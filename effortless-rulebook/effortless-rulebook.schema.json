@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://effortlessapi.com/schemas/effortless-rulebook/v1",
+  "title": "Effortless Rulebook Schema",
+  "description": "Schema for EffortlessAPI Rulebook (ERB) data model definitions. Defines tables, fields, relationships, calculated fields, and seed data. All property names use CamelCase except for 'schema' and 'data'.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "description": "Reference to this schema for validation."
+    },
+    "ModelName": {
+      "type": "string",
+      "description": "Unique identifier name for this data model.",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_-]*$"
+    },
+    "Description": {
+      "type": "string",
+      "description": "Human-readable description of the data model and its purpose."
+    },
+    "Meta": {
+      "$ref": "#/$defs/MetaInfo"
+    }
+  },
+  "additionalProperties": {
+    "$ref": "#/$defs/TableDefinition"
+  },
+  "$defs": {
+    "MetaInfo": {
+      "type": "object",
+      "description": "Metadata about the rulebook model.",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "description": "Model name."
+        },
+        "Description": {
+          "type": "string",
+          "description": "Extended description of the model."
+        },
+        "Version": {
+          "type": "string",
+          "description": "Semantic version of the model definition.",
+          "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9]+)?$"
+        },
+        "Summary": {
+          "type": "string",
+          "description": "Summary of what this model contains and its current state."
+        }
+      },
+      "additionalProperties": true
+    },
+    "TableDefinition": {
+      "type": "object",
+      "description": "Definition of a single table in the data model. Table keys use CamelCase (e.g., 'PropertyTypes', 'Leases').",
+      "properties": {
+        "Description": {
+          "type": "string",
+          "description": "Table description, typically starting with 'Table: TableName - description'.",
+          "pattern": "^Table:.*"
+        },
+        "schema": {
+          "type": "array",
+          "description": "Array of field definitions for this table. Note: 'schema' is lowercase by convention.",
+          "items": {
+            "$ref": "#/$defs/FieldDefinition"
+          },
+          "minItems": 1
+        },
+        "data": {
+          "type": "array",
+          "description": "Seed data records for this table. Note: 'data' is lowercase by convention.",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": ["Description", "schema"],
+      "additionalProperties": false
+    },
+    "FieldDefinition": {
+      "type": "object",
+      "description": "Definition of a single field within a table.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Field name in PascalCase.",
+          "pattern": "^[A-Z][A-Za-z0-9]*$"
+        },
+        "datatype": {
+          "type": "string",
+          "description": "Data type of the field.",
+          "enum": ["string", "boolean", "integer", "number", "datetime", "date", "time", "uuid", "json", "text"]
+        },
+        "type": {
+          "type": "string",
+          "description": "Field type indicating how the value is determined. 'raw' = base column (Schema/Data), 'calculated' = derived field (Lambda Functions), 'lookup' = FK lookup (Lookups), 'aggregation' = rollup/summary (Aggregations), 'relationship' = foreign key reference.",
+          "enum": ["raw", "calculated", "lookup", "aggregation", "relationship"]
+        },
+        "is_primary_key": {
+          "type": "boolean",
+          "description": "Whether this field is the primary key for the table.",
+          "default": false
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "Whether this field allows NULL values.",
+          "default": false
+        },
+        "Description": {
+          "type": "string",
+          "description": "Human-readable description of the field's purpose."
+        },
+        "formula": {
+          "type": "string",
+          "description": "Formula expression for calculated fields. Uses {{FieldName}} syntax for references.",
+          "pattern": "^=.*"
+        },
+        "RelatedTo": {
+          "type": "string",
+          "description": "For relationship fields, the CamelCase name of the related table."
+        },
+        "default": {
+          "description": "Default value for the field when not provided."
+        },
+        "unique": {
+          "type": "boolean",
+          "description": "Whether this field must have unique values across all records.",
+          "default": false
+        },
+        "min": {
+          "type": "number",
+          "description": "Minimum value for numeric fields."
+        },
+        "max": {
+          "type": "number",
+          "description": "Maximum value for numeric fields."
+        },
+        "minLength": {
+          "type": "integer",
+          "description": "Minimum length for string fields.",
+          "minimum": 0
+        },
+        "maxLength": {
+          "type": "integer",
+          "description": "Maximum length for string fields.",
+          "minimum": 1
+        },
+        "pattern": {
+          "type": "string",
+          "description": "Regex pattern for string field validation."
+        },
+        "enum": {
+          "type": "array",
+          "description": "Allowed values for this field.",
+          "items": {}
+        },
+        "format": {
+          "type": "string",
+          "description": "Format hint for the field (email, uri, phone, etc.).",
+          "enum": ["email", "uri", "url", "phone", "currency", "percentage", "ip", "hostname"]
+        }
+      },
+      "required": ["name", "datatype", "type"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": { "const": "relationship" }
+            },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["RelatedTo"]
+          }
+        }
+      ],
+      "additionalProperties": true
+    }
+  }
+}

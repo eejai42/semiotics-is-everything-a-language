@@ -1,0 +1,425 @@
+{
+  "$schema": "https://example.com/cmcc-schema/v1",
+  "model_name": "WikiDataCMCC",
+  "Description": "CMCC Rulebook implementing the Wikidata vs CMCC comparison model. Demonstrates the 5-layer architecture: Schema + Data + Lookups + Aggregations + Lambda Functions. Answers: 'Which state did Obama live in on 2005-01-04?'",
+  "People": {
+    "Description": "Table: People",
+    "schema": [
+      {
+        "name": "PersonId",
+        "datatype": "integer",
+        "type": "raw",
+        "nullable": false
+      },
+      {
+        "name": "Name",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false
+      },
+      {
+        "name": "WikidataId",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "BirthDate",
+        "datatype": "date",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "IsHistorical",
+        "datatype": "boolean",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "OfficesHeldList",
+        "datatype": "string",
+        "type": "relationship",
+        "nullable": true,
+        "RelatedTo": "OfficesHeld"
+      },
+      {
+        "name": "ResidencesList",
+        "datatype": "string",
+        "type": "relationship",
+        "nullable": true,
+        "RelatedTo": "PersonResidences"
+      },
+      {
+        "name": "HasEverBeenUsSenator",
+        "datatype": "boolean",
+        "type": "aggregation",
+        "nullable": true,
+        "formula": "=COUNTIFS(OfficesHeld!{{Person}}, People!{{PersonId}}, OfficesHeld!{{OfficeName}}, \"US Senator\") > 0"
+      },
+      {
+        "name": "SenatorTermCount",
+        "datatype": "integer",
+        "type": "aggregation",
+        "nullable": true,
+        "formula": "=COUNTIFS(OfficesHeld!{{Person}}, People!{{PersonId}}, OfficesHeld!{{OfficeName}}, \"US Senator\")"
+      }
+    ],
+    "data": [
+      {
+        "PersonId": 1,
+        "Name": "Barack Obama",
+        "WikidataId": "Q76",
+        "BirthDate": "1961-08-04",
+        "IsHistorical": true
+      },
+      {
+        "PersonId": 2,
+        "Name": "Jesus Christ",
+        "WikidataId": "Q302",
+        "BirthDate": null,
+        "IsHistorical": true
+      },
+      {
+        "PersonId": 3,
+        "Name": "Santa Claus",
+        "WikidataId": "Q42927",
+        "BirthDate": null,
+        "IsHistorical": false
+      }
+    ]
+  },
+  "Offices": {
+    "Description": "Table: Offices",
+    "schema": [
+      {
+        "name": "OfficeId",
+        "datatype": "integer",
+        "type": "raw",
+        "nullable": false
+      },
+      {
+        "name": "Name",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false
+      },
+      {
+        "name": "WikidataId",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "WikidataPropertyId",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "RequiresDistrict",
+        "datatype": "boolean",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "HolderCount",
+        "datatype": "integer",
+        "type": "aggregation",
+        "nullable": true,
+        "formula": "=COUNTIFS(OfficesHeld!{{Office}}, Offices!{{OfficeId}})"
+      }
+    ],
+    "data": [
+      {
+        "OfficeId": 1,
+        "Name": "US Senator",
+        "WikidataId": "Q4416090",
+        "WikidataPropertyId": "P39",
+        "RequiresDistrict": true
+      },
+      {
+        "OfficeId": 2,
+        "Name": "President of the United States",
+        "WikidataId": "Q11696",
+        "WikidataPropertyId": "P39",
+        "RequiresDistrict": false
+      },
+      {
+        "OfficeId": 3,
+        "Name": "Governor",
+        "WikidataId": "Q132050",
+        "WikidataPropertyId": "P39",
+        "RequiresDistrict": true
+      }
+    ]
+  },
+  "States": {
+    "Description": "Table: States",
+    "schema": [
+      {
+        "name": "StateId",
+        "datatype": "integer",
+        "type": "raw",
+        "nullable": false
+      },
+      {
+        "name": "Name",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false
+      },
+      {
+        "name": "Abbreviation",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": false
+      },
+      {
+        "name": "WikidataId",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "ResidentCount",
+        "datatype": "integer",
+        "type": "aggregation",
+        "nullable": true,
+        "formula": "=COUNTIFS(PersonResidences!{{State}}, States!{{StateId}})"
+      }
+    ],
+    "data": [
+      {
+        "StateId": 1,
+        "Name": "Illinois",
+        "Abbreviation": "IL",
+        "WikidataId": "Q1204"
+      },
+      {
+        "StateId": 2,
+        "Name": "New York",
+        "Abbreviation": "NY",
+        "WikidataId": "Q1384"
+      },
+      {
+        "StateId": 3,
+        "Name": "Arizona",
+        "Abbreviation": "AZ",
+        "WikidataId": "Q816"
+      },
+      {
+        "StateId": 4,
+        "Name": "Hawaii",
+        "Abbreviation": "HI",
+        "WikidataId": "Q782"
+      }
+    ]
+  },
+  "OfficesHeld": {
+    "Description": "Table: OfficesHeld",
+    "schema": [
+      {
+        "name": "OfficeHeldId",
+        "datatype": "integer",
+        "type": "raw",
+        "nullable": false
+      },
+      {
+        "name": "Person",
+        "datatype": "integer",
+        "type": "relationship",
+        "nullable": false,
+        "RelatedTo": "People"
+      },
+      {
+        "name": "Office",
+        "datatype": "integer",
+        "type": "relationship",
+        "nullable": false,
+        "RelatedTo": "Offices"
+      },
+      {
+        "name": "District",
+        "datatype": "integer",
+        "type": "relationship",
+        "nullable": true,
+        "RelatedTo": "States"
+      },
+      {
+        "name": "StartDate",
+        "datatype": "date",
+        "type": "raw",
+        "nullable": false
+      },
+      {
+        "name": "EndDate",
+        "datatype": "date",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "Rank",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "PersonName",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "formula": "=INDEX(People!{{Name}}, MATCH(OfficesHeld!{{Person}}, People!{{PersonId}}, 0))"
+      },
+      {
+        "name": "OfficeName",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "formula": "=INDEX(Offices!{{Name}}, MATCH(OfficesHeld!{{Office}}, Offices!{{OfficeId}}, 0))"
+      },
+      {
+        "name": "DistrictName",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "formula": "=INDEX(States!{{Name}}, MATCH(OfficesHeld!{{District}}, States!{{StateId}}, 0))"
+      },
+      {
+        "name": "DistrictAbbreviation",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "formula": "=INDEX(States!{{Abbreviation}}, MATCH(OfficesHeld!{{District}}, States!{{StateId}}, 0))"
+      },
+      {
+        "name": "TermDurationDays",
+        "datatype": "integer",
+        "type": "calculated",
+        "nullable": true,
+        "formula": "=DATEDIFF({{EndDate}}, {{StartDate}})"
+      }
+    ],
+    "data": [
+      {
+        "OfficeHeldId": 1,
+        "Person": 1,
+        "Office": 1,
+        "District": 1,
+        "StartDate": "2005-01-03",
+        "EndDate": "2008-11-16",
+        "Rank": "normal"
+      },
+      {
+        "OfficeHeldId": 2,
+        "Person": 1,
+        "Office": 2,
+        "District": null,
+        "StartDate": "2009-01-20",
+        "EndDate": "2017-01-20",
+        "Rank": "normal"
+      }
+    ]
+  },
+  "PersonResidences": {
+    "Description": "Table: PersonResidences",
+    "schema": [
+      {
+        "name": "ResidenceId",
+        "datatype": "integer",
+        "type": "raw",
+        "nullable": false
+      },
+      {
+        "name": "Person",
+        "datatype": "integer",
+        "type": "relationship",
+        "nullable": false,
+        "RelatedTo": "People"
+      },
+      {
+        "name": "State",
+        "datatype": "integer",
+        "type": "relationship",
+        "nullable": true,
+        "RelatedTo": "States"
+      },
+      {
+        "name": "LocationDescription",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "StartDate",
+        "datatype": "date",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "EndDate",
+        "datatype": "date",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "Source",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true
+      },
+      {
+        "name": "PersonName",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "formula": "=INDEX(People!{{Name}}, MATCH(PersonResidences!{{Person}}, People!{{PersonId}}, 0))"
+      },
+      {
+        "name": "StateName",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "formula": "=INDEX(States!{{Name}}, MATCH(PersonResidences!{{State}}, States!{{StateId}}, 0))"
+      },
+      {
+        "name": "StateAbbreviation",
+        "datatype": "string",
+        "type": "lookup",
+        "nullable": true,
+        "formula": "=INDEX(States!{{Abbreviation}}, MATCH(PersonResidences!{{State}}, States!{{StateId}}, 0))"
+      }
+    ],
+    "data": [
+      {
+        "ResidenceId": 1,
+        "Person": 3,
+        "State": null,
+        "LocationDescription": "North Pole",
+        "StartDate": null,
+        "EndDate": null,
+        "Source": "folklore"
+      },
+      {
+        "ResidenceId": 2,
+        "Person": 1,
+        "State": 4,
+        "LocationDescription": "Honolulu, Hawaii",
+        "StartDate": "1961-08-04",
+        "EndDate": "1979-06-01",
+        "Source": "biography"
+      }
+    ]
+  },
+  "_meta": {
+    "_CMCC_Summary": "CMCC Rulebook for Wikidata comparison demo. Implements Schema + Data + Lookups + Aggregations + Lambda Functions. The stable query interface is: SELECT * FROM vw_residences WHERE person_id = :obama AND start_date <= :date AND :date <= end_date",
+    "_conversion_metadata": {
+      "source": "WIKI_DATA_PLAN.md",
+      "table_count": 5,
+      "demo_question": "Which state did Obama live in on 2005-01-04?",
+      "expected_answers": {
+        "2005-01-02": "NULL (not yet a senator)",
+        "2005-01-04": "Illinois (senator term started 2005-01-03)"
+      }
+    }
+  }
+}
