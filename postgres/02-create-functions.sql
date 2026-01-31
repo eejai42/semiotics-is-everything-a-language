@@ -10,14 +10,6 @@
 -- ============================================================================
 
 
-CREATE OR REPLACE FUNCTION calc_language_candidates_is_a_family_feud_top_answer(p_language_candidate_id TEXT)
-RETURNS BOOLEAN AS $$
-BEGIN
-  RETURN (((calc_language_candidates_category_contains_language(p_language_candidate_id) = 'true') AND COALESCE((SELECT has_syntax FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE) AND NOT (COALESCE((SELECT can_be_held FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE)) AND COALESCE((SELECT meaning_is_serialized FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE) AND COALESCE((SELECT requires_parsing FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE) AND COALESCE((SELECT is_ongology_descriptor FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE) AND NOT (COALESCE((SELECT has_identity FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE)) AND COALESCE((SELECT distance_from_concept FROM language_candidates WHERE language_candidate_id = p_language_candidate_id) = 2, FALSE)))::boolean;
-END;
-$$ LANGUAGE plpgsql STABLE SECURITY DEFINER;
-
-
 CREATE OR REPLACE FUNCTION calc_language_candidates_family_feud_mismatch(p_language_candidate_id TEXT)
 RETURNS TEXT AS $$
 BEGIN
@@ -34,26 +26,26 @@ END;
 $$ LANGUAGE plpgsql STABLE SECURITY DEFINER;
 
 
-CREATE OR REPLACE FUNCTION calc_language_candidates_relationship_to_concept(p_language_candidate_id TEXT)
-RETURNS TEXT AS $$
-BEGIN
-  RETURN (CASE WHEN COALESCE((SELECT distance_from_concept FROM language_candidates WHERE language_candidate_id = p_language_candidate_id) = 1, FALSE) THEN 'IsMirrorOf' ELSE 'IsDescriptionOf' END)::text;
-END;
-$$ LANGUAGE plpgsql STABLE SECURITY DEFINER;
-
-
-CREATE OR REPLACE FUNCTION calc_language_candidates_category_contains_language(p_language_candidate_id TEXT)
+CREATE OR REPLACE FUNCTION calc_language_candidates_top_family_feud_answer(p_language_candidate_id TEXT)
 RETURNS BOOLEAN AS $$
 BEGIN
-  RETURN (POSITION('language' IN LOWER((SELECT NULLIF(category, '') FROM language_candidates WHERE language_candidate_id = p_language_candidate_id))) > 0)::boolean;
+  RETURN ((COALESCE((SELECT has_syntax FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE) AND NOT (COALESCE((SELECT can_be_held FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE)) AND COALESCE((SELECT meaning_is_serialized FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE) AND COALESCE((SELECT requires_parsing FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE) AND COALESCE((SELECT is_ongology_descriptor FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE) AND NOT (COALESCE((SELECT has_identity FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE)) AND COALESCE((SELECT distance_from_concept FROM language_candidates WHERE language_candidate_id = p_language_candidate_id) = 2, FALSE)))::boolean;
 END;
 $$ LANGUAGE plpgsql STABLE SECURITY DEFINER;
 
 
 CREATE OR REPLACE FUNCTION calc_language_candidates_has_grammar(p_language_candidate_id TEXT)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN ((SELECT has_syntax FROM language_candidates WHERE language_candidate_id = p_language_candidate_id) = TRUE)::boolean;
+END;
+$$ LANGUAGE plpgsql STABLE SECURITY DEFINER;
+
+
+CREATE OR REPLACE FUNCTION calc_language_candidates_relationship_to_concept(p_language_candidate_id TEXT)
 RETURNS TEXT AS $$
 BEGIN
-  RETURN ((SELECT has_syntax FROM language_candidates WHERE language_candidate_id = p_language_candidate_id))::text;
+  RETURN (CASE WHEN COALESCE((SELECT distance_from_concept FROM language_candidates WHERE language_candidate_id = p_language_candidate_id) = 1, FALSE) THEN 'IsMirrorOf' ELSE 'IsDescriptionOf' END)::text;
 END;
 $$ LANGUAGE plpgsql STABLE SECURITY DEFINER;
 

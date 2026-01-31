@@ -1,6 +1,6 @@
 # Effortless Rulebook
 
-### Generated from: 
+### Generated from:
 
 > This builds ssotme tools including those that are disabled which regenerates this file.
 
@@ -16,11 +16,67 @@ $ ssotme -build -id
 
 ---
 
-## Tables
+## Formal Arguments
+
+The following logical argument establishes that "language" can be formalized as a computable classification, and demonstrates that not everything qualifies as a language under this definition.
+
+{{#with IsEverythingALanguage}}
+{{#each data}}
+### {{Name}}: {{ArgumentCategory}} ({{StepType}})
+
+**Argument:** {{ArgumentName}}
+
+> {{Statement}}
+
+{{#if Formalization}}
+**Formalization:**
+```
+{{Formalization}}
+```
+{{/if}}
+
+{{#if RelatedCandidateName}}
+**Related Candidate:** {{RelatedCandidateName}}
+{{/if}}
+
+{{#if EvidenceFromRulebook}}
+**Evidence:** `{{EvidenceFromRulebook}}`
+{{/if}}
+
+{{#if Notes}}
+*Note: {{Notes}}*
+{{/if}}
+
+---
+{{/each}}
+{{/with}}
+
+## Language Candidates
+
+The following entities have been evaluated against the operational definition of "language" using testable predicates.
+
+| Name | Category | Is Language? | HasSyntax | RequiresParsing | MeaningIsSerialized | IsOntologyDescriptor | README |
+|------|----------|--------------|-----------|-----------------|---------------------|----------------------|--------|
+{{#each LanguageCandidates.data}}
+| {{Name}} | {{Category}} | {{#if TopFamilyFeudAnswer}}Yes{{else}}No{{/if}} | {{#if HasSyntax}}✓{{else}}✗{{/if}} | {{#if RequiresParsing}}✓{{else}}✗{{/if}} | {{#if MeaningIsSerialized}}✓{{else}}✗{{/if}} | {{#if IsOngologyDescriptor}}✓{{else}}✗{{/if}} | {{#if TopFamilyFeudAnswer}}[View](./language-candidates/{{LanguageCandidateId}}/README.md){{else}}-{{/if}} |
+{{/each}}
+
+### Predicate Legend
+
+| Predicate | Description |
+|-----------|-------------|
+| **HasSyntax** | Has formal syntactic rules governing valid expressions |
+| **RequiresParsing** | Understanding requires parsing/interpreting structured input |
+| **MeaningIsSerialized** | Meaning is encoded in a serialized, transmittable form |
+| **IsOntologyDescriptor** | Functions as an ontology/descriptor system for categorizing concepts |
+
+---
+
+## Table Schemas
 
 {{#each this}}
 {{#if schema}}
-### {{@key}}
+### Table: {{@key}}
 
 {{#if Description}}
 > {{Description}}

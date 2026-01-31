@@ -8,10 +8,19 @@ INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argumen
 VALUES ('neial-001', 'NEIAL-001', 'LanguageCanBeFormalized', 'Definition', 'Motivation', 'To avoid the slogan ''Everything is a language'', treat ''language'' as a typed construct defined by testable properties (syntax, parsing, serialized meaning, and descriptor-role).', '', '', '', '', 'This keeps ''can be interpreted'' separate from ''is a language system''.');
 
 INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
+VALUES ('neial-002', 'NEIAL-002', 'LanguageCanBeFormalized', 'Definition', 'PredicateSet', 'Use the repo predicates: HasSyntax, RequiresParsing, Meaning_Is_Serialized, IsOntologyDescriptor (spelled IsOngologyDescriptor in the dataset), plus auxiliary checks like CanBeHeld and HasIdentity.', 'Predicates: Syntax(x), Parse(x), SerializeMeaning(x), OntDesc(x), Tangible(x)', '', '', '', 'We preserve the dataset''s field name even when misspelled to match the generated schema.');
+
+INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
+VALUES ('neial-003', 'NEIAL-003', 'LanguageCanBeFormalized', 'Definition', 'Definition', 'Operational definition: an item x counts as a Language if it has syntax, requires parsing, serializes meaning, and functions as an ontology/descriptor system.', 'Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) ∧ IsOngologyDescriptor(x)', '', '', '', 'This is a deliberately ''strong'' definition: it matches formal languages and many natural language representations.');
+
+INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
 VALUES ('neial-004', 'NEIAL-004', 'LanguageCanBeFormalized', 'Premise', 'Witness', 'There exists at least one clear witness that satisfies the operational definition: English.', '∃x (x=English ∧ Language(x))', 'English', 'english', 'HasSyntax=True; RequiresParsing=True; Meaning_Is_Serialized=True; IsOngologyDescriptor=True; CanBeHeld=False; HasIdentity=False; DistanceFromConcept=2; Category=Natural Language', 'If any predicate is false in your current dataset for this witness, adjust the candidate record or relax the definition.');
 
 INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
-VALUES ('neial-016', 'NEIAL-016', 'NotEverythingIsALanguage', 'Conclusion', 'Conclusion', 'Given a formalizable definition of language, not everything is a language; some things are better treated as sign vehicles or semiotic processes, with running applications as a key fuzzy region that benefits from explicit modeling.', 'Formalizable(Language) ∧ ∃x ¬Language(x) ⇒ ¬(EverythingIsALanguage)', '', '', '', 'This is the repo''s thesis in one line.');
+VALUES ('neial-005', 'NEIAL-005', 'LanguageCanBeFormalized', 'Premise', 'Witness', 'There exists at least one clear witness that satisfies the operational definition: Python.', '∃x (x=Python ∧ Language(x))', 'Python', 'python', 'HasSyntax=True; RequiresParsing=True; Meaning_Is_Serialized=True; IsOngologyDescriptor=True; CanBeHeld=False; HasIdentity=False; DistanceFromConcept=2; Category=Formal Language', 'If any predicate is false in your current dataset for this witness, adjust the candidate record or relax the definition.');
+
+INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
+VALUES ('neial-006', 'NEIAL-006', 'LanguageCanBeFormalized', 'Conclusion', 'Conclusion', 'Therefore, ''language'' can be formalized as a computable classification boundary over explicit predicates.', '(Definition ∧ Witnesses) ⇒ Formalizable(Language)', '', '', '', 'This is the concession: language is formalizable (at least operationally).');
 
 INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
 VALUES ('neial-007', 'NEIAL-007', 'NotEverythingIsALanguage', 'Premise', 'Entailment', 'If Language(x) is defined by necessary conditions, then any x that fails at least one condition is not a language.', '∀x (¬(HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) ∧ IsOngologyDescriptor(x)) → ¬Language(x))', '', '', '', 'This is the standard move: a definition implies exclusions.');
@@ -23,10 +32,10 @@ INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argumen
 VALUES ('neial-009', 'NEIAL-009', 'NotEverythingIsALanguage', 'Example', 'NonLanguageExample', 'Non-language example: A Thunderstorm can be meaningful, but meaning here is not generated by an explicit syntax+parsing+serialization descriptor system.', '¬Language(A Thunderstorm)', 'A Thunderstorm', 'a-thunderstorm', 'HasSyntax=False; RequiresParsing=True; Meaning_Is_Serialized=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Physical event', 'These are strong candidates for ''sign vehicles'' rather than ''languages''.');
 
 INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
-VALUES ('neial-002', 'NEIAL-002', 'LanguageCanBeFormalized', 'Definition', 'PredicateSet', 'Use the repo predicates: HasSyntax, RequiresParsing, Meaning_Is_Serialized, IsOntologyDescriptor (spelled IsOngologyDescriptor in the dataset), plus auxiliary checks like CanBeHeld and HasIdentity.', 'Predicates: Syntax(x), Parse(x), SerializeMeaning(x), OntDesc(x), Tangible(x)', '', '', '', 'We preserve the dataset''s field name even when misspelled to match the generated schema.');
+VALUES ('neial-010', 'NEIAL-010', 'NotEverythingIsALanguage', 'Example', 'NonLanguageExample', 'Non-language example: A Coffee Mug can be meaningful, but meaning here is not generated by an explicit syntax+parsing+serialization descriptor system.', '¬Language(A Coffee Mug)', 'A Coffee Mug', 'a-coffee-mug', 'HasSyntax=False; RequiresParsing=False; Meaning_Is_Serialized=False; IsOngologyDescriptor=False; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object', 'These are strong candidates for ''sign vehicles'' rather than ''languages''.');
 
 INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
-VALUES ('neial-006', 'NEIAL-006', 'LanguageCanBeFormalized', 'Conclusion', 'Conclusion', 'Therefore, ''language'' can be formalized as a computable classification boundary over explicit predicates.', '(Definition ∧ Witnesses) ⇒ Formalizable(Language)', '', '', '', 'This is the concession: language is formalizable (at least operationally).');
+VALUES ('neial-011', 'NEIAL-011', 'NotEverythingIsALanguage', 'Example', 'NonLanguageExample', 'Non-language example: The Mona Lisa can be meaningful, but meaning here is not generated by an explicit syntax+parsing+serialization descriptor system.', '¬Language(The Mona Lisa)', 'The Mona Lisa', 'the-mona-lisa', 'HasSyntax=False; RequiresParsing=False; Meaning_Is_Serialized=False; IsOngologyDescriptor=True; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object', 'These are strong candidates for ''sign vehicles'' rather than ''languages''.');
 
 INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
 VALUES ('neial-012', 'NEIAL-012', 'NotEverythingIsALanguage', 'Observation', 'FuzzyBoundary', 'Fuzzy case: A Running App often contains embedded languages (code, UI grammars), but as an executing/interactive process it behaves like a dynamic system rather than a static serialized language artifact.', 'Borderline(A Running App): may contain ∃y Language(y) but ¬Language(A Running App) under static-serialization criteria', 'A Running App', '', '', 'This is where traditional semiotics'' ''anything is a sign'' doesn’t neatly distinguish: (1) language-as-system vs (2) meaning-making interactive processes.');
@@ -35,92 +44,83 @@ INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argumen
 VALUES ('neial-013', 'NEIAL-013', 'NotEverythingIsALanguage', 'Observation', 'FuzzyBoundary', 'Fuzzy case: Running Calculator App often contains embedded languages (code, UI grammars), but as an executing/interactive process it behaves like a dynamic system rather than a static serialized language artifact.', 'Borderline(Running Calculator App): may contain ∃y Language(y) but ¬Language(Running Calculator App) under static-serialization criteria', 'Running Calculator App', 'running-calculator-app', 'HasSyntax=False; RequiresParsing=True; Meaning_Is_Serialized=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Running Software', 'This is where traditional semiotics'' ''anything is a sign'' doesn’t neatly distinguish: (1) language-as-system vs (2) meaning-making interactive processes.');
 
 INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
-VALUES ('neial-010', 'NEIAL-010', 'NotEverythingIsALanguage', 'Example', 'NonLanguageExample', 'Non-language example: A Coffee Mug can be meaningful, but meaning here is not generated by an explicit syntax+parsing+serialization descriptor system.', '¬Language(A Coffee Mug)', 'A Coffee Mug', 'a-coffee-mug', 'HasSyntax=False; RequiresParsing=False; Meaning_Is_Serialized=False; IsOngologyDescriptor=False; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object', 'These are strong candidates for ''sign vehicles'' rather than ''languages''.');
-
-INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
 VALUES ('neial-014', 'NEIAL-014', 'NotEverythingIsALanguage', 'Observation', 'FuzzyBoundary', 'Fuzzy case: A Game of Fortnite often contains embedded languages (code, UI grammars), but as an executing/interactive process it behaves like a dynamic system rather than a static serialized language artifact.', 'Borderline(A Game of Fortnite): may contain ∃y Language(y) but ¬Language(A Game of Fortnite) under static-serialization criteria', 'A Game of Fortnite', 'a-game-of-fortnite', 'HasSyntax=False; RequiresParsing=True; Meaning_Is_Serialized=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Running Software', 'This is where traditional semiotics'' ''anything is a sign'' doesn’t neatly distinguish: (1) language-as-system vs (2) meaning-making interactive processes.');
-
-INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
-VALUES ('neial-005', 'NEIAL-005', 'LanguageCanBeFormalized', 'Premise', 'Witness', 'There exists at least one clear witness that satisfies the operational definition: Python.', '∃x (x=Python ∧ Language(x))', 'Python', 'python', 'HasSyntax=True; RequiresParsing=True; Meaning_Is_Serialized=True; IsOngologyDescriptor=True; CanBeHeld=False; HasIdentity=False; DistanceFromConcept=2; Category=Formal Language', 'If any predicate is false in your current dataset for this witness, adjust the candidate record or relax the definition.');
-
-INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
-VALUES ('neial-003', 'NEIAL-003', 'LanguageCanBeFormalized', 'Definition', 'Definition', 'Operational definition: an item x counts as a Language if it has syntax, requires parsing, serializes meaning, and functions as an ontology/descriptor system.', 'Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) ∧ IsOngologyDescriptor(x)', '', '', '', 'This is a deliberately ''strong'' definition: it matches formal languages and many natural language representations.');
 
 INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
 VALUES ('neial-015', 'NEIAL-015', 'NotEverythingIsALanguage', 'Definition', 'Refinement', 'Refinement: distinguish LanguageSystem (syntax/parsing/serialization descriptor) from SemioticProcess (interactive/dynamic meaning production) and from SignVehicle (object/phenomenon used as a sign).', 'Kinds: LanguageSystem(x) | SemioticProcess(x) | SignVehicle(x)', '', '', '', 'This gives you a place to put running apps and games without forcing ''language'' to swallow everything.');
 
 INSERT INTO is_everything_a_language (is_everything_a_language_id, name, argument_name, argument_category, step_type, statement, formalization, related_candidate_name, related_candidate_id, evidence_from_rulebook, notes)
-VALUES ('neial-011', 'NEIAL-011', 'NotEverythingIsALanguage', 'Example', 'NonLanguageExample', 'Non-language example: The Mona Lisa can be meaningful, but meaning here is not generated by an explicit syntax+parsing+serialization descriptor system.', '¬Language(The Mona Lisa)', 'The Mona Lisa', 'the-mona-lisa', 'HasSyntax=False; RequiresParsing=False; Meaning_Is_Serialized=False; IsOngologyDescriptor=True; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object', 'These are strong candidates for ''sign vehicles'' rather than ''languages''.');
+VALUES ('neial-016', 'NEIAL-016', 'NotEverythingIsALanguage', 'Conclusion', 'Conclusion', 'Given a formalizable definition of language, not everything is a language; some things are better treated as sign vehicles or semiotic processes, with running applications as a key fuzzy region that benefits from explicit modeling.', 'Formalizable(Language) ∧ ∃x ¬Language(x) ⇒ ¬(EverythingIsALanguage)', '', '', '', 'This is the repo''s thesis in one line.');
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('running-calculator-app', 'Running Calculator App', 'Running Software', FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, 18, TRUE, 1);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('falsifier-a', 'Falsifier A', 'MISSING: Have you seen this Language?', FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 19);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('a-chair', 'A Chair ', 'Physical Object', TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, 3, TRUE, 1);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('falsifier-b', 'Falsifier B', 'MISSING: Have you seen this Language?', TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, 1, 20);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('a-smartphone', 'A Smartphone', 'Physical Object', TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, 7, TRUE, 1);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('english', 'English', 'Natural Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 1);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('a-coffee-mug', 'A Coffee Mug', 'Physical Object', TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, 12, TRUE, 1);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('spoken-words', 'Spoken Words', 'Natural Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 2);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('an-xlsx-doc', 'An XLSX Doc', 'Formal Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 22, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('a-chair', 'A Chair ', 'Physical Object', FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, 1, 3);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('falsifier-a', 'Falsifier A', 'MISSING: Have you seen this Language?', FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, 19, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('a-game-of-fortnite', 'A Game of Fortnite', 'Running Software', FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, 1, 4);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('falsifier-b', 'Falsifier B', 'MISSING: Have you seen this Language?', TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, 20, TRUE, 1);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('sign-language', 'Sign Language', 'Natural Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 5);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('editing-an-docx-doc', 'Editing an DOCX Doc', 'Running Software', FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, 25, FALSE, 1);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('python', 'Python', 'Formal Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 6);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('an-docx-doc', 'An DOCX Doc', 'Formal Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 24, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('a-smartphone', 'A Smartphone', 'Physical Object', FALSE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, 1, 7);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('owl-rdf-graphql-generally', 'OWL/RDF/GraphQL/... generally', 'Natural Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 10, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('a-running-app', 'A Running App ', 'Running Software', FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, 1, 8);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('binary-code', 'Binary Code', 'Formal Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 14, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('an-xlsx-doc', 'An XLSX Doc', 'Formal Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 22);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('editing-an-xlsx-doc', 'Editing an XLSX Doc', 'Running Software', FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 23, FALSE, 1);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('editing-an-xlsx-doc', 'Editing an XLSX Doc', 'Running Software', FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 1, 23);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('a-thunderstorm', 'A Thunderstorm', 'Physical event', FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, 11, TRUE, 1);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('an-docx-doc', 'An DOCX Doc', 'Formal Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 24);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('python', 'Python', 'Formal Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 6, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('editing-an-docx-doc', 'Editing an DOCX Doc', 'Running Software', FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, 1, 25);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('english', 'English', 'Natural Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 1, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('a-csv-file', 'A CSV File', 'Formal Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 9);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('a-csv-file', 'A CSV File', 'Formal Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 9, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('owl-rdf-graphql-generally', 'OWL/RDF/GraphQL/... generally', 'Natural Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 10);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('a-uml-file', 'A UML File', 'Formal Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 13, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('a-coffee-mug', 'A Coffee Mug', 'Physical Object', FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, 1, 12);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('the-mona-lisa', 'The Mona Lisa', 'Physical Object', TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, 15, TRUE, 1);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('a-thunderstorm', 'A Thunderstorm', 'Physical event', FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, 1, 11);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('french', 'French', 'Natural Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 17, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('a-uml-file', 'A UML File', 'Formal Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 13);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('javascript', 'JavaScript', 'Formal Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 16, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('binary-code', 'Binary Code', 'Formal Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 14);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('spoken-words', 'Spoken Words', 'Natural Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 2, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('the-mona-lisa', 'The Mona Lisa', 'Physical Object', FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, 1, 15);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('sign-language', 'Sign Language', 'Natural Language', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 5, FALSE, 2);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('running-calculator-app', 'Running Calculator App', 'Running Software', FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, 1, 18);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('a-game-of-fortnite', 'A Game of Fortnite', 'Running Software', FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, 4, TRUE, 1);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('javascript', 'JavaScript', 'Formal Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 16);
 
-INSERT INTO language_candidates (language_candidate_id, name, category, can_be_held, meaning_is_serialized, requires_parsing, is_ongology_descriptor, has_syntax, chosen_language_candidate, sort_order, has_identity, distance_from_concept)
-VALUES ('a-running-app', 'A Running App ', 'Running Software', FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, 8, TRUE, 1);
+INSERT INTO language_candidates (language_candidate_id, name, category, chosen_language_candidate, has_syntax, has_identity, can_be_held, requires_parsing, meaning_is_serialized, is_ongology_descriptor, distance_from_concept, sort_order)
+VALUES ('french', 'French', 'Natural Language', TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, 2, 17);
 

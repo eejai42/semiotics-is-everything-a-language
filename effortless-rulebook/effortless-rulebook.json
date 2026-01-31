@@ -9,67 +9,78 @@
         "name": "IsEverythingALanguageId",
         "datatype": "string",
         "type": "raw",
-        "nullable": false
+        "nullable": false,
+        "description": "Unique identifier for this argument step in the 'Is Everything a Language?' logical framework (e.g., neial-001)"
       },
       {
         "name": "Name",
         "datatype": "string",
         "type": "raw",
-        "nullable": true
+        "nullable": true,
+        "description": "Human-readable code name for the argument step (e.g., NEIAL-001, NEIAL-016)"
       },
       {
         "name": "ArgumentName",
         "datatype": "string",
         "type": "raw",
-        "nullable": true
+        "nullable": true,
+        "description": "Name of the logical argument this step belongs to: 'LanguageCanBeFormalized' or 'NotEverythingIsALanguage'"
       },
       {
         "name": "ArgumentCategory",
         "datatype": "string",
         "type": "raw",
-        "nullable": true
+        "nullable": true,
+        "description": "Category classifying the argument step's role: Definition, Premise, Example, Observation, or Conclusion"
       },
       {
         "name": "StepType",
         "datatype": "string",
         "type": "raw",
-        "nullable": true
+        "nullable": true,
+        "description": "The specific logical function of this step: Motivation, PredicateSet, Definition, Witness, Entailment, Counterexample, NonLanguageExample, FuzzyBoundary, Refinement, or Conclusion"
       },
       {
         "name": "Statement",
         "datatype": "string",
         "type": "raw",
-        "nullable": true
+        "nullable": true,
+        "description": "The prose statement expressing this argument step in natural language"
       },
       {
         "name": "Formalization",
         "datatype": "string",
         "type": "raw",
-        "nullable": true
+        "nullable": true,
+        "description": "Formal logical notation representing the statement using predicate logic symbols (∀, ∃, ∧, ¬, →, ⇒)"
       },
       {
         "name": "RelatedCandidateName",
         "datatype": "string",
         "type": "raw",
-        "nullable": true
+        "nullable": true,
+        "description": "Display name of the LanguageCandidate this argument step references as evidence or example"
       },
       {
         "name": "RelatedCandidateId",
         "datatype": "string",
         "type": "raw",
-        "nullable": true
+        "nullable": true,
+        "description": "Foreign key linking to LanguageCandidates.LanguageCandidateId for the referenced candidate"
       },
       {
         "name": "EvidenceFromRulebook",
         "datatype": "string",
         "type": "raw",
-        "nullable": true
+        "nullable": true,
+        "description": "Predicate values from the related candidate that support this argument step (e.g., HasSyntax=True; RequiresParsing=True)"
       },
       {
         "name": "Notes",
         "datatype": "string",
         "type": "raw",
-        "nullable": true
+        "nullable": true,
+        "description": "Additional clarifications, caveats, or implementation notes for this argument step"
       }
     ],
     "data": [
@@ -284,121 +295,131 @@
     ]
   },
   "LanguageCandidates": {
-    "Description": "Table: LanguageCandidates",
+    "Description": "Table: LanguageCandidates - Contains entities being evaluated against the operational definition of 'language' using testable predicates",
     "schema": [
       {
         "name": "LanguageCandidateId",
         "datatype": "string",
         "type": "raw",
-        "nullable": false
+        "nullable": false,
+        "description": "Unique identifier for the language candidate in slug format (e.g., 'english', 'a-coffee-mug', 'running-calculator-app')"
       },
       {
         "name": "Name",
         "datatype": "string",
         "type": "raw",
-        "nullable": true
-      },
-      {
-        "name": "Is_A_Family_Feud_Top_Answer",
-        "datatype": "boolean",
-        "type": "calculated",
         "nullable": true,
-        "formula": "=AND(\n  {{CategoryContainsLanguage}},\n  {{HasSyntax}},\n  NOT({{CanBeHeld}}),\n  {{Meaning_Is_Serialized}},\n  {{RequiresParsing}},\n  {{IsOngologyDescriptor}},\n  NOT({{HasIdentity}}),\n  {{DistanceFromConcept}}=2\n)"
-      },
-      {
-        "name": "Category",
-        "datatype": "string",
-        "type": "raw",
-        "nullable": true
-      },
-      {
-        "name": "CanBeHeld",
-        "datatype": "boolean",
-        "type": "raw",
-        "nullable": true
-      },
-      {
-        "name": "Meaning_Is_Serialized",
-        "datatype": "boolean",
-        "type": "raw",
-        "nullable": true
-      },
-      {
-        "name": "RequiresParsing",
-        "datatype": "boolean",
-        "type": "raw",
-        "nullable": true
-      },
-      {
-        "name": "IsOngologyDescriptor",
-        "datatype": "boolean",
-        "type": "raw",
-        "nullable": true
-      },
-      {
-        "name": "HasSyntax",
-        "datatype": "boolean",
-        "type": "raw",
-        "nullable": true
-      },
-      {
-        "name": "ChosenLanguageCandidate",
-        "datatype": "boolean",
-        "type": "raw",
-        "nullable": true
+        "description": "Display name of the candidate being evaluated (e.g., 'English', 'A Coffee Mug', 'Python')"
       },
       {
         "name": "FamilyFeudMismatch",
         "datatype": "string",
         "type": "calculated",
         "nullable": true,
-        "formula": "=IF(NOT({{Is_A_Family_Feud_Top_Answer}} = {{ChosenLanguageCandidate}}),\n  {{Name}} \u0026 \u0022 \u0022 \u0026 IF({{Is_A_Family_Feud_Top_Answer}}, \u0022Is\u0022, \u0022Isn\u0027t\u0022) \u0026 \u0022 a Family Feud Language, but \u0022 \u0026 \n  IF({{ChosenLanguageCandidate}}, \u0022Is\u0022, \u0022Is Not\u0022) \u0026 \u0022 marked as a \u0027Language Candidate.\u0027\u0022)"
-      },
-      {
-        "name": "SortOrder",
-        "datatype": "integer",
-        "type": "raw",
-        "nullable": true
+        "formula": "=IF(NOT({{TopFamilyFeudAnswer}} = {{ChosenLanguageCandidate}}),\n  {{Name}} \u0026 \u0022 \u0022 \u0026 IF({{TopFamilyFeudAnswer}}, \u0022Is\u0022, \u0022Isn\u0027t\u0022) \u0026 \u0022 a Family Feud Language, but \u0022 \u0026 \n  IF({{ChosenLanguageCandidate}}, \u0022Is\u0022, \u0022Is Not\u0022) \u0026 \u0022 marked as a \u0027Language Candidate.\u0027\u0022)",
+        "description": "Diagnostic message identifying discrepancies between the calculated 'Family Feud' answer and the manually chosen classification"
       },
       {
         "name": "FamilyFuedQuestion",
         "datatype": "string",
         "type": "calculated",
         "nullable": true,
-        "formula": "=\u0022Is \u0022 \u0026 {{Name}} \u0026 \u0022 a language?\u0022"
+        "formula": "=\u0022Is \u0022 \u0026 {{Name}} \u0026 \u0022 a language?\u0022",
+        "description": "The canonical survey-style question: 'Is [Name] a language?' used for intuition testing"
+      },
+      {
+        "name": "Category",
+        "datatype": "string",
+        "type": "raw",
+        "nullable": true,
+        "description": "Classification category: Natural Language, Formal Language, Physical Object, Physical event, Running Software, or MISSING"
+      },
+      {
+        "name": "TopFamilyFeudAnswer",
+        "datatype": "boolean",
+        "type": "calculated",
+        "nullable": true,
+        "formula": "=AND(\n  {{HasSyntax}},\n  NOT({{CanBeHeld}}),\n  {{MeaningIsSerialized}},\n  {{RequiresParsing}},\n  {{IsOngologyDescriptor}},\n  NOT({{HasIdentity}}),\n  {{DistanceFromConcept}}=2\n)",
+        "description": "Calculated boolean indicating if this candidate would be considered a language by common intuition (all language predicates true, all non-language predicates false)"
+      },
+      {
+        "name": "ChosenLanguageCandidate",
+        "datatype": "boolean",
+        "type": "raw",
+        "nullable": true,
+        "description": "Manual override flag: true if this candidate should be classified as a language regardless of calculated predicates"
+      },
+      {
+        "name": "HasSyntax",
+        "datatype": "boolean",
+        "type": "raw",
+        "nullable": true,
+        "description": "Core predicate: Does this candidate have formal syntactic rules governing valid expressions?"
       },
       {
         "name": "HasIdentity",
         "datatype": "boolean",
         "type": "raw",
-        "nullable": true
+        "nullable": true,
+        "description": "Predicate: Does this candidate have a unique, persistent identity (a specific instance vs. a type/class)?"
+      },
+      {
+        "name": "CanBeHeld",
+        "datatype": "boolean",
+        "type": "raw",
+        "nullable": true,
+        "description": "Predicate: Is this candidate a tangible physical object that can be physically held?"
+      },
+      {
+        "name": "HasGrammar",
+        "datatype": "boolean",
+        "type": "calculated",
+        "nullable": true,
+        "formula": "={{HasSyntax}} = TRUE()",
+        "description": "Derived predicate: Equivalent to HasSyntax - indicates presence of grammatical structure"
+      },
+      {
+        "name": "RequiresParsing",
+        "datatype": "boolean",
+        "type": "raw",
+        "nullable": true,
+        "description": "Core predicate: Does understanding this candidate require parsing/interpreting structured input?"
+      },
+      {
+        "name": "MeaningIsSerialized",
+        "datatype": "boolean",
+        "type": "raw",
+        "nullable": true,
+        "description": "Core predicate: Is meaning encoded in a serialized, transmittable form rather than immediate experience?"
+      },
+      {
+        "name": "IsOngologyDescriptor",
+        "datatype": "boolean",
+        "type": "raw",
+        "nullable": true,
+        "description": "Core predicate: Does this candidate function as an ontology/descriptor system for categorizing concepts? (Note: field name preserves original 'Ongology' spelling)"
+      },
+      {
+        "name": "DistanceFromConcept",
+        "datatype": "integer",
+        "type": "raw",
+        "nullable": true,
+        "description": "Semiotic distance: 1 = direct mirror/instantiation of a concept (sign vehicle), 2 = description/representation of a concept (language)"
       },
       {
         "name": "RelationshipToConcept",
         "datatype": "string",
         "type": "calculated",
         "nullable": true,
-        "formula": "=IF({{DistanceFromConcept}} = 1, \u0022IsMirrorOf\u0022, \u0022IsDescriptionOf\u0022)"
+        "formula": "=IF({{DistanceFromConcept}} = 1, \u0022IsMirrorOf\u0022, \u0022IsDescriptionOf\u0022)",
+        "description": "Human-readable relationship type derived from DistanceFromConcept: 'IsMirrorOf' (distance=1) or 'IsDescriptionOf' (distance=2)"
       },
       {
-        "name": "DistanceFromConcept",
+        "name": "SortOrder",
         "datatype": "integer",
         "type": "raw",
-        "nullable": true
-      },
-      {
-        "name": "CategoryContainsLanguage",
-        "datatype": "boolean",
-        "type": "calculated",
         "nullable": true,
-        "formula": "=FIND(\u0022language\u0022, LOWER({{Category}})) \u003E 0"
-      },
-      {
-        "name": "HasGrammar",
-        "datatype": "string",
-        "type": "calculated",
-        "nullable": true,
-        "formula": "={{HasSyntax}}"
+        "description": "Display ordering index for presenting candidates in a consistent sequence"
       }
     ],
     "data": [
@@ -412,15 +433,14 @@
         "HasIdentity": true,
         "RelationshipToConcept": "IsMirrorOf",
         "DistanceFromConcept": 1,
-        "Is_A_Family_Feud_Top_Answer": false,
-        "CanBeHeld": false,
-        "Meaning_Is_Serialized": false,
-        "IsOngologyDescriptor": false,
-        "HasSyntax": false,
-        "ChosenLanguageCandidate": false,
         "FamilyFeudMismatch": "",
-        "CategoryContainsLanguage": false,
-        "HasGrammar": ""
+        "TopFamilyFeudAnswer": false,
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "CanBeHeld": false,
+        "HasGrammar": false,
+        "MeaningIsSerialized": false,
+        "IsOngologyDescriptor": false
       },
       {
         "LanguageCandidateId": "a-chair",
@@ -432,35 +452,33 @@
         "HasIdentity": true,
         "RelationshipToConcept": "IsMirrorOf",
         "DistanceFromConcept": 1,
-        "Is_A_Family_Feud_Top_Answer": false,
-        "Meaning_Is_Serialized": false,
-        "RequiresParsing": false,
-        "IsOngologyDescriptor": false,
-        "HasSyntax": false,
-        "ChosenLanguageCandidate": false,
         "FamilyFeudMismatch": "",
-        "CategoryContainsLanguage": false,
-        "HasGrammar": ""
+        "TopFamilyFeudAnswer": false,
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasGrammar": false,
+        "RequiresParsing": false,
+        "MeaningIsSerialized": false,
+        "IsOngologyDescriptor": false
       },
       {
         "LanguageCandidateId": "a-smartphone",
         "Name": "A Smartphone",
         "CanBeHeld": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "Category": "Physical Object",
         "SortOrder": 7,
         "FamilyFuedQuestion": "Is A Smartphone a language?",
         "HasIdentity": true,
         "RelationshipToConcept": "IsMirrorOf",
         "DistanceFromConcept": 1,
-        "Is_A_Family_Feud_Top_Answer": false,
-        "RequiresParsing": false,
-        "IsOngologyDescriptor": false,
-        "HasSyntax": false,
-        "ChosenLanguageCandidate": false,
         "FamilyFeudMismatch": "",
-        "CategoryContainsLanguage": false,
-        "HasGrammar": ""
+        "TopFamilyFeudAnswer": false,
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasGrammar": false,
+        "RequiresParsing": false,
+        "IsOngologyDescriptor": false
       },
       {
         "LanguageCandidateId": "a-coffee-mug",
@@ -472,22 +490,21 @@
         "HasIdentity": true,
         "RelationshipToConcept": "IsMirrorOf",
         "DistanceFromConcept": 1,
-        "Is_A_Family_Feud_Top_Answer": false,
-        "Meaning_Is_Serialized": false,
-        "RequiresParsing": false,
-        "IsOngologyDescriptor": false,
-        "HasSyntax": false,
-        "ChosenLanguageCandidate": false,
         "FamilyFeudMismatch": "",
-        "CategoryContainsLanguage": false,
-        "HasGrammar": ""
+        "TopFamilyFeudAnswer": false,
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasGrammar": false,
+        "RequiresParsing": false,
+        "MeaningIsSerialized": false,
+        "IsOngologyDescriptor": false
       },
       {
         "LanguageCandidateId": "an-xlsx-doc",
         "Name": "An XLSX Doc",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Formal Language",
@@ -496,18 +513,17 @@
         "FamilyFuedQuestion": "Is An XLSX Doc a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "falsifier-a",
         "Name": "Falsifier A",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "MISSING: Have you seen this Language?",
@@ -516,11 +532,10 @@
         "FamilyFuedQuestion": "Is Falsifier A a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "ChosenLanguageCandidate": false,
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "falsifier-b",
@@ -536,11 +551,10 @@
         "HasIdentity": true,
         "RelationshipToConcept": "IsMirrorOf",
         "DistanceFromConcept": 1,
-        "CategoryContainsLanguage": true,
-        "Is_A_Family_Feud_Top_Answer": false,
-        "Meaning_Is_Serialized": false,
+        "TopFamilyFeudAnswer": false,
         "HasSyntax": false,
-        "HasGrammar": ""
+        "HasGrammar": false,
+        "MeaningIsSerialized": false
       },
       {
         "LanguageCandidateId": "editing-an-docx-doc",
@@ -551,23 +565,22 @@
         "FamilyFuedQuestion": "Is Editing an DOCX Doc a language?",
         "RelationshipToConcept": "IsMirrorOf",
         "DistanceFromConcept": 1,
-        "Is_A_Family_Feud_Top_Answer": false,
-        "CanBeHeld": false,
-        "Meaning_Is_Serialized": false,
-        "RequiresParsing": false,
-        "HasSyntax": false,
-        "ChosenLanguageCandidate": false,
         "FamilyFeudMismatch": "",
+        "TopFamilyFeudAnswer": false,
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
         "HasIdentity": false,
-        "CategoryContainsLanguage": false,
-        "HasGrammar": ""
+        "CanBeHeld": false,
+        "HasGrammar": false,
+        "RequiresParsing": false,
+        "MeaningIsSerialized": false
       },
       {
         "LanguageCandidateId": "an-docx-doc",
         "Name": "An DOCX Doc",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Formal Language",
@@ -576,18 +589,17 @@
         "FamilyFuedQuestion": "Is An DOCX Doc a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "owl-rdf-graphql-generally",
         "Name": "OWL/RDF/GraphQL/... generally",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Natural Language",
@@ -596,18 +608,17 @@
         "FamilyFuedQuestion": "Is OWL/RDF/GraphQL/... generally a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "binary-code",
         "Name": "Binary Code",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Formal Language",
@@ -616,11 +627,10 @@
         "FamilyFuedQuestion": "Is Binary Code a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "editing-an-xlsx-doc",
@@ -630,21 +640,21 @@
         "FamilyFuedQuestion": "Is Editing an XLSX Doc a language?",
         "RelationshipToConcept": "IsMirrorOf",
         "DistanceFromConcept": 1,
-        "Is_A_Family_Feud_Top_Answer": false,
-        "CanBeHeld": false,
-        "Meaning_Is_Serialized": false,
-        "RequiresParsing": false,
-        "IsOngologyDescriptor": false,
-        "HasSyntax": false,
-        "ChosenLanguageCandidate": false,
         "FamilyFeudMismatch": "",
+        "TopFamilyFeudAnswer": false,
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
         "HasIdentity": false,
-        "CategoryContainsLanguage": false,
-        "HasGrammar": ""
+        "CanBeHeld": false,
+        "HasGrammar": false,
+        "RequiresParsing": false,
+        "MeaningIsSerialized": false,
+        "IsOngologyDescriptor": false
       },
       {
         "LanguageCandidateId": "a-thunderstorm",
         "Name": "A Thunderstorm",
+        "CanBeHeld": true,
         "RequiresParsing": true,
         "Category": "Physical event",
         "SortOrder": 11,
@@ -652,22 +662,20 @@
         "HasIdentity": true,
         "RelationshipToConcept": "IsMirrorOf",
         "DistanceFromConcept": 1,
-        "Is_A_Family_Feud_Top_Answer": false,
-        "CanBeHeld": false,
-        "Meaning_Is_Serialized": false,
-        "IsOngologyDescriptor": false,
-        "HasSyntax": false,
-        "ChosenLanguageCandidate": false,
         "FamilyFeudMismatch": "",
-        "CategoryContainsLanguage": false,
-        "HasGrammar": ""
+        "TopFamilyFeudAnswer": false,
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasGrammar": false,
+        "MeaningIsSerialized": false,
+        "IsOngologyDescriptor": false
       },
       {
         "LanguageCandidateId": "python",
         "Name": "Python",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Formal Language",
@@ -676,18 +684,17 @@
         "FamilyFuedQuestion": "Is Python a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "english",
         "Name": "English",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Natural Language",
@@ -696,18 +703,17 @@
         "FamilyFuedQuestion": "Is English a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "a-csv-file",
         "Name": "A CSV File",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Formal Language",
@@ -716,18 +722,17 @@
         "FamilyFuedQuestion": "Is A CSV File a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "a-uml-file",
         "Name": "A UML File",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Formal Language",
@@ -736,11 +741,10 @@
         "FamilyFuedQuestion": "Is A UML File a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "the-mona-lisa",
@@ -753,21 +757,20 @@
         "HasIdentity": true,
         "RelationshipToConcept": "IsMirrorOf",
         "DistanceFromConcept": 1,
-        "Is_A_Family_Feud_Top_Answer": false,
-        "Meaning_Is_Serialized": false,
-        "RequiresParsing": false,
-        "HasSyntax": false,
-        "ChosenLanguageCandidate": false,
         "FamilyFeudMismatch": "",
-        "CategoryContainsLanguage": false,
-        "HasGrammar": ""
+        "TopFamilyFeudAnswer": false,
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasGrammar": false,
+        "RequiresParsing": false,
+        "MeaningIsSerialized": false
       },
       {
         "LanguageCandidateId": "french",
         "Name": "French",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Natural Language",
@@ -776,18 +779,17 @@
         "FamilyFuedQuestion": "Is French a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "javascript",
         "Name": "JavaScript",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Formal Language",
@@ -796,18 +798,17 @@
         "FamilyFuedQuestion": "Is JavaScript a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "spoken-words",
         "Name": "Spoken Words",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Natural Language",
@@ -816,18 +817,17 @@
         "FamilyFuedQuestion": "Is Spoken Words a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "sign-language",
         "Name": "Sign Language",
-        "Is_A_Family_Feud_Top_Answer": true,
+        "TopFamilyFeudAnswer": true,
         "IsOngologyDescriptor": true,
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "HasSyntax": true,
         "Category": "Natural Language",
@@ -836,11 +836,10 @@
         "FamilyFuedQuestion": "Is Sign Language a language?",
         "RelationshipToConcept": "IsDescriptionOf",
         "DistanceFromConcept": 2,
-        "CategoryContainsLanguage": true,
-        "HasGrammar": "true",
-        "CanBeHeld": false,
+        "HasGrammar": true,
         "FamilyFeudMismatch": "",
-        "HasIdentity": false
+        "HasIdentity": false,
+        "CanBeHeld": false
       },
       {
         "LanguageCandidateId": "a-game-of-fortnite",
@@ -852,20 +851,19 @@
         "HasIdentity": true,
         "RelationshipToConcept": "IsMirrorOf",
         "DistanceFromConcept": 1,
-        "Is_A_Family_Feud_Top_Answer": false,
-        "CanBeHeld": false,
-        "Meaning_Is_Serialized": false,
-        "IsOngologyDescriptor": false,
-        "HasSyntax": false,
-        "ChosenLanguageCandidate": false,
         "FamilyFeudMismatch": "",
-        "CategoryContainsLanguage": false,
-        "HasGrammar": ""
+        "TopFamilyFeudAnswer": false,
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "CanBeHeld": false,
+        "HasGrammar": false,
+        "MeaningIsSerialized": false,
+        "IsOngologyDescriptor": false
       },
       {
         "LanguageCandidateId": "a-running-app",
         "Name": "A Running App ",
-        "Meaning_Is_Serialized": true,
+        "MeaningIsSerialized": true,
         "RequiresParsing": true,
         "Category": "Running Software",
         "SortOrder": 8,
@@ -873,14 +871,13 @@
         "HasIdentity": true,
         "RelationshipToConcept": "IsMirrorOf",
         "DistanceFromConcept": 1,
-        "Is_A_Family_Feud_Top_Answer": false,
-        "CanBeHeld": false,
-        "IsOngologyDescriptor": false,
-        "HasSyntax": false,
-        "ChosenLanguageCandidate": false,
         "FamilyFeudMismatch": "",
-        "CategoryContainsLanguage": false,
-        "HasGrammar": ""
+        "TopFamilyFeudAnswer": false,
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "CanBeHeld": false,
+        "HasGrammar": false,
+        "IsOngologyDescriptor": false
       }
     ]
   },

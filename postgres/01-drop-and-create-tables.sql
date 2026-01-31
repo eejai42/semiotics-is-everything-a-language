@@ -11,12 +11,11 @@
 -- ============================================================================
 
 -- Drop functions (order: first, because views depend on them)
-DROP FUNCTION IF EXISTS calc_language_candidates_category_contains_language(TEXT) CASCADE;
 DROP FUNCTION IF EXISTS calc_language_candidates_family_feud_mismatch(TEXT) CASCADE;
 DROP FUNCTION IF EXISTS calc_language_candidates_family_fued_question(TEXT) CASCADE;
 DROP FUNCTION IF EXISTS calc_language_candidates_has_grammar(TEXT) CASCADE;
-DROP FUNCTION IF EXISTS calc_language_candidates_is_a_family_feud_top_answer(TEXT) CASCADE;
 DROP FUNCTION IF EXISTS calc_language_candidates_relationship_to_concept(TEXT) CASCADE;
+DROP FUNCTION IF EXISTS calc_language_candidates_top_family_feud_answer(TEXT) CASCADE;
 
 -- Drop views (order: second, because they depend on tables)
 DROP VIEW IF EXISTS vw_is_everything_a_language CASCADE;
@@ -48,14 +47,14 @@ CREATE TABLE language_candidates (
   language_candidate_id               TEXT                 PRIMARY KEY,
   name                                TEXT                ,
   category                            TEXT                ,
-  can_be_held                         BOOLEAN             ,
-  meaning_is_serialized               BOOLEAN             ,
-  requires_parsing                    BOOLEAN             ,
-  is_ongology_descriptor              BOOLEAN             ,
-  has_syntax                          BOOLEAN             ,
   chosen_language_candidate           BOOLEAN             ,
-  sort_order                          INTEGER             ,
+  has_syntax                          BOOLEAN             ,
   has_identity                        BOOLEAN             ,
-  distance_from_concept               INTEGER             
+  can_be_held                         BOOLEAN             ,
+  requires_parsing                    BOOLEAN             ,
+  meaning_is_serialized               BOOLEAN             ,
+  is_ongology_descriptor              BOOLEAN             ,
+  distance_from_concept               INTEGER             ,
+  sort_order                          INTEGER             
 );
 

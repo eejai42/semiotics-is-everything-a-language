@@ -28,14 +28,91 @@
       "IsSSoTTranspiler": false,
       "Name": "airtabletorulebook",
       "RelativePath": "/effortless-rulebook",
-      "CommandLine": "airtable-to-rulebook -o effortless-rulebook.json -account airtable -w 300000",
+      "CommandLine": "airtable-to-rulebook -o effortless-rulebook.json -account airtable -p \"view=Grid view\"",
       "IsDisabled": false
     },
     {
       "IsSSoTTranspiler": false,
       "Name": "rulebooktopostgres",
       "RelativePath": "/postgres",
-      "CommandLine": "rulebook-to-postgres -i ../effortless-rulebook/effortless-rulebook.json -w 300000",
+      "CommandLine": "rulebook-to-postgres -i ../effortless-rulebook/effortless-rulebook.json",
+      "IsDisabled": false
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktopython",
+      "RelativePath": "/language-candidates/python",
+      "CommandLine": "-exec ./run.sh",
+      "IsDisabled": false
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktoenglish",
+      "RelativePath": "/language-candidates/english",
+      "CommandLine": "-exec ./run.sh",
+      "IsDisabled": false
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktogolang",
+      "RelativePath": "/language-candidates/golang",
+      "CommandLine": "-exec ./run.sh",
+      "IsDisabled": false
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktobinary",
+      "RelativePath": "/language-candidates/binary",
+      "CommandLine": "-exec ./run.sh",
+      "IsDisabled": false
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktocsv",
+      "RelativePath": "/language-candidates/csv",
+      "CommandLine": "-exec ./run.sh",
+      "IsDisabled": false
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktouml",
+      "RelativePath": "/language-candidates/uml",
+      "CommandLine": "-exec ./run.sh",
+      "IsDisabled": false
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktoowl",
+      "RelativePath": "/language-candidates/owl",
+      "CommandLine": "-exec ./run.sh",
+      "IsDisabled": false
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktordf",
+      "RelativePath": "/language-candidates/rdf",
+      "CommandLine": "-exec ./run.sh",
+      "IsDisabled": false
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktographql",
+      "RelativePath": "/language-candidates/graphql",
+      "CommandLine": "-exec ./run.sh",
+      "IsDisabled": false
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktodocx",
+      "RelativePath": "/language-candidates/docx",
+      "CommandLine": "-exec ./run.sh",
+      "IsDisabled": false
+    },
+    {
+      "IsSSoTTranspiler": false,
+      "Name": "rulebooktoyaml",
+      "RelativePath": "/language-candidates/yaml",
+      "CommandLine": "-exec ./run.sh",
       "IsDisabled": false
     },
     {
@@ -49,7 +126,7 @@
       "IsSSoTTranspiler": false,
       "Name": "JsonHbarsTransform",
       "RelativePath": "/docs",
-      "CommandLine": "json-hbars-transform -i ../effortless-rulebook/effortless-rulebook.json -i generate-rulebook-md.hbars -o ../README.md",
+      "CommandLine": "json-hbars-transform -i ../effortless-rulebook/effortless-rulebook.json -i generate-rulebook-md.hbars -o ../README.SCHEMA.md",
       "IsDisabled": false
     }
   ]

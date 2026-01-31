@@ -12,3 +12,4 @@
 effortless-rulebook/push-to-airtable/sync-report.md
 **/.vite/**/*
 postgresql-18.1/**/*
+**/*.pyc

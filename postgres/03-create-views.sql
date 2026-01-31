@@ -24,21 +24,20 @@ CREATE OR REPLACE VIEW vw_language_candidates WITH (security_invoker = ON) AS
 SELECT
   t.language_candidate_id,
   t.name,
-  calc_language_candidates_is_a_family_feud_top_answer(t.language_candidate_id) AS is_a_family_feud_top_answer,
-  t.category,
-  t.can_be_held,
-  t.meaning_is_serialized,
-  t.requires_parsing,
-  t.is_ongology_descriptor,
-  t.has_syntax,
-  t.chosen_language_candidate,
   calc_language_candidates_family_feud_mismatch(t.language_candidate_id) AS family_feud_mismatch,
-  t.sort_order,
   calc_language_candidates_family_fued_question(t.language_candidate_id) AS family_fued_question,
+  t.category,
+  calc_language_candidates_top_family_feud_answer(t.language_candidate_id) AS top_family_feud_answer,
+  t.chosen_language_candidate,
+  t.has_syntax,
   t.has_identity,
-  calc_language_candidates_relationship_to_concept(t.language_candidate_id) AS relationship_to_concept,
+  t.can_be_held,
+  calc_language_candidates_has_grammar(t.language_candidate_id) AS has_grammar,
+  t.requires_parsing,
+  t.meaning_is_serialized,
+  t.is_ongology_descriptor,
   t.distance_from_concept,
-  calc_language_candidates_category_contains_language(t.language_candidate_id) AS category_contains_language,
-  calc_language_candidates_has_grammar(t.language_candidate_id) AS has_grammar
+  calc_language_candidates_relationship_to_concept(t.language_candidate_id) AS relationship_to_concept,
+  t.sort_order
 FROM language_candidates t;
 

@@ -1,0 +1,37 @@
+# ERB Schema - CSV Implementation
+# Mirrors the PostgreSQL functions from postgres/02-create-functions.sql
+# Source: effortless-rulebook/effortless-rulebook.json
+#
+# This CSV defines the schema structure (no data)
+# DAG Execution Order: Level 0 (raw) -> Level 1 -> Level 2 -> Level 3
+
+entity,field_name,field_type,nullable,dag_level,depends_on,formula,description
+LanguageCandidate,language_candidate_id,string,false,0,,,"Primary key identifier"
+LanguageCandidate,name,string,true,0,,,"Display name of the candidate"
+LanguageCandidate,category,string,true,0,,,"Classification category"
+LanguageCandidate,can_be_held,boolean,true,0,,,"Tangibility predicate - can this be physically held?"
+LanguageCandidate,meaning_is_serialized,boolean,true,0,,,"Can meaning be represented in serialized form?"
+LanguageCandidate,requires_parsing,boolean,true,0,,,"Does it need parsing to be interpreted?"
+LanguageCandidate,is_ongology_descriptor,boolean,true,0,,,"Does it function as an ontology/descriptor system?"
+LanguageCandidate,has_syntax,boolean,true,0,,,"Does it have explicit grammar rules?"
+LanguageCandidate,chosen_language_candidate,boolean,true,0,,,"Manually marked as a true language candidate"
+LanguageCandidate,sort_order,integer,true,0,,,"Display ordering"
+LanguageCandidate,has_identity,boolean,true,0,,,"Does it have persistent identity?"
+LanguageCandidate,distance_from_concept,integer,true,0,,,"1=Mirror, 2=Description"
+LanguageCandidate,category_contains_language,boolean,true,1,category,"FIND(""language"", LOWER(category)) > 0","Does category string contain 'language'?"
+LanguageCandidate,has_grammar,string,true,1,has_syntax,"CAST(has_syntax AS TEXT)","String representation of has_syntax"
+LanguageCandidate,relationship_to_concept,string,true,1,distance_from_concept,"IF(distance_from_concept = 1, ""IsMirrorOf"", ""IsDescriptionOf"")","Semantic relationship to language concept"
+LanguageCandidate,family_fued_question,string,true,1,name,"""Is "" & name & "" a language?""","The Family Feud style question"
+LanguageCandidate,is_a_family_feud_top_answer,boolean,true,2,"category_contains_language,has_syntax,can_be_held,meaning_is_serialized,requires_parsing,is_ongology_descriptor,has_identity,distance_from_concept","AND(category_contains_language, has_syntax, NOT(can_be_held), meaning_is_serialized, requires_parsing, is_ongology_descriptor, NOT(has_identity), distance_from_concept = 2)","Would this be a top answer on Family Feud?"
+LanguageCandidate,family_feud_mismatch,string,true,3,"is_a_family_feud_top_answer,chosen_language_candidate,name","IF(is_a_family_feud_top_answer != chosen_language_candidate, mismatch_message, NULL)","Reports mismatches between computed and manual classification"
+IsEverythingALanguage,is_everything_a_language_id,string,false,0,,,"Primary key"
+IsEverythingALanguage,name,string,true,0,,,"Identifier like NEIAL-001"
+IsEverythingALanguage,argument_name,string,true,0,,,"Branch: LanguageCanBeFormalized or NotEverythingIsALanguage"
+IsEverythingALanguage,argument_category,string,true,0,,,"Role: Definition, Premise, Conclusion, Example, Observation, Refinement"
+IsEverythingALanguage,step_type,string,true,0,,,"Subtype of the argument step"
+IsEverythingALanguage,statement,string,true,0,,,"Natural language argument text"
+IsEverythingALanguage,formalization,string,true,0,,,"Formal logic notation"
+IsEverythingALanguage,related_candidate_name,string,true,0,,,"Name of related candidate"
+IsEverythingALanguage,related_candidate_id,string,true,0,,,"FK to language candidate"
+IsEverythingALanguage,evidence_from_rulebook,string,true,0,,,"Predicate values supporting the argument"
+IsEverythingALanguage,notes,string,true,0,,,"Additional context"

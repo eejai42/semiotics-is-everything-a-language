@@ -1,0 +1,269 @@
+# ERB Schema - RDF/Turtle Implementation
+# =======================================
+# Mirrors the PostgreSQL functions from postgres/02-create-functions.sql
+# Source: effortless-rulebook/effortless-rulebook.json
+#
+# DAG Execution Order:
+#   Level 0: Raw fields
+#   Level 1: categoryContainsLanguage, hasGrammar, relationshipToConcept, familyFuedQuestion
+#   Level 2: isAFamilyFeudTopAnswer (depends on categoryContainsLanguage)
+#   Level 3: familyFeudMismatch (depends on isAFamilyFeudTopAnswer)
+
+@prefix erb: <http://example.org/erb#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+# =============================================================================
+# CLASSES
+# =============================================================================
+
+erb:LanguageCandidate a rdfs:Class ;
+    rdfs:label "Language Candidate" ;
+    rdfs:comment "A candidate item to evaluate whether it qualifies as a 'language'" .
+
+erb:IsEverythingALanguage a rdfs:Class ;
+    rdfs:label "Is Everything A Language" ;
+    rdfs:comment "Argument steps in the philosophical debate about language definition" .
+
+# Category subclasses
+erb:NaturalLanguageCandidate a rdfs:Class ;
+    rdfs:subClassOf erb:LanguageCandidate ;
+    rdfs:label "Natural Language Candidate" .
+
+erb:FormalLanguageCandidate a rdfs:Class ;
+    rdfs:subClassOf erb:LanguageCandidate ;
+    rdfs:label "Formal Language Candidate" .
+
+erb:PhysicalObjectCandidate a rdfs:Class ;
+    rdfs:subClassOf erb:LanguageCandidate ;
+    rdfs:label "Physical Object Candidate" .
+
+erb:RunningSoftwareCandidate a rdfs:Class ;
+    rdfs:subClassOf erb:LanguageCandidate ;
+    rdfs:label "Running Software Candidate" .
+
+# =============================================================================
+# RAW PROPERTIES (Level 0)
+# =============================================================================
+
+erb:languageCandidateId a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:string ;
+    rdfs:label "language candidate ID" .
+
+erb:name a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:string ;
+    rdfs:label "name" .
+
+erb:category a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:string ;
+    rdfs:label "category" .
+
+erb:canBeHeld a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "can be held" ;
+    rdfs:comment "Tangibility predicate - can this be physically held?" .
+
+erb:meaningIsSerialized a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "meaning is serialized" ;
+    rdfs:comment "Can meaning be represented in serialized form?" .
+
+erb:requiresParsing a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "requires parsing" ;
+    rdfs:comment "Does it need parsing to be interpreted?" .
+
+erb:isOngologyDescriptor a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "is ontology descriptor" ;
+    rdfs:comment "Does it function as an ontology/descriptor system?" .
+
+erb:hasSyntax a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "has syntax" ;
+    rdfs:comment "Does it have explicit grammar rules?" .
+
+erb:chosenLanguageCandidate a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "chosen language candidate" ;
+    rdfs:comment "Manually marked as a 'true' language candidate" .
+
+erb:sortOrder a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:integer ;
+    rdfs:label "sort order" .
+
+erb:hasIdentity a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "has identity" ;
+    rdfs:comment "Does it have persistent identity?" .
+
+erb:distanceFromConcept a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:integer ;
+    rdfs:label "distance from concept" ;
+    rdfs:comment "1=Mirror (is the thing), 2=Description (describes the thing)" .
+
+# =============================================================================
+# CALCULATED PROPERTIES
+# =============================================================================
+
+# Level 1: Simple calculations on raw fields only
+# ------------------------------------------------
+
+erb:categoryContainsLanguage a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "category contains language" ;
+    rdfs:comment """
+        Mirrors: calc_language_candidates_category_contains_language()
+        Formula: FIND("language", LOWER(category)) > 0
+        DAG Level: 1
+        Depends on: category
+    """ .
+
+erb:hasGrammar a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:string ;
+    rdfs:label "has grammar" ;
+    rdfs:comment """
+        Mirrors: calc_language_candidates_has_grammar()
+        Formula: CAST(has_syntax AS TEXT)
+        DAG Level: 1
+        Depends on: hasSyntax
+    """ .
+
+erb:relationshipToConcept a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:string ;
+    rdfs:label "relationship to concept" ;
+    rdfs:comment """
+        Mirrors: calc_language_candidates_relationship_to_concept()
+        Formula: IF(distance_from_concept = 1, "IsMirrorOf", "IsDescriptionOf")
+        DAG Level: 1
+        Depends on: distanceFromConcept
+    """ .
+
+erb:familyFuedQuestion a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:string ;
+    rdfs:label "family feud question" ;
+    rdfs:comment """
+        Mirrors: calc_language_candidates_family_fued_question()
+        Formula: "Is " + name + " a language?"
+        DAG Level: 1
+        Depends on: name
+    """ .
+
+# Level 2: Depends on Level 1 calculations
+# ----------------------------------------
+
+erb:isAFamilyFeudTopAnswer a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "is a family feud top answer" ;
+    rdfs:comment """
+        Mirrors: calc_language_candidates_is_a_family_feud_top_answer()
+        Formula: AND(categoryContainsLanguage, hasSyntax, NOT(canBeHeld),
+                     meaningIsSerialized, requiresParsing, isOngologyDescriptor,
+                     NOT(hasIdentity), distanceFromConcept = 2)
+        DAG Level: 2
+        Depends on: categoryContainsLanguage (Level 1), plus raw fields
+    """ .
+
+# Level 3: Depends on Level 2 calculations
+# ----------------------------------------
+
+erb:familyFeudMismatch a rdf:Property ;
+    rdfs:domain erb:LanguageCandidate ;
+    rdfs:range xsd:string ;
+    rdfs:label "family feud mismatch" ;
+    rdfs:comment """
+        Mirrors: calc_language_candidates_family_feud_mismatch()
+        Returns mismatch message or null
+        DAG Level: 3
+        Depends on: isAFamilyFeudTopAnswer (Level 2), chosenLanguageCandidate, name
+    """ .
+
+# =============================================================================
+# CORE LANGUAGE DEFINITION
+# Language(x) := HasSyntax(x) AND RequiresParsing(x) AND Meaning_Is_Serialized(x) AND IsOngologyDescriptor(x)
+# =============================================================================
+
+erb:Language a rdfs:Class ;
+    rdfs:subClassOf erb:LanguageCandidate ;
+    rdfs:label "Language" ;
+    rdfs:comment """
+        A true language according to the formal definition:
+        Language(x) := HasSyntax(x) AND RequiresParsing(x) AND Meaning_Is_Serialized(x) AND IsOngologyDescriptor(x)
+    """ .
+
+# =============================================================================
+# SHACL SHAPES FOR VALIDATION
+# =============================================================================
+
+erb:LanguageCandidateShape a sh:NodeShape ;
+    sh:targetClass erb:LanguageCandidate ;
+    sh:property [
+        sh:path erb:languageCandidateId ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path erb:distanceFromConcept ;
+        sh:datatype xsd:integer ;
+        sh:in (1 2) ;
+    ] .
+
+# =============================================================================
+# IsEverythingALanguage PROPERTIES
+# =============================================================================
+
+erb:isEverythingALanguageId a rdf:Property ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string .
+
+erb:argumentName a rdf:Property ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string .
+
+erb:argumentCategory a rdf:Property ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string .
+
+erb:stepType a rdf:Property ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string .
+
+erb:statement a rdf:Property ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string .
+
+erb:formalization a rdf:Property ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string .
+
+erb:relatedCandidate a rdf:Property ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range erb:LanguageCandidate .
+
+erb:evidenceFromRulebook a rdf:Property ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string .
+
+erb:notes a rdf:Property ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string .
