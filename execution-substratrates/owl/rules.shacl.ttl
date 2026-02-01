@@ -1,0 +1,140 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix erb: <http://example.org/erb#> .
+
+# === Shape with rules for LanguageCandidates ===
+erb:LanguageCandidatesShape a sh:NodeShape ;
+    sh:targetClass erb:LanguageCandidates ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        rdfs:label "rule_LanguageCandidates_FamilyFuedQuestion" ;
+        sh:prefixes erb: ;
+        sh:construct """
+            PREFIX erb: <http://example.org/erb#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            CONSTRUCT {
+                $this erb:familyFuedQuestion ?_result .
+            }
+            WHERE {
+    $this a erb:LanguageCandidates .
+    OPTIONAL { $this erb:name ?name . }
+                BIND(CONCAT("Is ", ?name, " a language?") AS ?_result)
+            }
+        """ ;
+    ] ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        rdfs:label "rule_LanguageCandidates_TopFamilyFeudAnswer" ;
+        sh:prefixes erb: ;
+        sh:construct """
+            PREFIX erb: <http://example.org/erb#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            CONSTRUCT {
+                $this erb:topFamilyFeudAnswer ?_result .
+            }
+            WHERE {
+    $this a erb:LanguageCandidates .
+    OPTIONAL { $this erb:canBeHeld ?can_be_held . }
+    OPTIONAL { $this erb:hasIdentity ?has_identity . }
+    OPTIONAL { $this erb:hasLinearDecodingPressure ?has_linear_decoding_pressure . }
+    OPTIONAL { $this erb:hasSyntax ?has_syntax . }
+    OPTIONAL { $this erb:isDescriptionOf ?is_description_of . }
+    OPTIONAL { $this erb:isStableOntologyReference ?is_stable_ontology_reference . }
+    OPTIONAL { $this erb:requiresParsing ?requires_parsing . }
+                BIND((?has_syntax && ?requires_parsing && ?is_description_of && ?has_linear_decoding_pressure && ?is_stable_ontology_reference && (!(?can_be_held)) && (!(?has_identity))) AS ?_result)
+            }
+        """ ;
+    ] ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        rdfs:label "rule_LanguageCandidates_FamilyFeudMismatch" ;
+        sh:prefixes erb: ;
+        sh:construct """
+            PREFIX erb: <http://example.org/erb#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            CONSTRUCT {
+                $this erb:familyFeudMismatch ?_result .
+            }
+            WHERE {
+    $this a erb:LanguageCandidates .
+    OPTIONAL { $this erb:chosenLanguageCandidate ?chosen_language_candidate . }
+    OPTIONAL { $this erb:isOpenClosedWorldConflicted ?is_open_closed_world_conflicted . }
+    OPTIONAL { $this erb:name ?name . }
+    OPTIONAL { $this erb:topFamilyFeudAnswer ?top_family_feud_answer . }
+                BIND(CONCAT(IF((!((?top_family_feud_answer = ?chosen_language_candidate))), CONCAT(?name, " ", IF(?top_family_feud_answer, "Is", "Isn\'t"), " a Family Feud Language, but ", IF(?chosen_language_candidate, "Is", "Is Not"), " marked as a \'Language Candidate.\'"), ""), IF(?is_open_closed_world_conflicted, " - Open World vs. Closed World Conflict.", "")) AS ?_result)
+            }
+        """ ;
+    ] ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        rdfs:label "rule_LanguageCandidates_HasGrammar" ;
+        sh:prefixes erb: ;
+        sh:construct """
+            PREFIX erb: <http://example.org/erb#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            CONSTRUCT {
+                $this erb:hasGrammar ?_result .
+            }
+            WHERE {
+    $this a erb:LanguageCandidates .
+    OPTIONAL { $this erb:hasSyntax ?has_syntax . }
+                BIND((?has_syntax = true) AS ?_result)
+            }
+        """ ;
+    ] ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        rdfs:label "rule_LanguageCandidates_IsOpenClosedWorldConflicted" ;
+        sh:prefixes erb: ;
+        sh:construct """
+            PREFIX erb: <http://example.org/erb#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            CONSTRUCT {
+                $this erb:isOpenClosedWorldConflicted ?_result .
+            }
+            WHERE {
+    $this a erb:LanguageCandidates .
+    OPTIONAL { $this erb:isClosedWorld ?is_closed_world . }
+    OPTIONAL { $this erb:isOpenWorld ?is_open_world . }
+                BIND((?is_open_world && ?is_closed_world) AS ?_result)
+            }
+        """ ;
+    ] ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        rdfs:label "rule_LanguageCandidates_IsDescriptionOf" ;
+        sh:prefixes erb: ;
+        sh:construct """
+            PREFIX erb: <http://example.org/erb#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            CONSTRUCT {
+                $this erb:isDescriptionOf ?_result .
+            }
+            WHERE {
+    $this a erb:LanguageCandidates .
+    OPTIONAL { $this erb:distanceFromConcept ?distance_from_concept . }
+                BIND((?distance_from_concept > 1) AS ?_result)
+            }
+        """ ;
+    ] ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        rdfs:label "rule_LanguageCandidates_RelationshipToConcept" ;
+        sh:prefixes erb: ;
+        sh:construct """
+            PREFIX erb: <http://example.org/erb#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            CONSTRUCT {
+                $this erb:relationshipToConcept ?_result .
+            }
+            WHERE {
+    $this a erb:LanguageCandidates .
+    OPTIONAL { $this erb:distanceFromConcept ?distance_from_concept . }
+                BIND(IF((?distance_from_concept = 1), "IsMirrorOf", "IsDescriptionOf") AS ?_result)
+            }
+        """ ;
+    ] .
+
+# Generated 7 SHACL rules

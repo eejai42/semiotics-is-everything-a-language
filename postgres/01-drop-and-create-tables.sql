@@ -14,6 +14,7 @@
 DROP FUNCTION IF EXISTS calc_language_candidates_family_feud_mismatch(TEXT) CASCADE;
 DROP FUNCTION IF EXISTS calc_language_candidates_family_fued_question(TEXT) CASCADE;
 DROP FUNCTION IF EXISTS calc_language_candidates_has_grammar(TEXT) CASCADE;
+DROP FUNCTION IF EXISTS calc_language_candidates_is_description_of(TEXT) CASCADE;
 DROP FUNCTION IF EXISTS calc_language_candidates_is_open_closed_world_conflicted(TEXT) CASCADE;
 DROP FUNCTION IF EXISTS calc_language_candidates_relationship_to_concept(TEXT) CASCADE;
 DROP FUNCTION IF EXISTS calc_language_candidates_top_family_feud_answer(TEXT) CASCADE;
@@ -53,8 +54,8 @@ CREATE TABLE language_candidates (
   has_identity                        BOOLEAN             ,
   can_be_held                         BOOLEAN             ,
   requires_parsing                    BOOLEAN             ,
-  meaning_is_serialized               BOOLEAN             ,
-  is_ongology_descriptor              BOOLEAN             ,
+  has_linear_decoding_pressure        BOOLEAN             ,
+  is_stable_ontology_reference        BOOLEAN             ,
   dimensionality_while_editing        TEXT                ,
   is_open_world                       BOOLEAN             ,
   is_closed_world                     BOOLEAN             ,

@@ -1,137 +1,45 @@
-@startuml ERB Language Candidates
-
-' ERB Schema - UML Class Diagram
-' Mirrors the PostgreSQL functions from postgres/02-create-functions.sql
-' Source: effortless-rulebook/effortless-rulebook.json
-'
-' DAG Execution Order:
-'   Level 0: Raw fields (attributes)
-'   Level 1: categoryContainsLanguage, hasGrammar, relationshipToConcept, familyFuedQuestion
-'   Level 2: isAFamilyFeudTopAnswer (depends on categoryContainsLanguage)
-'   Level 3: familyFeudMismatch (depends on isAFamilyFeudTopAnswer)
-
+@startuml
 skinparam classAttributeIconSize 0
-skinparam class {
-    BackgroundColor White
-    ArrowColor Black
-    BorderColor Black
+
+class IsEverythingALanguage {
+  +IsEverythingALanguageId: String
+  +Name: String
+  +ArgumentName: String
+  +ArgumentCategory: String
+  +StepType: String
+  +Statement: String
+  +Formalization: String
+  +RelatedCandidateName: String
+  +RelatedCandidateId: String
+  +EvidenceFromRulebook: String
+  +Notes: String
+  --
 }
 
-package "ERB Language Candidates" {
-
-    class LanguageCandidate {
-        .. Primary Key ..
-        + language_candidate_id : string <<PK>>
-
-        .. Raw Fields (Level 0) ..
-        + name : string
-        + category : string
-        + can_be_held : boolean
-        + meaning_is_serialized : boolean
-        + requires_parsing : boolean
-        + is_ongology_descriptor : boolean
-        + has_syntax : boolean
-        + chosen_language_candidate : boolean
-        + sort_order : integer
-        + has_identity : boolean
-        + distance_from_concept : integer
-
-        .. Calculated Fields ..
-        __Level 1 (Simple)__
-        + category_contains_language : boolean <<calc>>
-        + has_grammar : string <<calc>>
-        + relationship_to_concept : string <<calc>>
-        + family_fued_question : string <<calc>>
-        __Level 2 (Dependent)__
-        + is_a_family_feud_top_answer : boolean <<calc>>
-        __Level 3 (Higher-Order)__
-        + family_feud_mismatch : string <<calc>>
-
-        .. Methods ..
-        + calcCategoryContainsLanguage() : boolean
-        + calcHasGrammar() : string
-        + calcRelationshipToConcept() : string
-        + calcFamilyFuedQuestion() : string
-        + calcIsAFamilyFeudTopAnswer() : boolean
-        + calcFamilyFeudMismatch() : string
-        + toView() : LanguageCandidateView
-    }
-
-    class IsEverythingALanguage {
-        .. Primary Key ..
-        + is_everything_a_language_id : string <<PK>>
-
-        .. Raw Fields ..
-        + name : string
-        + argument_name : string
-        + argument_category : string
-        + step_type : string
-        + statement : string
-        + formalization : string
-        + related_candidate_name : string
-        + related_candidate_id : string <<FK>>
-        + evidence_from_rulebook : string
-        + notes : string
-    }
-
-    ' View classes (materialized calculations)
-    class LanguageCandidateView <<view>> {
-        .. All Raw Fields ..
-        + language_candidate_id : string
-        + name : string
-        + category : string
-        + can_be_held : boolean
-        + meaning_is_serialized : boolean
-        + requires_parsing : boolean
-        + is_ongology_descriptor : boolean
-        + has_syntax : boolean
-        + chosen_language_candidate : boolean
-        + sort_order : integer
-        + has_identity : boolean
-        + distance_from_concept : integer
-
-        .. All Calculated Fields ..
-        + category_contains_language : boolean
-        + has_grammar : string
-        + relationship_to_concept : string
-        + family_fued_question : string
-        + is_a_family_feud_top_answer : boolean
-        + family_feud_mismatch : string
-    }
-
-    ' Relationships
-    IsEverythingALanguage "0..*" --> "0..1" LanguageCandidate : related_candidate_id
-    LanguageCandidate ..> LanguageCandidateView : toView()
-
+class LanguageCandidates {
+  +LanguageCandidateId: String
+  +Name: String
+  +Category: String
+  +ChosenLanguageCandidate: Boolean
+  +HasSyntax: Boolean
+  +HasIdentity: Boolean
+  +CanBeHeld: Boolean
+  +RequiresParsing: Boolean
+  +HasLinearDecodingPressure: Boolean
+  +IsStableOntologyReference: Boolean
+  +DimensionalityWhileEditing: String
+  +IsOpenWorld: Boolean
+  +IsClosedWorld: Boolean
+  +DistanceFromConcept: Integer
+  +SortOrder: Integer
+  --
+  /FamilyFuedQuestion: String  {derived}
+  /TopFamilyFeudAnswer: Boolean  {derived}
+  /FamilyFeudMismatch: String  {derived}
+  /HasGrammar: Boolean  {derived}
+  /IsOpenClosedWorldConflicted: Boolean  {derived}
+  /IsDescriptionOf: Boolean  {derived}
+  /RelationshipToConcept: String  {derived}
 }
-
-' Category stereotypes
-class NaturalLanguage <<category>>
-class FormalLanguage <<category>>
-class PhysicalObject <<category>>
-class RunningSoftware <<category>>
-
-LanguageCandidate <|-- NaturalLanguage
-LanguageCandidate <|-- FormalLanguage
-LanguageCandidate <|-- PhysicalObject
-LanguageCandidate <|-- RunningSoftware
-
-' Core Language Definition note
-note right of LanguageCandidate
-    <b>Core Language Definition:</b>
-    Language(x) :=
-        HasSyntax(x) AND
-        RequiresParsing(x) AND
-        Meaning_Is_Serialized(x) AND
-        IsOngologyDescriptor(x)
-
-    <b>DAG Dependencies:</b>
-    Level 1: category → category_contains_language
-    Level 1: has_syntax → has_grammar
-    Level 1: distance_from_concept → relationship_to_concept
-    Level 1: name → family_fued_question
-    Level 2: category_contains_language + raw → is_a_family_feud_top_answer
-    Level 3: is_a_family_feud_top_answer + raw → family_feud_mismatch
-end note
 
 @enduml

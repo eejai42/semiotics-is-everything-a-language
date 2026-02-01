@@ -1,234 +1,189 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ERB Ontology - OWL Implementation
-  =================================
-  Mirrors the PostgreSQL functions from postgres/02-create-functions.sql
-  Source: effortless-rulebook/effortless-rulebook.json
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix erb: <http://example.org/erb#> .
 
-  DAG Execution Order:
-    Level 0: Raw data properties
-    Level 1: categoryContainsLanguage, hasGrammar, relationshipToConcept, familyFuedQuestion
-    Level 2: isAFamilyFeudTopAnswer (depends on categoryContainsLanguage)
-    Level 3: familyFeudMismatch (depends on isAFamilyFeudTopAnswer)
--->
-<rdf:RDF xmlns="http://example.org/erb#"
-         xml:base="http://example.org/erb"
-         xmlns:owl="http://www.w3.org/2002/07/owl#"
-         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-         xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+erb: a owl:Ontology ;
+    rdfs:label "ERB Ontology" ;
+    rdfs:comment "Generated from effortless-rulebook.json" .
 
-  <owl:Ontology rdf:about="http://example.org/erb">
-    <rdfs:label>ERB Language Candidates Ontology</rdfs:label>
-    <rdfs:comment>Ontology for evaluating whether items qualify as 'languages'</rdfs:comment>
-  </owl:Ontology>
+# === Class: IsEverythingALanguage ===
+erb:IsEverythingALanguage a owl:Class ;
+    rdfs:label "IsEverythingALanguage" .
 
-  <!-- ========================================================================
-       CLASSES
-       ======================================================================== -->
+erb:isEverythingALanguageId a owl:DatatypeProperty ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string ;
+    rdfs:label "IsEverythingALanguageId" .
 
-  <owl:Class rdf:about="#LanguageCandidate">
-    <rdfs:label>Language Candidate</rdfs:label>
-    <rdfs:comment>A candidate item to evaluate whether it qualifies as a 'language'</rdfs:comment>
-  </owl:Class>
+erb:name a owl:DatatypeProperty ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string ;
+    rdfs:label "Name" .
 
-  <owl:Class rdf:about="#IsEverythingALanguage">
-    <rdfs:label>Is Everything A Language</rdfs:label>
-    <rdfs:comment>Argument steps in the philosophical debate about language definition</rdfs:comment>
-  </owl:Class>
+erb:argumentName a owl:DatatypeProperty ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string ;
+    rdfs:label "ArgumentName" .
 
-  <!-- Category subclasses -->
-  <owl:Class rdf:about="#NaturalLanguageCandidate">
-    <rdfs:subClassOf rdf:resource="#LanguageCandidate"/>
-    <rdfs:label>Natural Language Candidate</rdfs:label>
-  </owl:Class>
+erb:argumentCategory a owl:DatatypeProperty ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string ;
+    rdfs:label "ArgumentCategory" .
 
-  <owl:Class rdf:about="#FormalLanguageCandidate">
-    <rdfs:subClassOf rdf:resource="#LanguageCandidate"/>
-    <rdfs:label>Formal Language Candidate</rdfs:label>
-  </owl:Class>
+erb:stepType a owl:DatatypeProperty ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string ;
+    rdfs:label "StepType" .
 
-  <owl:Class rdf:about="#PhysicalObjectCandidate">
-    <rdfs:subClassOf rdf:resource="#LanguageCandidate"/>
-    <rdfs:label>Physical Object Candidate</rdfs:label>
-  </owl:Class>
+erb:statement a owl:DatatypeProperty ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string ;
+    rdfs:label "Statement" .
 
-  <owl:Class rdf:about="#RunningSoftwareCandidate">
-    <rdfs:subClassOf rdf:resource="#LanguageCandidate"/>
-    <rdfs:label>Running Software Candidate</rdfs:label>
-  </owl:Class>
+erb:formalization a owl:DatatypeProperty ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string ;
+    rdfs:label "Formalization" .
 
-  <!-- ========================================================================
-       RAW DATA PROPERTIES (Level 0)
-       ======================================================================== -->
+erb:relatedCandidateName a owl:DatatypeProperty ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string ;
+    rdfs:label "RelatedCandidateName" .
 
-  <owl:DatatypeProperty rdf:about="#name">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:string"/>
-    <rdfs:label>name</rdfs:label>
-  </owl:DatatypeProperty>
+erb:relatedCandidateId a owl:DatatypeProperty ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string ;
+    rdfs:label "RelatedCandidateId" .
 
-  <owl:DatatypeProperty rdf:about="#category">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:string"/>
-    <rdfs:label>category</rdfs:label>
-  </owl:DatatypeProperty>
+erb:evidenceFromRulebook a owl:DatatypeProperty ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string ;
+    rdfs:label "EvidenceFromRulebook" .
 
-  <owl:DatatypeProperty rdf:about="#canBeHeld">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:boolean"/>
-    <rdfs:label>can be held</rdfs:label>
-    <rdfs:comment>Tangibility predicate - can this be physically held?</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:notes a owl:DatatypeProperty ;
+    rdfs:domain erb:IsEverythingALanguage ;
+    rdfs:range xsd:string ;
+    rdfs:label "Notes" .
 
-  <owl:DatatypeProperty rdf:about="#meaningIsSerialized">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:boolean"/>
-    <rdfs:label>meaning is serialized</rdfs:label>
-    <rdfs:comment>Can meaning be represented in serialized form?</rdfs:comment>
-  </owl:DatatypeProperty>
+# === Class: LanguageCandidates ===
+erb:LanguageCandidates a owl:Class ;
+    rdfs:label "LanguageCandidates" .
 
-  <owl:DatatypeProperty rdf:about="#requiresParsing">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:boolean"/>
-    <rdfs:label>requires parsing</rdfs:label>
-    <rdfs:comment>Does it need parsing to be interpreted?</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:languageCandidateId a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:string ;
+    rdfs:label "LanguageCandidateId" .
 
-  <owl:DatatypeProperty rdf:about="#isOngologyDescriptor">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:boolean"/>
-    <rdfs:label>is ontology descriptor</rdfs:label>
-    <rdfs:comment>Does it function as an ontology/descriptor system?</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:name a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:string ;
+    rdfs:label "Name" .
 
-  <owl:DatatypeProperty rdf:about="#hasSyntax">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:boolean"/>
-    <rdfs:label>has syntax</rdfs:label>
-    <rdfs:comment>Does it have explicit grammar rules?</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:category a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:string ;
+    rdfs:label "Category" .
 
-  <owl:DatatypeProperty rdf:about="#chosenLanguageCandidate">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:boolean"/>
-    <rdfs:label>chosen language candidate</rdfs:label>
-    <rdfs:comment>Manually marked as a 'true' language candidate</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:familyFuedQuestion a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:string ;
+    rdfs:label "FamilyFuedQuestion" .
+    # calculated: calculated
 
-  <owl:DatatypeProperty rdf:about="#sortOrder">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:integer"/>
-    <rdfs:label>sort order</rdfs:label>
-  </owl:DatatypeProperty>
+erb:topFamilyFeudAnswer a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "TopFamilyFeudAnswer" .
+    # calculated: calculated
 
-  <owl:DatatypeProperty rdf:about="#hasIdentity">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:boolean"/>
-    <rdfs:label>has identity</rdfs:label>
-    <rdfs:comment>Does it have persistent identity?</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:chosenLanguageCandidate a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "ChosenLanguageCandidate" .
 
-  <owl:DatatypeProperty rdf:about="#distanceFromConcept">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:integer"/>
-    <rdfs:label>distance from concept</rdfs:label>
-    <rdfs:comment>1=Mirror (is the thing), 2=Description (describes the thing)</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:familyFeudMismatch a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:string ;
+    rdfs:label "FamilyFeudMismatch" .
+    # calculated: calculated
 
-  <!-- ========================================================================
-       CALCULATED PROPERTIES - Using SWRL Rules
-       ======================================================================== -->
+erb:hasSyntax a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "HasSyntax" .
 
-  <!-- Level 1 Calculated Properties -->
+erb:hasIdentity a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "HasIdentity" .
 
-  <owl:DatatypeProperty rdf:about="#categoryContainsLanguage">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:boolean"/>
-    <rdfs:label>category contains language</rdfs:label>
-    <rdfs:comment>Mirrors: calc_language_candidates_category_contains_language(). Formula: FIND("language", LOWER(category)) > 0</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:canBeHeld a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "CanBeHeld" .
 
-  <owl:DatatypeProperty rdf:about="#hasGrammar">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:string"/>
-    <rdfs:label>has grammar</rdfs:label>
-    <rdfs:comment>Mirrors: calc_language_candidates_has_grammar(). Formula: CAST(has_syntax AS TEXT)</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:hasGrammar a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "HasGrammar" .
+    # calculated: calculated
 
-  <owl:DatatypeProperty rdf:about="#relationshipToConcept">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:string"/>
-    <rdfs:label>relationship to concept</rdfs:label>
-    <rdfs:comment>Mirrors: calc_language_candidates_relationship_to_concept(). Formula: IF(distance_from_concept = 1, "IsMirrorOf", "IsDescriptionOf")</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:requiresParsing a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "RequiresParsing" .
 
-  <owl:DatatypeProperty rdf:about="#familyFuedQuestion">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:string"/>
-    <rdfs:label>family feud question</rdfs:label>
-    <rdfs:comment>Mirrors: calc_language_candidates_family_fued_question(). Formula: "Is " + name + " a language?"</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:hasLinearDecodingPressure a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "HasLinearDecodingPressure" .
 
-  <!-- Level 2 Calculated Properties -->
+erb:isStableOntologyReference a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "IsStableOntologyReference" .
 
-  <owl:DatatypeProperty rdf:about="#isAFamilyFeudTopAnswer">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:boolean"/>
-    <rdfs:label>is a family feud top answer</rdfs:label>
-    <rdfs:comment>Mirrors: calc_language_candidates_is_a_family_feud_top_answer(). Depends on categoryContainsLanguage (Level 1)</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:dimensionalityWhileEditing a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:string ;
+    rdfs:label "DimensionalityWhileEditing" .
 
-  <!-- Level 3 Calculated Properties -->
+erb:isOpenWorld a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "IsOpenWorld" .
 
-  <owl:DatatypeProperty rdf:about="#familyFeudMismatch">
-    <rdfs:domain rdf:resource="#LanguageCandidate"/>
-    <rdfs:range rdf:resource="xsd:string"/>
-    <rdfs:label>family feud mismatch</rdfs:label>
-    <rdfs:comment>Mirrors: calc_language_candidates_family_feud_mismatch(). Depends on isAFamilyFeudTopAnswer (Level 2)</rdfs:comment>
-  </owl:DatatypeProperty>
+erb:isClosedWorld a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "IsClosedWorld" .
 
-  <!-- ========================================================================
-       CORE LANGUAGE DEFINITION
-       Language(x) := HasSyntax(x) AND RequiresParsing(x) AND Meaning_Is_Serialized(x) AND IsOngologyDescriptor(x)
-       ======================================================================== -->
+erb:isOpenClosedWorldConflicted a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "IsOpenClosedWorldConflicted" .
+    # calculated: calculated
 
-  <owl:Class rdf:about="#Language">
-    <rdfs:label>Language</rdfs:label>
-    <rdfs:comment>A true language according to the formal definition</rdfs:comment>
-    <owl:equivalentClass>
-      <owl:Class>
-        <owl:intersectionOf rdf:parseType="Collection">
-          <owl:Restriction>
-            <owl:onProperty rdf:resource="#hasSyntax"/>
-            <owl:hasValue rdf:datatype="xsd:boolean">true</owl:hasValue>
-          </owl:Restriction>
-          <owl:Restriction>
-            <owl:onProperty rdf:resource="#requiresParsing"/>
-            <owl:hasValue rdf:datatype="xsd:boolean">true</owl:hasValue>
-          </owl:Restriction>
-          <owl:Restriction>
-            <owl:onProperty rdf:resource="#meaningIsSerialized"/>
-            <owl:hasValue rdf:datatype="xsd:boolean">true</owl:hasValue>
-          </owl:Restriction>
-          <owl:Restriction>
-            <owl:onProperty rdf:resource="#isOngologyDescriptor"/>
-            <owl:hasValue rdf:datatype="xsd:boolean">true</owl:hasValue>
-          </owl:Restriction>
-        </owl:intersectionOf>
-      </owl:Class>
-    </owl:equivalentClass>
-  </owl:Class>
+erb:distanceFromConcept a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:integer ;
+    rdfs:label "DistanceFromConcept" .
 
-  <!-- ========================================================================
-       OBJECT PROPERTIES (Relationships)
-       ======================================================================== -->
+erb:isDescriptionOf a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "IsDescriptionOf" .
+    # calculated: calculated
 
-  <owl:ObjectProperty rdf:about="#relatedCandidate">
-    <rdfs:domain rdf:resource="#IsEverythingALanguage"/>
-    <rdfs:range rdf:resource="#LanguageCandidate"/>
-    <rdfs:label>related candidate</rdfs:label>
-    <rdfs:comment>Links an argument step to its related language candidate</rdfs:comment>
-  </owl:ObjectProperty>
+erb:relationshipToConcept a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:string ;
+    rdfs:label "RelationshipToConcept" .
+    # calculated: calculated
 
-</rdf:RDF>
+erb:sortOrder a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:integer ;
+    rdfs:label "SortOrder" .

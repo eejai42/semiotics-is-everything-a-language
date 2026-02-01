@@ -48,6 +48,61 @@ echo -e "${BOLD}${CYAN}║${NC}          ${BOLD}${WHITE}EXECUTION SUBSTRATE ORCH
 echo -e "${BOLD}${CYAN}╚════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
+# =============================================================================
+# MENU: Select run mode
+# =============================================================================
+
+# Get list of substrates for the menu
+SUBSTRATES=$(ls -d "$SUBSTRATES_DIR"/*/ 2>/dev/null | xargs -n1 basename)
+SUBSTRATES_ARRAY=($SUBSTRATES)
+TOTAL_SUBSTRATES=${#SUBSTRATES_ARRAY[@]}
+
+echo -e "${BOLD}${WHITE}Select an option:${NC}"
+echo ""
+echo -e "  ${GREEN}[A]${NC} Run ${BOLD}ALL${NC} substrates ($TOTAL_SUBSTRATES total)"
+echo ""
+echo -e "  ${YELLOW}Or select a specific substrate:${NC}"
+echo ""
+
+# Display substrates with numbers
+INDEX=1
+for substrate in $SUBSTRATES; do
+    substrate_dir="$SUBSTRATES_DIR/$substrate"
+    inject_script="$substrate_dir/inject-substrate.sh"
+    if [ -f "$inject_script" ]; then
+        echo -e "  ${CYAN}[$INDEX]${NC} $substrate"
+    # else
+    #   echo -e "  ${DIM}[$INDEX] $substrate (no inject-substrate.sh)${NC}"
+    fi
+    INDEX=$((INDEX + 1))
+done 
+echo ""
+
+# Read user input
+read -p "Enter choice [A or 1-$TOTAL_SUBSTRATES] (default: A): " USER_CHOICE
+
+# Default to 'A' if user just presses Enter
+if [ -z "$USER_CHOICE" ]; then
+    USER_CHOICE="A"
+fi
+
+# Determine which substrates to run
+RUN_SINGLE=""
+if [[ "$USER_CHOICE" =~ ^[Aa]$ ]]; then
+    echo ""
+    echo -e "${GREEN}Running ALL substrates...${NC}"
+    echo ""
+elif [[ "$USER_CHOICE" =~ ^[0-9]+$ ]] && [ "$USER_CHOICE" -ge 1 ] && [ "$USER_CHOICE" -le "$TOTAL_SUBSTRATES" ]; then
+    RUN_SINGLE="${SUBSTRATES_ARRAY[$((USER_CHOICE - 1))]}"
+    echo ""
+    echo -e "${GREEN}Running single substrate: ${BOLD}$RUN_SINGLE${NC}"
+    echo ""
+else
+    echo ""
+    echo -e "${RED}Invalid choice. Exiting.${NC}"
+    exit 1
+fi
+
 # -----------------------------------------------------------------------------
 # Step 1: Generate answer key and blank test from database
 # -----------------------------------------------------------------------------
@@ -79,15 +134,25 @@ echo -e "${BOLD}${BLUE}│${NC} ${BOLD}${WHITE}STEP 2:${NC} ${YELLOW}Running inj
 echo -e "${BOLD}${BLUE}└──────────────────────────────────────────────────────────────┘${NC}"
 echo ""
 
-# Get list of substrates
-SUBSTRATES=$(ls -d "$SUBSTRATES_DIR"/*/ 2>/dev/null | xargs -n1 basename)
+# Determine which substrates to process
+if [ -n "$RUN_SINGLE" ]; then
+    SUBSTRATES_TO_RUN="$RUN_SINGLE"
+    TOTAL_TO_RUN=1
+else
+    SUBSTRATES_TO_RUN=$(ls -d "$SUBSTRATES_DIR"/*/ 2>/dev/null | xargs -n1 basename)
+    TOTAL_TO_RUN=$(echo "$SUBSTRATES_TO_RUN" | wc -w | tr -d ' ')
+fi
 
 INJECT_RESULTS=""
 COLOR_INDEX=0
-TOTAL_SUBSTRATES=$(echo "$SUBSTRATES" | wc -w | tr -d ' ')
 CURRENT=0
 
-for substrate in $SUBSTRATES; do
+# Array to store failed substrates (outputs stored in temp files)
+FAILED_SUBSTRATES=""
+FAILED_OUTPUTS_DIR=$(mktemp -d)
+trap "rm -rf $FAILED_OUTPUTS_DIR" EXIT
+
+for substrate in $SUBSTRATES_TO_RUN; do
     substrate_dir="$SUBSTRATES_DIR/$substrate"
     inject_script="$substrate_dir/inject-substrate.sh"
     CURRENT=$((CURRENT + 1))
@@ -97,20 +162,27 @@ for substrate in $SUBSTRATES; do
     COLOR_INDEX=$(( (COLOR_INDEX + 1) % ${#SUBSTRATE_COLORS[@]} ))
 
     if [ -f "$inject_script" ]; then
-        # Add significant vertical spacing for visual isolation (like starting a new page)
-        printf '\n%.0s' {1..20}
-        
         substrate_upper=$(echo "$substrate" | tr '[:lower:]' '[:upper:]')
         echo -e "${COLOR}╔══════════════════════════════════════════════════════════════╗${NC}"
-        echo -e "${COLOR}║${NC} ${BOLD}[$CURRENT/$TOTAL_SUBSTRATES]${NC} ${COLOR}▶ ${BOLD}${substrate_upper}${NC}"
+        echo -e "${COLOR}║${NC} ${BOLD}[$CURRENT/$TOTAL_TO_RUN]${NC} ${COLOR}▶ ${BOLD}${substrate_upper}${NC}"
         echo -e "${COLOR}╚══════════════════════════════════════════════════════════════╝${NC}"
 
-        if bash "$inject_script"; then
+        # Run script with real-time output AND capture for error reporting
+        # Use tee to show output live while also saving to temp file
+        INJECT_TEMP_FILE=$(mktemp)
+        bash "$inject_script" 2>&1 | tee "$INJECT_TEMP_FILE" && INJECT_EXIT_CODE=0 || INJECT_EXIT_CODE=${PIPESTATUS[0]}
+        INJECT_OUTPUT=$(cat "$INJECT_TEMP_FILE")
+        rm -f "$INJECT_TEMP_FILE"
+        
+        if [ $INJECT_EXIT_CODE -eq 0 ]; then
             INJECT_RESULTS="$INJECT_RESULTS$substrate:OK\n"
             echo -e "  ${GREEN}✓${NC} ${substrate}: ${GREEN}${BOLD}OK${NC}"
         else
             INJECT_RESULTS="$INJECT_RESULTS$substrate:FAILED\n"
-            echo -e "  ${RED}✗${NC} ${substrate}: ${RED}${BOLD}FAILED${NC}"
+            echo -e "  ${RED}✗${NC} ${substrate}: ${RED}${BOLD}FAILED TO EXECUTE${NC}"
+            # Store failure information
+            FAILED_SUBSTRATES="$FAILED_SUBSTRATES $substrate"
+            echo "$INJECT_OUTPUT" > "$FAILED_OUTPUTS_DIR/$substrate.txt"
         fi
 
         # Grade this substrate immediately
@@ -130,12 +202,20 @@ with open(test_orch.ANSWER_KEY_PATH, 'r') as f:
     answer_key = json.load(f)
 
 substrate = '$substrate'
-answers_path = os.path.join(test_orch.SUBSTRATES_DIR, substrate, 'test-answers.json')
-if os.path.exists(answers_path):
-    grades = test_orch.grade_substrate(substrate, answer_key, answers_path)
-else:
+inject_exit_code = $INJECT_EXIT_CODE
+
+# If inject failed, mark as error regardless of stale test-answers.json
+if inject_exit_code != 0:
     grades = test_orch.grade_substrate(substrate, answer_key, None)
-    grades['error'] = 'No test-answers.json'
+    grades['error'] = 'FAILED TO EXECUTE (inject-substrate.sh returned non-zero)'
+    grades['execution_failed'] = True
+else:
+    answers_path = os.path.join(test_orch.SUBSTRATES_DIR, substrate, 'test-answers.json')
+    if os.path.exists(answers_path):
+        grades = test_orch.grade_substrate(substrate, answer_key, answers_path)
+    else:
+        grades = test_orch.grade_substrate(substrate, answer_key, None)
+        grades['error'] = 'No test-answers.json'
 
 test_orch.generate_substrate_report(substrate, grades)
 test_orch.print_substrate_test_summary(substrate, grades)
@@ -146,6 +226,8 @@ grades_file = os.path.join(test_orch.SUBSTRATES_DIR, substrate, '.grades.pkl')
 with open(grades_file, 'wb') as f:
     pickle.dump(grades, f)
 "
+        # Add vertical spacing after each substrate for visual isolation
+        printf '\n%.0s' {1..10}
     else
         echo -e "  ${YELLOW}○${NC} ${substrate}: ${DIM}SKIPPED (no inject-substrate.sh)${NC}"
         INJECT_RESULTS="$INJECT_RESULTS$substrate:SKIPPED\n"
@@ -155,6 +237,8 @@ done
 # -----------------------------------------------------------------------------
 # Step 3: Generate summary report
 # -----------------------------------------------------------------------------
+# Breathing room before summary
+printf '\n%.0s' {1..5}
 echo -e "${BOLD}${BLUE}┌──────────────────────────────────────────────────────────────┐${NC}"
 echo -e "${BOLD}${BLUE}│${NC} ${BOLD}${WHITE}STEP 3:${NC} ${YELLOW}Generating summary report...${NC}                         ${BOLD}${BLUE}│${NC}"
 echo -e "${BOLD}${BLUE}└──────────────────────────────────────────────────────────────┘${NC}"
@@ -172,7 +256,12 @@ test_orch = module_from_spec(spec)
 spec.loader.exec_module(test_orch)
 
 # Collect grades from temp files
-substrates = test_orch.get_substrates()
+run_single = '$RUN_SINGLE'
+if run_single:
+    substrates = [run_single]
+else:
+    substrates = test_orch.get_substrates()
+
 all_grades = {}
 for substrate in substrates:
     grades_file = os.path.join(test_orch.SUBSTRATES_DIR, substrate, '.grades.pkl')
@@ -182,19 +271,77 @@ for substrate in substrates:
         os.remove(grades_file)  # Clean up
 
 # Generate summary report and print final table
-test_orch.generate_summary_report(all_grades)
-test_orch.print_final_summary_table(all_grades)
+if run_single:
+    # For single substrate, just print the summary table (no full report)
+    test_orch.print_final_summary_table(all_grades)
+else:
+    test_orch.generate_summary_report(all_grades)
+    test_orch.print_final_summary_table(all_grades)
 "
 echo ""
 
 # -----------------------------------------------------------------------------
+# Step 4: Show Failed Substrates Summary (if any)
+# -----------------------------------------------------------------------------
+# Trim leading space from FAILED_SUBSTRATES
+FAILED_SUBSTRATES=$(echo "$FAILED_SUBSTRATES" | xargs)
+FAILED_COUNT=$(echo "$FAILED_SUBSTRATES" | wc -w | tr -d ' ')
+
+if [ -n "$FAILED_SUBSTRATES" ]; then
+    printf '\n%.0s' {1..3}
+    echo -e "${BOLD}${RED}╔════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${BOLD}${RED}║${NC}           ${BOLD}${WHITE}⚠️  FAILED TO EXECUTE ($FAILED_COUNT substrates)${NC}              ${BOLD}${RED}║${NC}"
+    echo -e "${BOLD}${RED}╚════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    
+    for failed_substrate in $FAILED_SUBSTRATES; do
+        failed_upper=$(echo "$failed_substrate" | tr '[:lower:]' '[:upper:]')
+        echo -e "${RED}┌──────────────────────────────────────────────────────────────┐${NC}"
+        echo -e "${RED}│${NC} ${BOLD}${RED}✗ ${failed_upper}${NC} ${DIM}(FAILED TO EXECUTE)${NC}"
+        echo -e "${RED}├──────────────────────────────────────────────────────────────┤${NC}"
+        
+        # Show the captured output (last 20 lines to keep it manageable)
+        echo -e "${DIM}Output (last 20 lines):${NC}"
+        if [ -f "$FAILED_OUTPUTS_DIR/$failed_substrate.txt" ]; then
+            tail -20 "$FAILED_OUTPUTS_DIR/$failed_substrate.txt" | while IFS= read -r line; do
+                echo -e "  ${DIM}│${NC} $line"
+            done
+        fi
+        
+        echo -e "${RED}└──────────────────────────────────────────────────────────────┘${NC}"
+        echo ""
+    done
+    
+    # List all failed substrates on one line for easy copy/paste
+    echo -e "${RED}${BOLD}Failed substrates:${NC} $FAILED_SUBSTRATES"
+    echo ""
+fi
+
+# -----------------------------------------------------------------------------
 # Summary
 # -----------------------------------------------------------------------------
-echo -e "${BOLD}${GREEN}╔════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BOLD}${GREEN}║${NC}              ${BOLD}${WHITE}ORCHESTRATION COMPLETE${NC}                       ${BOLD}${GREEN}║${NC}"
-echo -e "${BOLD}${GREEN}╚════════════════════════════════════════════════════════════╝${NC}"
+if [ -n "$FAILED_SUBSTRATES" ]; then
+    echo -e "${BOLD}${YELLOW}╔════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${BOLD}${YELLOW}║${NC}         ${BOLD}${WHITE}ORCHESTRATION COMPLETE (WITH FAILURES)${NC}            ${BOLD}${YELLOW}║${NC}"
+    echo -e "${BOLD}${YELLOW}╚════════════════════════════════════════════════════════════╝${NC}"
+else
+    echo -e "${BOLD}${GREEN}╔════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${BOLD}${GREEN}║${NC}              ${BOLD}${WHITE}ORCHESTRATION COMPLETE${NC}                       ${BOLD}${GREEN}║${NC}"
+    echo -e "${BOLD}${GREEN}╚════════════════════════════════════════════════════════════╝${NC}"
+fi
 echo ""
-echo -e "${CYAN}Results written to:${NC}"
-echo -e "  ${DIM}•${NC} Per-substrate: ${WHITE}execution-substratrates/*/test-results.md${NC}"
-echo -e "  ${DIM}•${NC} Summary:       ${WHITE}orchestration/all-tests-results.md${NC}"
+if [ -n "$RUN_SINGLE" ]; then
+    echo -e "${CYAN}Results written to:${NC}"
+    echo -e "  ${DIM}•${NC} Per-substrate: ${WHITE}execution-substratrates/$RUN_SINGLE/test-results.md${NC}"
+else
+    echo -e "${CYAN}Results written to:${NC}"
+    echo -e "  ${DIM}•${NC} Per-substrate: ${WHITE}execution-substratrates/*/test-results.md${NC}"
+    echo -e "  ${DIM}•${NC} Summary:       ${WHITE}orchestration/all-tests-results.md${NC}"
+fi
 echo ""
+
+# Exit with error code if any substrates failed
+if [ -n "$FAILED_SUBSTRATES" ]; then
+    echo -e "${RED}${BOLD}⚠️  $FAILED_COUNT substrate(s) failed to execute: $FAILED_SUBSTRATES${NC}"
+    exit 1
+fi

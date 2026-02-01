@@ -10,11 +10,20 @@ with one worksheet per table, including:
 
 The script is generic and works for ANY rulebook structure - it simply reads
 what's defined and generates the corresponding xlsx.
+
+Smart Update Feature:
+To avoid unnecessary file changes caused by volatile functions like NOW(),
+the script exports the LanguageCandidates sheet to CSV before and after
+regeneration. If the content is identical, the update is rolled back.
 """
 
 import sys
 import re
+import os
+import csv
+import shutil
 from pathlib import Path
+from datetime import datetime
 
 # Add project root to path for shared imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
@@ -23,7 +32,7 @@ from orchestration.shared import load_rulebook, get_candidate_name_from_cwd
 
 # Try to import openpyxl, provide helpful error if missing
 try:
-    from openpyxl import Workbook
+    from openpyxl import Workbook, load_workbook
     from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
     from openpyxl.utils import get_column_letter
 except ImportError:
@@ -314,9 +323,137 @@ def create_worksheet_from_table(workbook, table_name, table_data):
     return ws
 
 
+def export_sheet_to_csv(xlsx_path, sheet_name, csv_path):
+    """Export a specific sheet from an xlsx file to CSV.
+    
+    Args:
+        xlsx_path: Path to the xlsx file
+        sheet_name: Name of the sheet to export
+        csv_path: Path for the output CSV file
+        
+    Returns:
+        True if export succeeded, False if sheet not found or file doesn't exist
+    """
+    xlsx_path = Path(xlsx_path)
+    csv_path = Path(csv_path)
+    
+    if not xlsx_path.exists():
+        print(f"  Note: {xlsx_path} does not exist (first run?)")
+        return False
+    
+    try:
+        wb = load_workbook(xlsx_path, data_only=True)  # data_only=True reads computed values
+        
+        # Find the sheet (case-insensitive matching)
+        matching_sheet = None
+        for name in wb.sheetnames:
+            if name.lower() == sheet_name.lower():
+                matching_sheet = name
+                break
+        
+        if not matching_sheet:
+            print(f"  Warning: Sheet '{sheet_name}' not found in {xlsx_path}")
+            wb.close()
+            return False
+        
+        ws = wb[matching_sheet]
+        
+        with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            for row in ws.iter_rows(values_only=True):
+                # Convert all values to strings, handling None
+                writer.writerow(['' if v is None else str(v) for v in row])
+        
+        wb.close()
+        return True
+        
+    except Exception as e:
+        print(f"  Error exporting sheet: {e}")
+        return False
+
+
+def compare_csv_files(csv1_path, csv2_path):
+    """Compare two CSV files content.
+    
+    Args:
+        csv1_path: Path to first CSV file
+        csv2_path: Path to second CSV file
+        
+    Returns:
+        True if files are identical, False otherwise
+    """
+    csv1_path = Path(csv1_path)
+    csv2_path = Path(csv2_path)
+    
+    if not csv1_path.exists() or not csv2_path.exists():
+        return False
+    
+    try:
+        with open(csv1_path, 'r', encoding='utf-8') as f1:
+            content1 = f1.read()
+        with open(csv2_path, 'r', encoding='utf-8') as f2:
+            content2 = f2.read()
+        return content1 == content2
+    except Exception as e:
+        print(f"  Error comparing files: {e}")
+        return False
+
+
+def cleanup_file(path):
+    """Safely remove a file if it exists."""
+    path = Path(path)
+    if path.exists():
+        path.unlink()
+
+
+def generate_workbook(rulebook, table_names):
+    """Generate the workbook from the rulebook.
+    
+    Args:
+        rulebook: The loaded rulebook dict
+        table_names: List of table names to process
+        
+    Returns:
+        The generated Workbook object
+    """
+    wb = Workbook()
+    default_sheet = wb.active
+
+    for table_name in table_names:
+        table_data = rulebook[table_name]
+
+        if not isinstance(table_data, dict) or 'schema' not in table_data:
+            print(f"  Skipping {table_name}: not a table structure")
+            continue
+
+        print(f"  Creating worksheet: {table_name}")
+        schema = table_data.get('schema', [])
+        data = table_data.get('data', [])
+
+        raw_count = sum(1 for f in schema if f.get('type', 'raw') == 'raw')
+        calc_count = sum(1 for f in schema if f.get('type') == 'calculated')
+
+        print(f"    - {len(schema)} columns ({raw_count} raw, {calc_count} calculated)")
+        print(f"    - {len(data)} data rows")
+
+        create_worksheet_from_table(wb, table_name, table_data)
+
+    if len(wb.sheetnames) > 1:
+        wb.remove(default_sheet)
+
+    return wb
+
+
 def main():
     candidate_name = get_candidate_name_from_cwd()
     print(f"Generating {candidate_name} from rulebook...")
+
+    # Define paths
+    output_path = Path('rulebook.xlsx')
+    backup_path = Path('rulebook.xlsx.backup')
+    csv_before_path = Path('.language_candidates_before.csv')
+    csv_after_path = Path('.language_candidates_after.csv')
+    comparison_sheet = 'LanguageCandidates'  # Sheet to compare for content changes
 
     # Load the rulebook
     try:
@@ -324,12 +461,6 @@ def main():
     except FileNotFoundError as e:
         print(f"Error: {e}")
         sys.exit(1)
-
-    # Create workbook
-    wb = Workbook()
-
-    # Remove the default sheet created by openpyxl
-    default_sheet = wb.active
 
     # Get all table names from the rulebook
     table_names = get_table_names(rulebook)
@@ -340,37 +471,73 @@ def main():
 
     print(f"Found {len(table_names)} tables: {', '.join(table_names)}")
 
-    # Create a worksheet for each table
-    for table_name in table_names:
-        table_data = rulebook[table_name]
+    # --- SMART UPDATE WORKFLOW ---
+    # Step 1: Export the comparison sheet from current xlsx to CSV (baseline)
+    print(f"\n--- Smart Update: Checking for actual content changes ---")
+    has_existing_xlsx = output_path.exists()
+    baseline_exported = False
+    
+    if has_existing_xlsx:
+        print(f"Step 1: Exporting '{comparison_sheet}' from existing xlsx to CSV...")
+        baseline_exported = export_sheet_to_csv(output_path, comparison_sheet, csv_before_path)
+        
+        if baseline_exported:
+            print(f"  Exported baseline to: {csv_before_path}")
+            
+            # Step 2: Rename current xlsx to backup
+            print(f"Step 2: Creating backup of existing xlsx...")
+            shutil.move(str(output_path), str(backup_path))
+            print(f"  Backed up to: {backup_path}")
+        else:
+            print(f"  Skipping smart update (could not export baseline)")
+    else:
+        print(f"  No existing xlsx found - this is a fresh generation")
 
-        # Skip if not a table structure (must have schema)
-        if not isinstance(table_data, dict) or 'schema' not in table_data:
-            print(f"  Skipping {table_name}: not a table structure")
-            continue
+    # Step 3: Generate the new workbook
+    print(f"\nStep 3: Generating new xlsx...")
+    wb = generate_workbook(rulebook, table_names)
 
-        print(f"  Creating worksheet: {table_name}")
-        schema = table_data.get('schema', [])
-        data = table_data.get('data', [])
-
-        # Count raw vs calculated fields
-        raw_count = sum(1 for f in schema if f.get('type', 'raw') == 'raw')
-        calc_count = sum(1 for f in schema if f.get('type') == 'calculated')
-
-        print(f"    - {len(schema)} columns ({raw_count} raw, {calc_count} calculated)")
-        print(f"    - {len(data)} data rows")
-
-        create_worksheet_from_table(wb, table_name, table_data)
-
-    # Remove the default empty sheet if we created other sheets
-    if len(wb.sheetnames) > 1:
-        wb.remove(default_sheet)
-
-    # Save the workbook
-    output_path = Path('rulebook.xlsx')
+    # Save the new workbook
     wb.save(output_path)
     print(f"\nGenerated: {output_path}")
     print(f"  - {len(wb.sheetnames)} worksheets")
+
+    # Step 4-6: Compare and decide whether to keep or rollback
+    if baseline_exported and backup_path.exists():
+        print(f"\nStep 4: Exporting '{comparison_sheet}' from new xlsx to CSV...")
+        after_exported = export_sheet_to_csv(output_path, comparison_sheet, csv_after_path)
+        
+        if after_exported:
+            print(f"  Exported to: {csv_after_path}")
+            
+            # Step 5: Compare the CSVs
+            print(f"\nStep 5: Comparing content...")
+            content_changed = not compare_csv_files(csv_before_path, csv_after_path)
+            
+            if content_changed:
+                # Content actually changed - keep the new file
+                print(f"  CONTENT CHANGED - keeping new xlsx")
+                print(f"\nStep 6: Cleaning up (keeping new file)...")
+                cleanup_file(backup_path)
+                cleanup_file(csv_before_path)
+                cleanup_file(csv_after_path)
+                print(f"  Removed backup and temp CSV files")
+            else:
+                # Content is the same - rollback to avoid unnecessary file change
+                print(f"  NO CONTENT CHANGE - rolling back to preserve original file")
+                print(f"\nStep 6: Rolling back...")
+                cleanup_file(output_path)
+                shutil.move(str(backup_path), str(output_path))
+                cleanup_file(csv_before_path)
+                cleanup_file(csv_after_path)
+                print(f"  Restored original xlsx, removed temp files")
+                print(f"\n*** XLSX NOT UPDATED (content unchanged) ***")
+                return  # Exit early since we rolled back
+        else:
+            # Couldn't export after - just keep the new file and clean up
+            print(f"  Warning: Could not export new xlsx for comparison - keeping new file")
+            cleanup_file(backup_path)
+            cleanup_file(csv_before_path)
 
     # Also update the README
     from orchestration.shared import write_readme

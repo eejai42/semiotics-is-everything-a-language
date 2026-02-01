@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # take-test.sh for graphql execution substrate
-# This script will eventually run the graphql substrate to produce test answers
+# This script runs the GraphQL resolver logic to compute test answers
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Step 1: Copy blank test template to this folder as test-answers.json
-cp "$SCRIPT_DIR/../../testing/blank-test.json" "$SCRIPT_DIR/test-answers.json"
+cd "$SCRIPT_DIR"
 
-# TODO: Step 2: Run the graphql substrate solution to populate answers
-# (Future implementation will go here)
+# Step 1: Delete previous test-answers.json to prevent stale results
+rm -f "$SCRIPT_DIR/test-answers.json"
 
-echo "graphql: test-answers.json created from blank template"
+# Step 2: Run the Python script to compute answers using resolver functions
+python3 take-test.py

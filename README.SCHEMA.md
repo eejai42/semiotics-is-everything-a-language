@@ -24,7 +24,7 @@ The following logical argument establishes that "language" can be formalized as 
 
 **Argument:** LanguageCanBeFormalized
 
-> To avoid the slogan 'Everything is a language', treat 'language' as a typed construct defined by testable properties (syntax, parsing, serialized meaning, and descriptor-role).
+> To avoid the slogan 'Everything is a language', treat 'language' as a typed construct defined by testable properties (syntax, parsing, linear decoding pressure, and descriptor-role).
 
 
 
@@ -36,7 +36,7 @@ The following logical argument establishes that "language" can be formalized as 
 
 **Argument:** LanguageCanBeFormalized
 
-> Use the repo predicates: HasSyntax, RequiresParsing, Meaning_Is_Serialized, IsOntologyDescriptor (spelled IsOngologyDescriptor in the dataset), plus auxiliary checks like CanBeHeld and HasIdentity.
+> Use the repo predicates: HasSyntax, RequiresParsing, HasLinearDecodingPressure, StableOntologyReference (spelled IsOngologyDescriptor in the dataset), plus auxiliary checks like CanBeHeld and HasIdentity.
 
 **Formalization:**
 ```
@@ -56,7 +56,7 @@ Predicates: Syntax(x), Parse(x), SerializeMeaning(x), OntDesc(x), Tangible(x)
 
 **Formalization:**
 ```
-Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) ∧ IsOngologyDescriptor(x)
+Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ HasLinearDecodingPressure(x) ∧ StableOntologyReference(x)
 ```
 
 
@@ -77,7 +77,7 @@ Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) 
 
 **Related Candidate:** English
 
-**Evidence:** `HasSyntax=True; RequiresParsing=True; Meaning_Is_Serialized=True; IsOngologyDescriptor=True; CanBeHeld=False; HasIdentity=False; DistanceFromConcept=2; Category=Natural Language`
+**Evidence:** `HasSyntax=True; RequiresParsing=True; HasLinearDecodingPressure=True; IsOngologyDescriptor=True; CanBeHeld=False; HasIdentity=False; DistanceFromConcept=2; Category=Natural Language`
 
 *Note: If any predicate is false in your current dataset for this witness, adjust the candidate record or relax the definition.*
 
@@ -95,7 +95,7 @@ Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) 
 
 **Related Candidate:** Python
 
-**Evidence:** `HasSyntax=True; RequiresParsing=True; Meaning_Is_Serialized=True; IsOngologyDescriptor=True; CanBeHeld=False; HasIdentity=False; DistanceFromConcept=2; Category=Formal Language`
+**Evidence:** `HasSyntax=True; RequiresParsing=True; HasLinearDecodingPressure=True; IsOngologyDescriptor=True; CanBeHeld=False; HasIdentity=False; DistanceFromConcept=2; Category=Formal Language`
 
 *Note: If any predicate is false in your current dataset for this witness, adjust the candidate record or relax the definition.*
 
@@ -124,7 +124,7 @@ Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) 
 
 **Formalization:**
 ```
-∀x (¬(HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) ∧ IsOngologyDescriptor(x)) → ¬Language(x))
+∀x (¬(HasSyntax(x) ∧ RequiresParsing(x) ∧ HasLinearDecodingPressure(x) ∧ StableOntologyReference(x)) → ¬Language(x))
 ```
 
 
@@ -162,7 +162,7 @@ Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) 
 
 **Related Candidate:** A Thunderstorm
 
-**Evidence:** `HasSyntax=False; RequiresParsing=True; Meaning_Is_Serialized=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Physical event`
+**Evidence:** `HasSyntax=False; RequiresParsing=True; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Physical event`
 
 *Note: These are strong candidates for 'sign vehicles' rather than 'languages'.*
 
@@ -180,7 +180,7 @@ Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) 
 
 **Related Candidate:** A Coffee Mug
 
-**Evidence:** `HasSyntax=False; RequiresParsing=False; Meaning_Is_Serialized=False; IsOngologyDescriptor=False; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object`
+**Evidence:** `HasSyntax=False; RequiresParsing=False; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object`
 
 *Note: These are strong candidates for 'sign vehicles' rather than 'languages'.*
 
@@ -198,7 +198,7 @@ Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) 
 
 **Related Candidate:** The Mona Lisa
 
-**Evidence:** `HasSyntax=False; RequiresParsing=False; Meaning_Is_Serialized=False; IsOngologyDescriptor=True; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object`
+**Evidence:** `HasSyntax=False; RequiresParsing=False; HasLinearDecodingPressure=False; IsOngologyDescriptor=True; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object`
 
 *Note: These are strong candidates for 'sign vehicles' rather than 'languages'.*
 
@@ -233,7 +233,7 @@ Borderline(Running Calculator App): may contain ∃y Language(y) but ¬Language(
 
 **Related Candidate:** Running Calculator App
 
-**Evidence:** `HasSyntax=False; RequiresParsing=True; Meaning_Is_Serialized=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Running Software`
+**Evidence:** `HasSyntax=False; RequiresParsing=True; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Running Software`
 
 *Note: This is where traditional semiotics' 'anything is a sign' doesn’t neatly distinguish: (1) language-as-system vs (2) meaning-making interactive processes.*
 
@@ -251,7 +251,7 @@ Borderline(A Game of Fortnite): may contain ∃y Language(y) but ¬Language(A Ga
 
 **Related Candidate:** A Game of Fortnite
 
-**Evidence:** `HasSyntax=False; RequiresParsing=True; Meaning_Is_Serialized=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Running Software`
+**Evidence:** `HasSyntax=False; RequiresParsing=True; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Running Software`
 
 *Note: This is where traditional semiotics' 'anything is a sign' doesn’t neatly distinguish: (1) language-as-system vs (2) meaning-making interactive processes.*
 
@@ -295,31 +295,31 @@ The following entities have been evaluated against the operational definition of
 
 | Name | Category | Is Language? | HasSyntax | RequiresParsing | MeaningIsSerialized | IsOntologyDescriptor | README |
 |------|----------|--------------|-----------|-----------------|---------------------|----------------------|--------|
-| Falsifier A | MISSING: Have you seen this Language? | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/falsifier-a/README.md) |
-| Falsifier B | MISSING: Have you seen this Language? | No | ✗ | ✓ | ✗ | ✓ | - |
-| Falsifier C | MISSING: Have you seen this Language? | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/falsifier-c/README.md) |
-| English | Natural Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/english/README.md) |
-| Spoken Words | Natural Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/spoken-words/README.md) |
+| Falsifier A | MISSING: Have you seen this Language? | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/falsifier-a/README.md) |
+| Falsifier B | MISSING: Have you seen this Language? | No | ✗ | ✓ | ✗ | ✗ | - |
+| Falsifier C | MISSING: Have you seen this Language? | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/falsifier-c/README.md) |
+| English | Natural Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/english/README.md) |
+| Spoken Words | Natural Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/spoken-words/README.md) |
 | A Chair  | Physical Object | No | ✗ | ✗ | ✗ | ✗ | - |
 | A Game of Fortnite | Running Software | No | ✗ | ✓ | ✗ | ✗ | - |
-| Sign Language | Natural Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/sign-language/README.md) |
-| Python | Formal Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/python/README.md) |
-| A Smartphone | Physical Object | No | ✗ | ✗ | ✓ | ✗ | - |
-| A Running App  | Running Software | No | ✗ | ✓ | ✓ | ✗ | - |
-| An XLSX Doc | Formal Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/an-xlsx-doc/README.md) |
+| Sign Language | Natural Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/sign-language/README.md) |
+| Python | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/python/README.md) |
+| A Smartphone | Physical Object | No | ✗ | ✗ | ✗ | ✗ | - |
+| A Running App  | Running Software | No | ✗ | ✓ | ✗ | ✗ | - |
+| An XLSX Doc | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/an-xlsx-doc/README.md) |
 | Editing an XLSX Doc | Running Software | No | ✗ | ✗ | ✗ | ✗ | - |
-| An DOCX Doc | Formal Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/an-docx-doc/README.md) |
-| Editing an DOCX Doc | Running Software | No | ✗ | ✗ | ✗ | ✓ | - |
-| A CSV File | Formal Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/a-csv-file/README.md) |
-| OWL/RDF/GraphQL/... generally | Natural Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/owl-rdf-graphql-generally/README.md) |
+| An DOCX Doc | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/an-docx-doc/README.md) |
+| Editing an DOCX Doc | Running Software | No | ✗ | ✗ | ✗ | ✗ | - |
+| A CSV File | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/a-csv-file/README.md) |
+| OWL/RDF/GraphQL/... generally | Natural Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/owl-rdf-graphql-generally/README.md) |
 | A Coffee Mug | Physical Object | No | ✗ | ✗ | ✗ | ✗ | - |
 | A Thunderstorm | Physical event | No | ✗ | ✓ | ✗ | ✗ | - |
-| A UML File | Formal Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/a-uml-file/README.md) |
-| Binary Code | Formal Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/binary-code/README.md) |
-| The Mona Lisa | Physical Object | No | ✗ | ✗ | ✗ | ✓ | - |
+| A UML File | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/a-uml-file/README.md) |
+| Binary Code | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/binary-code/README.md) |
+| The Mona Lisa | Physical Object | No | ✗ | ✗ | ✗ | ✗ | - |
 | Running Calculator App | Running Software | No | ✗ | ✓ | ✗ | ✗ | - |
-| JavaScript | Formal Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/javascript/README.md) |
-| French | Natural Language | Yes | ✓ | ✓ | ✓ | ✓ | [View](./execution-substratrates/french/README.md) |
+| JavaScript | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/javascript/README.md) |
+| French | Natural Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/french/README.md) |
 
 ### Predicate Legend
 
@@ -364,7 +364,7 @@ The following entities have been evaluated against the operational definition of
 | `ArgumentName` | LanguageCanBeFormalized |
 | `ArgumentCategory` | Definition |
 | `StepType` | Motivation |
-| `Statement` | To avoid the slogan 'Everything is a language', treat 'language' as a typed construct defined by testable properties (syntax, parsing, serialized meaning, and descriptor-role). |
+| `Statement` | To avoid the slogan 'Everything is a language', treat 'language' as a typed construct defined by testable properties (syntax, parsing, linear decoding pressure, and descriptor-role). |
 | `Notes` | This keeps 'can be interpreted' separate from 'is a language system'. |
 | `Formalization` |  |
 | `RelatedCandidateName` |  |
@@ -382,24 +382,25 @@ The following entities have been evaluated against the operational definition of
 | Field | Type | Data Type | Nullable | Description |
 |-------|------|-----------|----------|-------------|
 | `LanguageCandidateId` | raw | string | No | - |
-| `Name` | raw | string | Yes | - |
-| `Category` | raw | string | Yes | - |
-| `FamilyFuedQuestion` | calculated | string | Yes | - |
-| `TopFamilyFeudAnswer` | calculated | boolean | Yes | - |
-| `ChosenLanguageCandidate` | raw | boolean | Yes | - |
-| `FamilyFeudMismatch` | calculated | string | Yes | - |
-| `HasSyntax` | raw | boolean | Yes | - |
-| `HasIdentity` | raw | boolean | Yes | - |
-| `CanBeHeld` | raw | boolean | Yes | - |
-| `HasGrammar` | calculated | boolean | Yes | - |
-| `RequiresParsing` | raw | boolean | Yes | - |
-| `MeaningIsSerialized` | raw | boolean | Yes | - |
-| `IsOngologyDescriptor` | raw | boolean | Yes | - |
+| `Name` | raw | string | Yes | Name of the language candidate being classified. |
+| `Category` | raw | string | Yes | The general high level category of the candidate. |
+| `FamilyFuedQuestion` | calculated | string | Yes | Question that 100 random people could be asked, family feud style. |
+| `TopFamilyFeudAnswer` | calculated | boolean | Yes | The predicted answer as the top most popular answer among those in the family feud polling pool. |
+| `ChosenLanguageCandidate` | raw | boolean | Yes | The test answer that is intended to match the Family Feud answer to be "correct". |
+| `FamilyFeudMismatch` | calculated | string | Yes | If the family feud answer does not match the chosen language candidates status then this explains what did not match. t also flags (in english) mismatch where a candidate is marked as BOTH open AND closed world which does not make sense. |
+| `HasSyntax` | raw | boolean | Yes | Does this language candidate have syntax and/or grammar? |
+| `HasIdentity` | raw | boolean | Yes | Could this thing be assigned a guid, unique in the universe that would identify it globally?  Like a drivers license or social security number for a person. |
+| `CanBeHeld` | raw | boolean | Yes | Is this candidate physical/material.  I.e. could it at least theoretically "be held"? |
+| `HasGrammar` | calculated | boolean | Yes | Does this candidate have a Grammar?  Generally follows candidates that have syntax also have grammar. |
+| `RequiresParsing` | raw | boolean | Yes | Is the knowledge/information encoded in a form that requires parsing before meaning can be extracted? |
+| `HasLinearDecodingPressure` | raw | boolean | Yes | - |
+| `IsStableOntologyReference` | raw | boolean | Yes | - |
 | `DimensionalityWhileEditing` | raw | string | Yes | - |
-| `IsOpenClosedWorldConflicted` | calculated | boolean | Yes | - |
 | `IsOpenWorld` | raw | boolean | Yes | - |
 | `IsClosedWorld` | raw | boolean | Yes | - |
+| `IsOpenClosedWorldConflicted` | calculated | boolean | Yes | - |
 | `DistanceFromConcept` | raw | integer | Yes | - |
+| `IsDescriptionOf` | calculated | boolean | Yes | - |
 | `RelationshipToConcept` | calculated | string | Yes | - |
 | `SortOrder` | raw | integer | Yes | - |
 
@@ -412,12 +413,12 @@ The following entities have been evaluated against the operational definition of
 ```
 =AND(
   {{HasSyntax}},
-  NOT({{CanBeHeld}}),
-  {{MeaningIsSerialized}},
   {{RequiresParsing}},
-  {{IsOngologyDescriptor}},
-  NOT({{HasIdentity}}),
-  {{DistanceFromConcept}}=2
+  {{IsDescriptionOf}},
+  {{HasLinearDecodingPressure}},
+  {{IsStableOntologyReference}},
+  NOT({{CanBeHeld}}),
+  NOT({{HasIdentity}})
 )
 ```
 
@@ -435,8 +436,12 @@ The following entities have been evaluated against the operational definition of
 
 **Formula for `IsOpenClosedWorldConflicted`:**
 ```
-=AND({{IsOpenWorld}} = TRUE(), 
-    {{IsClosedWorld}} = TRUE())
+=AND({{IsOpenWorld}}, {{IsClosedWorld}})
+```
+
+**Formula for `IsDescriptionOf`:**
+```
+={{DistanceFromConcept}} > 1
 ```
 
 **Formula for `RelationshipToConcept`:**
@@ -452,8 +457,8 @@ The following entities have been evaluated against the operational definition of
 | `LanguageCandidateId` | falsifier-a |
 | `Name` | Falsifier A |
 | `TopFamilyFeudAnswer` | true |
-| `IsOngologyDescriptor` | true |
-| `MeaningIsSerialized` | true |
+| `IsStableOntologyReference` | true |
+| `HasLinearDecodingPressure` | true |
 | `RequiresParsing` | true |
 | `HasSyntax` | true |
 | `Category` | MISSING: Have you seen this Language? |
@@ -463,13 +468,14 @@ The following entities have been evaluated against the operational definition of
 | `RelationshipToConcept` | IsDescriptionOf |
 | `DistanceFromConcept` | 2 |
 | `HasGrammar` | true |
+| `DimensionalityWhileEditing` | N/A |
+| `IsDescriptionOf` | true |
 | `ChosenLanguageCandidate` | false |
 | `HasIdentity` | false |
 | `CanBeHeld` | false |
-| `DimensionalityWhileEditing` |  |
-| `IsOpenClosedWorldConflicted` | false |
 | `IsOpenWorld` | false |
 | `IsClosedWorld` | false |
+| `IsOpenClosedWorldConflicted` | false |
 
 ---
 

@@ -1,8 +1,12 @@
 # Graphql Language Candidate
 
-GraphQL schema generation from the Effortless Rulebook.
+GraphQL schema and resolvers generated from the Effortless Rulebook.
 
-Future implementation will generate GraphQL types, queries, mutations, and resolvers.
+This substrate generates:
+- `schema.graphql`: GraphQL type definitions for all entities
+- `resolvers.js`: JavaScript resolver functions for calculated fields
+
+The resolvers implement the exact same calculation logic as the PostgreSQL functions, enabling consistent results across all execution substrates.
 
 ## Technology
 
@@ -14,25 +18,7 @@ Key characteristics:
 - **Strong typing**: Every field has a type; the schema serves as a contract and documentation
 - **Introspection**: Clients can query the schema itself to discover available types and fields
 
-ERB GraphQL exports would generate:
-```graphql
-type LanguageCandidate {
-  id: ID!
-  name: String
-  hasSyntax: Boolean
-  requiresParsing: Boolean
-  meaningIsSerialized: Boolean
-  isOngologyDescriptor: Boolean
-  topFamilyFeudAnswer: Boolean  # Calculated
-  category: String
-}
-
-type Query {
-  languageCandidates: [LanguageCandidate!]!
-  languageCandidate(id: ID!): LanguageCandidate
-  argumentSteps: [ArgumentStep!]!
-}
-```
+This ERB GraphQL substrate generates both the schema definitions and the JavaScript resolver functions needed to compute calculated fields.
 
 ## Status
 

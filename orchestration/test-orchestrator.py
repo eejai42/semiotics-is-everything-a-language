@@ -33,12 +33,13 @@ PRIMARY_KEY = "language_candidate_id"
 
 # Computed columns to strip for blank test
 # (These are the fields that substrates must compute)
+# Note: has_grammar was removed - it's now a raw field in the rulebook
 COMPUTED_COLUMNS = [
     "family_feud_mismatch",
     "family_fued_question",
     "top_family_feud_answer",
-    "has_grammar",
     "relationship_to_concept",
+    "is_open_closed_world_conflicted",
 ]
 
 # Paths
@@ -64,6 +65,8 @@ DARK_TEXT = "\033[38;5;232m"    # Near-black text for contrast
 GREEN_BG = "\033[48;5;22m"      # Dark green background for pass rows
 RED_BG = "\033[48;5;52m"        # Dark red background for fail rows
 WHITE_TEXT = "\033[97m"         # White text
+STRIKETHROUGH = "\033[9m"       # Strikethrough text
+DIM = "\033[2m"                 # Dim text
 
 
 def get_score_color(score: float) -> str:
@@ -214,10 +217,6 @@ def run_and_grade_all_substrates(answer_key):
     all_grades = {}
 
     for i, substrate in enumerate(substrates, 1):
-        # Add significant vertical spacing before each substrate for visual isolation
-        # (like starting at the top of a new page - using top 3/4 of terminal height)
-        print("\n" * 20, flush=True)
-        
         # Print substrate header (flush immediately so it appears before the test runs)
         print(f"  [{i}/{len(substrates)}] Testing {substrate}...", flush=True)
 
@@ -236,6 +235,9 @@ def run_and_grade_all_substrates(answer_key):
 
         # Print the summary box immediately
         print_substrate_test_summary(substrate, grades)
+        
+        # Add vertical spacing after each substrate for visual isolation
+        print("\n" * 10, flush=True)
 
     return all_grades
 
@@ -411,10 +413,13 @@ def print_substrate_test_summary(substrate_name, grades):
     total = grades["total_fields_tested"]
     passed = grades["fields_passed"]
     failed = grades["fields_failed"]
+    execution_failed = grades.get("execution_failed", False) or (grades.get("error") and total == 0)
     score = (passed / total * 100) if total > 0 else 0
 
     # Determine status with color
-    if grades.get("error"):
+    if execution_failed:
+        status_plain = "FAILED TO COMPUTE"
+    elif grades.get("error"):
         status_plain = "ERROR"
     elif failed == 0:
         status_plain = "PASS"
@@ -424,14 +429,26 @@ def print_substrate_test_summary(substrate_name, grades):
     # Get gradient color for score
     score_color = get_score_color(score)
 
-    # Print header with sky-blue background
+    # Print header with sky-blue background (or red for execution failures)
     box_width = 52
-    print(f"  {SKY_BLUE_BG}{DARK_TEXT}┌{'─' * box_width}┐{RESET}", flush=True)
-    print(f"  {SKY_BLUE_BG}{DARK_TEXT}│{BOLD} {substrate_name.upper():^{box_width - 2}} {RESET}{SKY_BLUE_BG}{DARK_TEXT}│{RESET}", flush=True)
-    # Score line with gradient color
-    score_text = f"Score: {passed}/{total} ({score:.1f}%) - {status_plain}"
-    print(f"  {SKY_BLUE_BG}{DARK_TEXT}│ {score_color}{BOLD}{score_text:^{box_width - 2}}{RESET}{SKY_BLUE_BG}{DARK_TEXT} │{RESET}", flush=True)
-    print(f"  {SKY_BLUE_BG}{DARK_TEXT}├{'─' * box_width}┤{RESET}", flush=True)
+    if execution_failed:
+        header_bg = RED_BG
+        header_text = WHITE_TEXT
+    else:
+        header_bg = SKY_BLUE_BG
+        header_text = DARK_TEXT
+
+    print(f"  {header_bg}{header_text}┌{'─' * box_width}┐{RESET}", flush=True)
+    print(f"  {header_bg}{header_text}│{BOLD} {substrate_name.upper():^{box_width - 2}} {RESET}{header_bg}{header_text}│{RESET}", flush=True)
+    
+    # Score line
+    if execution_failed:
+        score_text = f"Score: --/-- (--%) - {status_plain}"
+        print(f"  {header_bg}{header_text}│ {RED}{BOLD}{score_text:^{box_width - 2}}{RESET}{header_bg}{header_text} │{RESET}", flush=True)
+    else:
+        score_text = f"Score: {passed}/{total} ({score:.1f}%) - {status_plain}"
+        print(f"  {header_bg}{header_text}│ {score_color}{BOLD}{score_text:^{box_width - 2}}{RESET}{header_bg}{header_text} │{RESET}", flush=True)
+    print(f"  {header_bg}{header_text}├{'─' * box_width}┤{RESET}", flush=True)
 
     # Group failures by field
     failures_by_field = {}
@@ -446,7 +463,13 @@ def print_substrate_test_summary(substrate_name, grades):
         col_failures = failures_by_field.get(col, 0)
         col_total = grades["total_records"]
 
-        if col_failures == 0 and not grades.get("error"):
+        if execution_failed:
+            # Execution failed - show -- for all
+            row_bg = RED_BG
+            icon = "✗"
+            result_padded = "-- (NO DATA)"
+            text_color = RED
+        elif col_failures == 0 and not grades.get("error"):
             # Passing test - green background
             row_bg = GREEN_BG
             icon = "✓"
@@ -465,7 +488,7 @@ def print_substrate_test_summary(substrate_name, grades):
         row_content = f"  {icon} {col_display:<32} {result_padded:>12} "
         print(f"  {row_bg}{WHITE_TEXT}│{row_content}│{RESET}", flush=True)
 
-    print(f"  {SKY_BLUE_BG}{DARK_TEXT}└{'─' * box_width}┘{RESET}", flush=True)
+    print(f"  {header_bg}{header_text}└{'─' * box_width}┘{RESET}", flush=True)
     print(flush=True)
 
 
@@ -612,6 +635,18 @@ def generate_summary_report(all_grades):
     return total_passed, total_failed, total_tests, overall_score
 
 
+def split_column_name(name, max_lines=3):
+    """Split a column name by underscores into multiple lines, centered.
+
+    Ensures at least max_lines lines are returned (padded with empty strings).
+    """
+    parts = name.replace('_', '\n').split('\n')
+    # Pad to ensure we have at least max_lines
+    while len(parts) < max_lines:
+        parts.insert(0, '')  # Add empty lines at the beginning
+    return parts[-max_lines:]  # Return only the last max_lines
+
+
 def print_final_summary_table(all_grades):
     """Print a final summary table to console showing all substrates"""
     print(flush=True)
@@ -622,23 +657,60 @@ def print_final_summary_table(all_grades):
 
     # Calculate column widths
     substrate_width = 15
-    test_width = 8
+    test_width = 12  # Wider to accommodate longer column name parts
+    status_width = 18  # Wide enough for "FAILED TO COMPUTE"
 
-    # Header row
-    header = f"{'Substrate':<{substrate_width}}"
+    # Build multi-line header (3 lines for column names)
+    header_lines = [[], [], []]
+    col_name_parts = []
+
     for col in COMPUTED_COLUMNS:
-        col_short = col[:test_width] if len(col) > test_width else col
-        header += f" │ {col_short:^{test_width}}"
-    header += f" │ {'Total':^8} │ {'Score':^7}"
-    print(header, flush=True)
-    print("─" * len(header), flush=True)
+        parts = split_column_name(col, max_lines=3)
+        col_name_parts.append(parts)
+
+    # Print 3-line header
+    for line_idx in range(3):
+        if line_idx == 1:
+            # Middle line includes "Substrate" label
+            line = f"{'Substrate':<{substrate_width}}"
+        else:
+            line = f"{'':<{substrate_width}}"
+
+        for parts in col_name_parts:
+            line += f" │ {parts[line_idx]:^{test_width}}"
+
+        # Add Total/Score/Status on middle line only
+        if line_idx == 1:
+            line += f" │ {'Total':^8} │ {'Score':^7} │ {'Status':^{status_width}}"
+        else:
+            line += f" │ {'':^8} │ {'':^7} │ {'':^{status_width}}"
+
+        print(line, flush=True)
+
+    # Calculate header width for separator
+    header_width = substrate_width + (len(COMPUTED_COLUMNS) * (test_width + 3)) + 8 + 3 + 7 + 3 + status_width + 3
+    print("─" * header_width, flush=True)
 
     # Data rows
     total_passed = 0
     total_failed = 0
+    failed_substrates = []
 
-    for substrate_name in sorted(all_grades.keys()):
+    # Sort substrates by score (highest to lowest)
+    def get_substrate_score(name):
+        grades = all_grades[name]
+        passed = grades["fields_passed"]
+        total = grades["total_fields_tested"]
+        return (passed / total * 100) if total > 0 else 0
+
+    for substrate_name in sorted(all_grades.keys(), key=get_substrate_score, reverse=True):
         grades = all_grades[substrate_name]
+        has_error = grades.get("error") is not None
+        execution_failed = grades.get("execution_failed", False) or (has_error and grades.get("total_fields_tested", 0) == 0)
+
+        # Track failed substrates (execution failures only)
+        if execution_failed:
+            failed_substrates.append(substrate_name)
 
         # Group failures by field
         failures_by_field = {}
@@ -648,8 +720,11 @@ def print_final_summary_table(all_grades):
                 failures_by_field[field] = 0
             failures_by_field[field] += 1
 
-        # Print substrate name
-        print(f"{substrate_name:<{substrate_width}}", end="", flush=True)
+        # Print substrate name (with strikethrough if execution failed)
+        if execution_failed:
+            print(f"{RED}{STRIKETHROUGH}{substrate_name:<{substrate_width}}{RESET}", end="", flush=True)
+        else:
+            print(f"{substrate_name:<{substrate_width}}", end="", flush=True)
 
         substrate_passed = 0
         substrate_total = 0
@@ -661,7 +736,12 @@ def print_final_summary_table(all_grades):
             substrate_passed += (col_total - col_failures)
             substrate_total += col_total
 
-            if col_failures == 0 and not grades.get("error"):
+            if execution_failed:
+                # Show -- for execution failures (we have no data)
+                cell_str = "--"
+                padding = (test_width - len(cell_str)) // 2
+                print(f" │ {' ' * padding}{RED}{DIM}{cell_str}{RESET}{' ' * (test_width - padding - len(cell_str))}", end="", flush=True)
+            elif col_failures == 0:
                 # Center the checkmark with padding
                 padding = (test_width - 1) // 2
                 print(f" │ {' ' * padding}{GREEN}✓{RESET}{' ' * (test_width - padding - 1)}", end="", flush=True)
@@ -671,8 +751,10 @@ def print_final_summary_table(all_grades):
                 padding = (test_width - len(cell_str)) // 2
                 print(f" │ {' ' * padding}{RED}{cell_str}{RESET}{' ' * (test_width - padding - len(cell_str))}", end="", flush=True)
 
-        total_passed += substrate_passed
-        total_failed += (substrate_total - substrate_passed)
+        # For execution failures, don't count towards totals
+        if not execution_failed:
+            total_passed += substrate_passed
+            total_failed += (substrate_total - substrate_passed)
 
         passed = grades["fields_passed"]
         total = grades["total_fields_tested"]
@@ -681,9 +763,19 @@ def print_final_summary_table(all_grades):
         # Use gradient color for score
         score_color = get_score_color(score)
 
-        print(f" │ {passed:>3}/{total:<3} │ {score_color}{score:>5.1f}%{RESET}", flush=True)
+        # Status column
+        if execution_failed:
+            status_text = "FAILED TO COMPUTE"
+            # Show --/-- for total since we have no data
+            print(f" │ {'--':>3}/{'--':<3} │ {RED}{DIM}{'--':>5}%{RESET} │ {RED}{BOLD}{status_text:^{status_width}}{RESET}", flush=True)
+        elif grades["fields_failed"] == 0:
+            status_text = "PASS"
+            print(f" │ {passed:>3}/{total:<3} │ {score_color}{score:>5.1f}%{RESET} │ {GREEN}{status_text:^{status_width}}{RESET}", flush=True)
+        else:
+            status_text = "PARTIAL"
+            print(f" │ {passed:>3}/{total:<3} │ {score_color}{score:>5.1f}%{RESET} │ {YELLOW}{status_text:^{status_width}}{RESET}", flush=True)
 
-    print("─" * len(header), flush=True)
+    print("─" * header_width, flush=True)
 
     # Overall totals
     overall_total = total_passed + total_failed
@@ -691,8 +783,18 @@ def print_final_summary_table(all_grades):
     print(f"{BOLD}{'OVERALL':<{substrate_width}}{RESET}", end="", flush=True)
     for _ in COMPUTED_COLUMNS:
         print(f" │ {'':^{test_width}}", end="", flush=True)
-    print(f" │ {total_passed:>3}/{overall_total:<3} │ {BOLD}{overall_score:>5.1f}%{RESET}", flush=True)
+    print(f" │ {total_passed:>3}/{overall_total:<3} │ {BOLD}{overall_score:>5.1f}%{RESET} │ {' ':^{status_width}}", flush=True)
     print(flush=True)
+
+    # Print failed substrates summary if any
+    if failed_substrates:
+        print(f"{RED}{'─' * 70}{RESET}", flush=True)
+        print(f"{RED}{BOLD}⚠️  FAILED TO EXECUTE ({len(failed_substrates)} substrates):{RESET}", flush=True)
+        print(flush=True)
+        for substrate_name in failed_substrates:
+            error_msg = all_grades[substrate_name].get("error", "Unknown error")
+            print(f"  {RED}✗{RESET} {BOLD}{substrate_name}{RESET}: {DIM}{error_msg}{RESET}", flush=True)
+        print(flush=True)
 
 
 # =============================================================================
@@ -718,6 +820,8 @@ def main():
     print(flush=True)
 
     # Step 4: Generate summary report
+    # Breathing room before summary
+    print("\n" * 5, flush=True)
     generate_summary_report(all_grades)
     print(flush=True)
 

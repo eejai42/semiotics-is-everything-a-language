@@ -1,0 +1,953 @@
+{
+  "classes": {
+    "IsEverythingALanguage": {
+      "attributes": [
+        {
+          "name": "IsEverythingALanguageId",
+          "type": "string"
+        },
+        {
+          "name": "Name",
+          "type": "string"
+        },
+        {
+          "name": "ArgumentName",
+          "type": "string"
+        },
+        {
+          "name": "ArgumentCategory",
+          "type": "string"
+        },
+        {
+          "name": "StepType",
+          "type": "string"
+        },
+        {
+          "name": "Statement",
+          "type": "string"
+        },
+        {
+          "name": "Formalization",
+          "type": "string"
+        },
+        {
+          "name": "RelatedCandidateName",
+          "type": "string"
+        },
+        {
+          "name": "RelatedCandidateId",
+          "type": "string"
+        },
+        {
+          "name": "EvidenceFromRulebook",
+          "type": "string"
+        },
+        {
+          "name": "Notes",
+          "type": "string"
+        }
+      ],
+      "derived": []
+    },
+    "LanguageCandidates": {
+      "attributes": [
+        {
+          "name": "LanguageCandidateId",
+          "type": "string"
+        },
+        {
+          "name": "Name",
+          "type": "string"
+        },
+        {
+          "name": "Category",
+          "type": "string"
+        },
+        {
+          "name": "ChosenLanguageCandidate",
+          "type": "boolean"
+        },
+        {
+          "name": "HasSyntax",
+          "type": "boolean"
+        },
+        {
+          "name": "HasIdentity",
+          "type": "boolean"
+        },
+        {
+          "name": "CanBeHeld",
+          "type": "boolean"
+        },
+        {
+          "name": "RequiresParsing",
+          "type": "boolean"
+        },
+        {
+          "name": "HasLinearDecodingPressure",
+          "type": "boolean"
+        },
+        {
+          "name": "IsStableOntologyReference",
+          "type": "boolean"
+        },
+        {
+          "name": "DimensionalityWhileEditing",
+          "type": "string"
+        },
+        {
+          "name": "IsOpenWorld",
+          "type": "boolean"
+        },
+        {
+          "name": "IsClosedWorld",
+          "type": "boolean"
+        },
+        {
+          "name": "DistanceFromConcept",
+          "type": "integer"
+        },
+        {
+          "name": "SortOrder",
+          "type": "integer"
+        }
+      ],
+      "derived": [
+        {
+          "name": "FamilyFuedQuestion",
+          "type": "string",
+          "formula": "=\"Is \" & {{Name}} & \" a language?\""
+        },
+        {
+          "name": "TopFamilyFeudAnswer",
+          "type": "boolean",
+          "formula": "=AND(\n  {{HasSyntax}},\n  {{RequiresParsing}},\n  {{IsDescriptionOf}},\n  {{HasLinearDecodingPressure}},\n  {{IsStableOntologyReference}},\n  NOT({{CanBeHeld}}),\n  NOT({{HasIdentity}})\n)"
+        },
+        {
+          "name": "FamilyFeudMismatch",
+          "type": "string",
+          "formula": "=IF(NOT({{TopFamilyFeudAnswer}} = {{ChosenLanguageCandidate}}),\n  {{Name}} & \" \" & IF({{TopFamilyFeudAnswer}}, \"Is\", \"Isn't\") & \" a Family Feud Language, but \" & \n  IF({{ChosenLanguageCandidate}}, \"Is\", \"Is Not\") & \" marked as a 'Language Candidate.'\") & IF({{IsOpenClosedWorldConflicted}}, \" - Open World vs. Closed World Conflict.\")"
+        },
+        {
+          "name": "HasGrammar",
+          "type": "boolean",
+          "formula": "={{HasSyntax}} = TRUE()"
+        },
+        {
+          "name": "IsOpenClosedWorldConflicted",
+          "type": "boolean",
+          "formula": "=AND({{IsOpenWorld}}, {{IsClosedWorld}})"
+        },
+        {
+          "name": "IsDescriptionOf",
+          "type": "boolean",
+          "formula": "={{DistanceFromConcept}} > 1"
+        },
+        {
+          "name": "RelationshipToConcept",
+          "type": "string",
+          "formula": "=IF({{DistanceFromConcept}} = 1, \"IsMirrorOf\", \"IsDescriptionOf\")"
+        }
+      ]
+    }
+  },
+  "instances": [
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_0",
+      "values": {
+        "IsEverythingALanguageId": "neial-001",
+        "Name": "NEIAL-001",
+        "ArgumentName": "LanguageCanBeFormalized",
+        "ArgumentCategory": "Definition",
+        "StepType": "Motivation",
+        "Statement": "To avoid the slogan 'Everything is a language', treat 'language' as a typed construct defined by testable properties (syntax, parsing, linear decoding pressure, and descriptor-role).",
+        "Formalization": "",
+        "RelatedCandidateName": "",
+        "RelatedCandidateId": "",
+        "EvidenceFromRulebook": "",
+        "Notes": "This keeps 'can be interpreted' separate from 'is a language system'."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_1",
+      "values": {
+        "IsEverythingALanguageId": "neial-002",
+        "Name": "NEIAL-002",
+        "ArgumentName": "LanguageCanBeFormalized",
+        "ArgumentCategory": "Definition",
+        "StepType": "PredicateSet",
+        "Statement": "Use the repo predicates: HasSyntax, RequiresParsing, HasLinearDecodingPressure, StableOntologyReference (spelled IsOngologyDescriptor in the dataset), plus auxiliary checks like CanBeHeld and HasIdentity.",
+        "Formalization": "Predicates: Syntax(x), Parse(x), SerializeMeaning(x), OntDesc(x), Tangible(x)",
+        "RelatedCandidateName": "",
+        "RelatedCandidateId": "",
+        "EvidenceFromRulebook": "",
+        "Notes": "We preserve the dataset's field name even when misspelled to match the generated schema."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_2",
+      "values": {
+        "IsEverythingALanguageId": "neial-003",
+        "Name": "NEIAL-003",
+        "ArgumentName": "LanguageCanBeFormalized",
+        "ArgumentCategory": "Definition",
+        "StepType": "Definition",
+        "Statement": "Operational definition: an item x counts as a Language if it has syntax, requires parsing, serializes meaning, and functions as an ontology/descriptor system.",
+        "Formalization": "Language(x) := HasSyntax(x) \u2227 RequiresParsing(x) \u2227 HasLinearDecodingPressure(x) \u2227 StableOntologyReference(x)",
+        "RelatedCandidateName": "",
+        "RelatedCandidateId": "",
+        "EvidenceFromRulebook": "",
+        "Notes": "This is a deliberately 'strong' definition: it matches formal languages and many natural language representations."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_3",
+      "values": {
+        "IsEverythingALanguageId": "neial-004",
+        "Name": "NEIAL-004",
+        "ArgumentName": "LanguageCanBeFormalized",
+        "ArgumentCategory": "Premise",
+        "StepType": "Witness",
+        "Statement": "There exists at least one clear witness that satisfies the operational definition: English.",
+        "Formalization": "\u2203x (x=English \u2227 Language(x))",
+        "RelatedCandidateName": "English",
+        "RelatedCandidateId": "english",
+        "EvidenceFromRulebook": "HasSyntax=True; RequiresParsing=True; HasLinearDecodingPressure=True; IsOngologyDescriptor=True; CanBeHeld=False; HasIdentity=False; DistanceFromConcept=2; Category=Natural Language",
+        "Notes": "If any predicate is false in your current dataset for this witness, adjust the candidate record or relax the definition."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_4",
+      "values": {
+        "IsEverythingALanguageId": "neial-005",
+        "Name": "NEIAL-005",
+        "ArgumentName": "LanguageCanBeFormalized",
+        "ArgumentCategory": "Premise",
+        "StepType": "Witness",
+        "Statement": "There exists at least one clear witness that satisfies the operational definition: Python.",
+        "Formalization": "\u2203x (x=Python \u2227 Language(x))",
+        "RelatedCandidateName": "Python",
+        "RelatedCandidateId": "python",
+        "EvidenceFromRulebook": "HasSyntax=True; RequiresParsing=True; HasLinearDecodingPressure=True; IsOngologyDescriptor=True; CanBeHeld=False; HasIdentity=False; DistanceFromConcept=2; Category=Formal Language",
+        "Notes": "If any predicate is false in your current dataset for this witness, adjust the candidate record or relax the definition."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_5",
+      "values": {
+        "IsEverythingALanguageId": "neial-006",
+        "Name": "NEIAL-006",
+        "ArgumentName": "LanguageCanBeFormalized",
+        "ArgumentCategory": "Conclusion",
+        "StepType": "Conclusion",
+        "Statement": "Therefore, 'language' can be formalized as a computable classification boundary over explicit predicates.",
+        "Formalization": "(Definition \u2227 Witnesses) \u21d2 Formalizable(Language)",
+        "RelatedCandidateName": "",
+        "RelatedCandidateId": "",
+        "EvidenceFromRulebook": "",
+        "Notes": "This is the concession: language is formalizable (at least operationally)."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_6",
+      "values": {
+        "IsEverythingALanguageId": "neial-007",
+        "Name": "NEIAL-007",
+        "ArgumentName": "NotEverythingIsALanguage",
+        "ArgumentCategory": "Premise",
+        "StepType": "Entailment",
+        "Statement": "If Language(x) is defined by necessary conditions, then any x that fails at least one condition is not a language.",
+        "Formalization": "\u2200x (\u00ac(HasSyntax(x) \u2227 RequiresParsing(x) \u2227 HasLinearDecodingPressure(x) \u2227 StableOntologyReference(x)) \u2192 \u00acLanguage(x))",
+        "RelatedCandidateName": "",
+        "RelatedCandidateId": "",
+        "EvidenceFromRulebook": "",
+        "Notes": "This is the standard move: a definition implies exclusions."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_7",
+      "values": {
+        "IsEverythingALanguageId": "neial-008",
+        "Name": "NEIAL-008",
+        "ArgumentName": "NotEverythingIsALanguage",
+        "ArgumentCategory": "Example",
+        "StepType": "Counterexample",
+        "Statement": "Counterexample: a chair can be interpreted as a sign (status, design, function), but it does not constitute a language system under the operational definition.",
+        "Formalization": "\u00acLanguage(Chair)",
+        "RelatedCandidateName": "A Chair",
+        "RelatedCandidateId": "",
+        "EvidenceFromRulebook": "",
+        "Notes": "This separates semiotic availability (can signify) from linguistic structure (has syntax/parsing/serialized meaning)."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_8",
+      "values": {
+        "IsEverythingALanguageId": "neial-009",
+        "Name": "NEIAL-009",
+        "ArgumentName": "NotEverythingIsALanguage",
+        "ArgumentCategory": "Example",
+        "StepType": "NonLanguageExample",
+        "Statement": "Non-language example: A Thunderstorm can be meaningful, but meaning here is not generated by an explicit syntax+parsing+serialization descriptor system.",
+        "Formalization": "\u00acLanguage(A Thunderstorm)",
+        "RelatedCandidateName": "A Thunderstorm",
+        "RelatedCandidateId": "a-thunderstorm",
+        "EvidenceFromRulebook": "HasSyntax=False; RequiresParsing=True; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Physical event",
+        "Notes": "These are strong candidates for 'sign vehicles' rather than 'languages'."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_9",
+      "values": {
+        "IsEverythingALanguageId": "neial-010",
+        "Name": "NEIAL-010",
+        "ArgumentName": "NotEverythingIsALanguage",
+        "ArgumentCategory": "Example",
+        "StepType": "NonLanguageExample",
+        "Statement": "Non-language example: A Coffee Mug can be meaningful, but meaning here is not generated by an explicit syntax+parsing+serialization descriptor system.",
+        "Formalization": "\u00acLanguage(A Coffee Mug)",
+        "RelatedCandidateName": "A Coffee Mug",
+        "RelatedCandidateId": "a-coffee-mug",
+        "EvidenceFromRulebook": "HasSyntax=False; RequiresParsing=False; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object",
+        "Notes": "These are strong candidates for 'sign vehicles' rather than 'languages'."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_10",
+      "values": {
+        "IsEverythingALanguageId": "neial-011",
+        "Name": "NEIAL-011",
+        "ArgumentName": "NotEverythingIsALanguage",
+        "ArgumentCategory": "Example",
+        "StepType": "NonLanguageExample",
+        "Statement": "Non-language example: The Mona Lisa can be meaningful, but meaning here is not generated by an explicit syntax+parsing+serialization descriptor system.",
+        "Formalization": "\u00acLanguage(The Mona Lisa)",
+        "RelatedCandidateName": "The Mona Lisa",
+        "RelatedCandidateId": "the-mona-lisa",
+        "EvidenceFromRulebook": "HasSyntax=False; RequiresParsing=False; HasLinearDecodingPressure=False; IsOngologyDescriptor=True; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object",
+        "Notes": "These are strong candidates for 'sign vehicles' rather than 'languages'."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_11",
+      "values": {
+        "IsEverythingALanguageId": "neial-012",
+        "Name": "NEIAL-012",
+        "ArgumentName": "NotEverythingIsALanguage",
+        "ArgumentCategory": "Observation",
+        "StepType": "FuzzyBoundary",
+        "Statement": "Fuzzy case: A Running App often contains embedded languages (code, UI grammars), but as an executing/interactive process it behaves like a dynamic system rather than a static serialized language artifact.",
+        "Formalization": "Borderline(A Running App): may contain \u2203y Language(y) but \u00acLanguage(A Running App) under static-serialization criteria",
+        "RelatedCandidateName": "A Running App",
+        "RelatedCandidateId": "",
+        "EvidenceFromRulebook": "",
+        "Notes": "This is where traditional semiotics' 'anything is a sign' doesn\u2019t neatly distinguish: (1) language-as-system vs (2) meaning-making interactive processes."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_12",
+      "values": {
+        "IsEverythingALanguageId": "neial-013",
+        "Name": "NEIAL-013",
+        "ArgumentName": "NotEverythingIsALanguage",
+        "ArgumentCategory": "Observation",
+        "StepType": "FuzzyBoundary",
+        "Statement": "Fuzzy case: Running Calculator App often contains embedded languages (code, UI grammars), but as an executing/interactive process it behaves like a dynamic system rather than a static serialized language artifact.",
+        "Formalization": "Borderline(Running Calculator App): may contain \u2203y Language(y) but \u00acLanguage(Running Calculator App) under static-serialization criteria",
+        "RelatedCandidateName": "Running Calculator App",
+        "RelatedCandidateId": "running-calculator-app",
+        "EvidenceFromRulebook": "HasSyntax=False; RequiresParsing=True; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Running Software",
+        "Notes": "This is where traditional semiotics' 'anything is a sign' doesn\u2019t neatly distinguish: (1) language-as-system vs (2) meaning-making interactive processes."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_13",
+      "values": {
+        "IsEverythingALanguageId": "neial-014",
+        "Name": "NEIAL-014",
+        "ArgumentName": "NotEverythingIsALanguage",
+        "ArgumentCategory": "Observation",
+        "StepType": "FuzzyBoundary",
+        "Statement": "Fuzzy case: A Game of Fortnite often contains embedded languages (code, UI grammars), but as an executing/interactive process it behaves like a dynamic system rather than a static serialized language artifact.",
+        "Formalization": "Borderline(A Game of Fortnite): may contain \u2203y Language(y) but \u00acLanguage(A Game of Fortnite) under static-serialization criteria",
+        "RelatedCandidateName": "A Game of Fortnite",
+        "RelatedCandidateId": "a-game-of-fortnite",
+        "EvidenceFromRulebook": "HasSyntax=False; RequiresParsing=True; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Running Software",
+        "Notes": "This is where traditional semiotics' 'anything is a sign' doesn\u2019t neatly distinguish: (1) language-as-system vs (2) meaning-making interactive processes."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_14",
+      "values": {
+        "IsEverythingALanguageId": "neial-015",
+        "Name": "NEIAL-015",
+        "ArgumentName": "NotEverythingIsALanguage",
+        "ArgumentCategory": "Definition",
+        "StepType": "Refinement",
+        "Statement": "Refinement: distinguish LanguageSystem (syntax/parsing/serialization descriptor) from SemioticProcess (interactive/dynamic meaning production) and from SignVehicle (object/phenomenon used as a sign).",
+        "Formalization": "Kinds: LanguageSystem(x) | SemioticProcess(x) | SignVehicle(x)",
+        "RelatedCandidateName": "",
+        "RelatedCandidateId": "",
+        "EvidenceFromRulebook": "",
+        "Notes": "This gives you a place to put running apps and games without forcing 'language' to swallow everything."
+      }
+    },
+    {
+      "class": "IsEverythingALanguage",
+      "id": "IsEverythingALanguage_15",
+      "values": {
+        "IsEverythingALanguageId": "neial-016",
+        "Name": "NEIAL-016",
+        "ArgumentName": "NotEverythingIsALanguage",
+        "ArgumentCategory": "Conclusion",
+        "StepType": "Conclusion",
+        "Statement": "Given a formalizable definition of language, not everything is a language; some things are better treated as sign vehicles or semiotic processes, with running applications as a key fuzzy region that benefits from explicit modeling.",
+        "Formalization": "Formalizable(Language) \u2227 \u2203x \u00acLanguage(x) \u21d2 \u00ac(EverythingIsALanguage)",
+        "RelatedCandidateName": "",
+        "RelatedCandidateId": "",
+        "EvidenceFromRulebook": "",
+        "Notes": "This is the repo's thesis in one line."
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_0",
+      "values": {
+        "LanguageCandidateId": "falsifier-a",
+        "Name": "Falsifier A",
+        "Category": "MISSING: Have you seen this Language?",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "N/A",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 0
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_1",
+      "values": {
+        "LanguageCandidateId": "falsifier-b",
+        "Name": "Falsifier B",
+        "Category": "MISSING: Have you seen this Language?",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": true,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "N/A",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 1,
+        "SortOrder": 1
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_2",
+      "values": {
+        "LanguageCandidateId": "falsifier-c",
+        "Name": "Falsifier C",
+        "Category": "MISSING: Have you seen this Language?",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": true,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 2,
+        "SortOrder": 2
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_3",
+      "values": {
+        "LanguageCandidateId": "english",
+        "Name": "English",
+        "Category": "Natural Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": true,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 3
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_4",
+      "values": {
+        "LanguageCandidateId": "spoken-words",
+        "Name": "Spoken Words",
+        "Category": "Natural Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": true,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 4
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_5",
+      "values": {
+        "LanguageCandidateId": "a-chair",
+        "Name": "A Chair ",
+        "Category": "Physical Object",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": true,
+        "RequiresParsing": false,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": false,
+        "DimensionalityWhileEditing": "N/A",
+        "IsOpenWorld": false,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 1,
+        "SortOrder": 5
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_6",
+      "values": {
+        "LanguageCandidateId": "a-game-of-fortnite",
+        "Name": "A Game of Fortnite",
+        "Category": "Running Software",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": false,
+        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 1,
+        "SortOrder": 6
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_7",
+      "values": {
+        "LanguageCandidateId": "sign-language",
+        "Name": "Sign Language",
+        "Category": "Natural Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": true,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 7
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_8",
+      "values": {
+        "LanguageCandidateId": "python",
+        "Name": "Python",
+        "Category": "Formal Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": true,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 8
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_9",
+      "values": {
+        "LanguageCandidateId": "a-smartphone",
+        "Name": "A Smartphone",
+        "Category": "Physical Object",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": true,
+        "RequiresParsing": false,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": false,
+        "DimensionalityWhileEditing": "N/A",
+        "IsOpenWorld": false,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 1,
+        "SortOrder": 9
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_10",
+      "values": {
+        "LanguageCandidateId": "a-running-app",
+        "Name": "A Running App ",
+        "Category": "Running Software",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": false,
+        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 1,
+        "SortOrder": 22
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_11",
+      "values": {
+        "LanguageCandidateId": "an-xlsx-doc",
+        "Name": "An XLSX Doc",
+        "Category": "Formal Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 23
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_12",
+      "values": {
+        "LanguageCandidateId": "editing-an-xlsx-doc",
+        "Name": "Editing an XLSX Doc",
+        "Category": "Running Software",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": false,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": false,
+        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 1,
+        "SortOrder": 24
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_13",
+      "values": {
+        "LanguageCandidateId": "an-docx-doc",
+        "Name": "An DOCX Doc",
+        "Category": "Formal Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 25
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_14",
+      "values": {
+        "LanguageCandidateId": "editing-an-docx-doc",
+        "Name": "Editing an DOCX Doc",
+        "Category": "Running Software",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": false,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 1,
+        "SortOrder": 25
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_15",
+      "values": {
+        "LanguageCandidateId": "a-csv-file",
+        "Name": "A CSV File",
+        "Category": "Formal Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": true,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 10
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_16",
+      "values": {
+        "LanguageCandidateId": "owl-rdf-graphql-generally",
+        "Name": "OWL/RDF/GraphQL/... generally",
+        "Category": "Natural Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 2,
+        "SortOrder": 11
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_17",
+      "values": {
+        "LanguageCandidateId": "a-coffee-mug",
+        "Name": "A Coffee Mug",
+        "Category": "Physical Object",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": true,
+        "RequiresParsing": false,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": false,
+        "DimensionalityWhileEditing": "N/A",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 1,
+        "SortOrder": 12
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_18",
+      "values": {
+        "LanguageCandidateId": "a-thunderstorm",
+        "Name": "A Thunderstorm",
+        "Category": "Physical event",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": true,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": false,
+        "DimensionalityWhileEditing": "N/A",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 1,
+        "SortOrder": 13
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_19",
+      "values": {
+        "LanguageCandidateId": "a-uml-file",
+        "Name": "A UML File",
+        "Category": "Formal Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 14
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_20",
+      "values": {
+        "LanguageCandidateId": "binary-code",
+        "Name": "Binary Code",
+        "Category": "Formal Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 15
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_21",
+      "values": {
+        "LanguageCandidateId": "the-mona-lisa",
+        "Name": "The Mona Lisa",
+        "Category": "Physical Object",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": true,
+        "RequiresParsing": false,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "N/A",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 1,
+        "SortOrder": 16
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_22",
+      "values": {
+        "LanguageCandidateId": "running-calculator-app",
+        "Name": "Running Calculator App",
+        "Category": "Running Software",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": false,
+        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 1,
+        "SortOrder": 17
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_23",
+      "values": {
+        "LanguageCandidateId": "javascript",
+        "Name": "JavaScript",
+        "Category": "Formal Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 18
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_24",
+      "values": {
+        "LanguageCandidateId": "french",
+        "Name": "French",
+        "Category": "Natural Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "SortOrder": 19
+      }
+    }
+  ]
+}

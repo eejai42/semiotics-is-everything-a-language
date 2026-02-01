@@ -1,26 +1,26 @@
-language_candidate_id,name,category,family_fued_question,top_family_feud_answer,chosen_language_candidate,family_feud_mismatch,has_syntax,has_identity,can_be_held,has_grammar,requires_parsing,meaning_is_serialized,is_ongology_descriptor,dimensionality_while_editing,is_open_closed_world_conflicted,is_open_world,is_closed_world,distance_from_concept,relationship_to_concept,sort_order
-falsifier-a,Falsifier A,MISSING: Have you seen this Language?,Is Falsifier A a language?,true,false,"Falsifier A Is a Family Feud Language, but Is Not marked as a 'Language Candidate.'",true,false,false,true,true,true,true,,false,false,false,2,IsDescriptionOf,0
-falsifier-b,Falsifier B,MISSING: Have you seen this Language?,Is Falsifier B a language?,false,true,"Falsifier B Isn't a Family Feud Language, but Is marked as a 'Language Candidate.'",false,true,true,false,true,false,true,,false,false,false,1,IsMirrorOf,1
-falsifier-c,Falsifier C,MISSING: Have you seen this Language?,Is Falsifier C a language?,true,true, - Open World vs. Closed World Conflict.,true,false,false,true,true,true,true,OneDimensionalSymbolic,true,true,true,2,IsDescriptionOf,2
-english,English,Natural Language,Is English a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,true,false,2,IsDescriptionOf,3
-spoken-words,Spoken Words,Natural Language,Is Spoken Words a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,true,false,2,IsDescriptionOf,4
-a-chair,A Chair ,Physical Object,Is A Chair  a language?,false,false,,false,true,true,false,false,false,false,MultiDimensionalNonSymbolic,false,false,true,1,IsMirrorOf,5
-a-game-of-fortnite,A Game of Fortnite,Running Software,Is A Game of Fortnite a language?,false,false,,false,true,false,false,true,false,false,MultiDimensionalNonSymbolic,false,false,true,1,IsMirrorOf,6
-sign-language,Sign Language,Natural Language,Is Sign Language a language?,true,true,,true,false,false,true,true,true,true,MultiDimensionalNonSymbolic,false,true,false,2,IsDescriptionOf,7
-python,Python,Formal Language,Is Python a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,true,false,2,IsDescriptionOf,8
-a-smartphone,A Smartphone,Physical Object,Is A Smartphone a language?,false,false,,false,true,true,false,false,true,false,MultiDimensionalNonSymbolic,false,false,true,1,IsMirrorOf,9
-a-running-app,A Running App ,Running Software,Is A Running App  a language?,false,false,,false,true,false,false,true,true,false,MultiDimensionalNonSymbolic,false,false,true,1,IsMirrorOf,22
-an-xlsx-doc,An XLSX Doc,Formal Language,Is An XLSX Doc a language?,true,true,,true,false,false,true,true,true,true,,false,false,false,2,IsDescriptionOf,23
-editing-an-xlsx-doc,Editing an XLSX Doc,Running Software,Is Editing an XLSX Doc a language?,false,false,,false,false,false,false,false,false,false,,false,false,false,1,IsMirrorOf,24
-an-docx-doc,An DOCX Doc,Formal Language,Is An DOCX Doc a language?,true,true,,true,false,false,true,true,true,true,,false,false,false,2,IsDescriptionOf,25
-editing-an-docx-doc,Editing an DOCX Doc,Running Software,Is Editing an DOCX Doc a language?,false,false,,false,false,false,false,false,false,true,,false,false,false,1,IsMirrorOf,25
-a-csv-file,A CSV File,Formal Language,Is A CSV File a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,true,false,2,IsDescriptionOf,10
-owl-rdf-graphql-generally,OWL/RDF/GraphQL/... generally,Natural Language,Is OWL/RDF/GraphQL/... generally a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,false,true,2,IsDescriptionOf,11
-a-coffee-mug,A Coffee Mug,Physical Object,Is A Coffee Mug a language?,false,false,,false,true,true,false,false,false,false,,false,false,false,1,IsMirrorOf,12
-a-thunderstorm,A Thunderstorm,Physical event,Is A Thunderstorm a language?,false,false,,false,true,true,false,true,false,false,,false,false,false,1,IsMirrorOf,13
-a-uml-file,A UML File,Formal Language,Is A UML File a language?,true,true,,true,false,false,true,true,true,true,,false,false,false,2,IsDescriptionOf,14
-binary-code,Binary Code,Formal Language,Is Binary Code a language?,true,true,,true,false,false,true,true,true,true,,false,false,false,2,IsDescriptionOf,15
-the-mona-lisa,The Mona Lisa,Physical Object,Is The Mona Lisa a language?,false,false,,false,true,true,false,false,false,true,,false,false,false,1,IsMirrorOf,16
-running-calculator-app,Running Calculator App,Running Software,Is Running Calculator App a language?,false,false,,false,true,false,false,true,false,false,,false,false,false,1,IsMirrorOf,17
-javascript,JavaScript,Formal Language,Is JavaScript a language?,true,true,,true,false,false,true,true,true,true,,false,false,false,2,IsDescriptionOf,18
-french,French,Natural Language,Is French a language?,true,true,,true,false,false,true,true,true,true,,false,false,false,2,IsDescriptionOf,19
+language_candidate_id,name,category,family_fued_question,top_family_feud_answer,chosen_language_candidate,family_feud_mismatch,has_syntax,has_identity,can_be_held,has_grammar,requires_parsing,has_linear_decoding_pressure,is_stable_ontology_reference,dimensionality_while_editing,is_open_world,is_closed_world,is_open_closed_world_conflicted,distance_from_concept,is_description_of,relationship_to_concept,sort_order
+falsifier-a,Falsifier A,MISSING: Have you seen this Language?,Is Falsifier A a language?,true,false,"Falsifier A Is a Family Feud Language, but Is Not marked as a 'Language Candidate.'",true,false,false,true,true,true,true,N/A,false,false,false,2,,IsDescriptionOf,0
+falsifier-b,Falsifier B,MISSING: Have you seen this Language?,Is Falsifier B a language?,false,true,"Falsifier B Isn't a Family Feud Language, but Is marked as a 'Language Candidate.'",false,true,true,false,true,false,true,N/A,false,false,false,1,,IsMirrorOf,1
+falsifier-c,Falsifier C,MISSING: Have you seen this Language?,Is Falsifier C a language?,true,true, - Open World vs. Closed World Conflict.,true,false,false,true,true,true,true,OneDimensionalSymbolic,true,true,true,2,,IsDescriptionOf,2
+english,English,Natural Language,Is English a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,true,false,false,2,,IsDescriptionOf,3
+spoken-words,Spoken Words,Natural Language,Is Spoken Words a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,true,false,false,2,,IsDescriptionOf,4
+a-chair,A Chair ,Physical Object,Is A Chair  a language?,false,false,,false,true,true,false,false,false,false,N/A,false,true,false,1,,IsMirrorOf,5
+a-game-of-fortnite,A Game of Fortnite,Running Software,Is A Game of Fortnite a language?,false,false,,false,true,false,false,true,false,false,MultiDimensionalNonSymbolic,false,true,false,1,,IsMirrorOf,6
+sign-language,Sign Language,Natural Language,Is Sign Language a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,true,false,false,2,,IsDescriptionOf,7
+python,Python,Formal Language,Is Python a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,true,false,false,2,,IsDescriptionOf,8
+a-smartphone,A Smartphone,Physical Object,Is A Smartphone a language?,false,false,,false,true,true,false,false,true,false,N/A,false,true,false,1,,IsMirrorOf,9
+a-running-app,A Running App ,Running Software,Is A Running App  a language?,false,false,,false,true,false,false,true,true,false,MultiDimensionalNonSymbolic,false,true,false,1,,IsMirrorOf,22
+an-xlsx-doc,An XLSX Doc,Formal Language,Is An XLSX Doc a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,false,false,2,,IsDescriptionOf,23
+editing-an-xlsx-doc,Editing an XLSX Doc,Running Software,Is Editing an XLSX Doc a language?,false,false,,false,false,false,false,false,false,false,MultiDimensionalNonSymbolic,false,false,false,1,,IsMirrorOf,24
+an-docx-doc,An DOCX Doc,Formal Language,Is An DOCX Doc a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,false,false,2,,IsDescriptionOf,25
+editing-an-docx-doc,Editing an DOCX Doc,Running Software,Is Editing an DOCX Doc a language?,false,false,,false,false,false,false,false,false,true,MultiDimensionalNonSymbolic,false,false,false,1,,IsMirrorOf,25
+a-csv-file,A CSV File,Formal Language,Is A CSV File a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,true,false,false,2,,IsDescriptionOf,10
+owl-rdf-graphql-generally,OWL/RDF/GraphQL/... generally,Natural Language,Is OWL/RDF/GraphQL/... generally a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,true,false,2,,IsDescriptionOf,11
+a-coffee-mug,A Coffee Mug,Physical Object,Is A Coffee Mug a language?,false,false,,false,true,true,false,false,false,false,N/A,false,false,false,1,,IsMirrorOf,12
+a-thunderstorm,A Thunderstorm,Physical event,Is A Thunderstorm a language?,false,false,,false,true,true,false,true,false,false,N/A,false,false,false,1,,IsMirrorOf,13
+a-uml-file,A UML File,Formal Language,Is A UML File a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,false,false,2,,IsDescriptionOf,14
+binary-code,Binary Code,Formal Language,Is Binary Code a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,false,false,2,,IsDescriptionOf,15
+the-mona-lisa,The Mona Lisa,Physical Object,Is The Mona Lisa a language?,false,false,,false,true,true,false,false,false,true,N/A,false,false,false,1,,IsMirrorOf,16
+running-calculator-app,Running Calculator App,Running Software,Is Running Calculator App a language?,false,false,,false,true,false,false,true,false,false,MultiDimensionalNonSymbolic,false,false,false,1,,IsMirrorOf,17
+javascript,JavaScript,Formal Language,Is JavaScript a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,false,false,2,,IsDescriptionOf,18
+french,French,Natural Language,Is French a language?,true,true,,true,false,false,true,true,true,true,OneDimensionalSymbolic,false,false,false,2,,IsDescriptionOf,19

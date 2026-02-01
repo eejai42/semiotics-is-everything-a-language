@@ -16,12 +16,12 @@ LanguageCandidates,category,raw,0,
 LanguageCandidates,family_fued_question,calculated,,"=""Is "" & {{Name}} & "" a language?"""
 LanguageCandidates,top_family_feud_answer,calculated,,"=AND(
   {{HasSyntax}},
-  NOT({{CanBeHeld}}),
-  {{MeaningIsSerialized}},
   {{RequiresParsing}},
-  {{IsOngologyDescriptor}},
-  NOT({{HasIdentity}}),
-  {{DistanceFromConcept}}=2
+  {{IsDescriptionOf}},
+  {{HasLinearDecodingPressure}},
+  {{IsStableOntologyReference}},
+  NOT({{CanBeHeld}}),
+  NOT({{HasIdentity}})
 )"
 LanguageCandidates,chosen_language_candidate,raw,0,
 LanguageCandidates,family_feud_mismatch,calculated,,"=IF(NOT({{TopFamilyFeudAnswer}} = {{ChosenLanguageCandidate}}),
@@ -32,13 +32,13 @@ LanguageCandidates,has_identity,raw,0,
 LanguageCandidates,can_be_held,raw,0,
 LanguageCandidates,has_grammar,calculated,,={{HasSyntax}} = TRUE()
 LanguageCandidates,requires_parsing,raw,0,
-LanguageCandidates,meaning_is_serialized,raw,0,
-LanguageCandidates,is_ongology_descriptor,raw,0,
+LanguageCandidates,has_linear_decoding_pressure,raw,0,
+LanguageCandidates,is_stable_ontology_reference,raw,0,
 LanguageCandidates,dimensionality_while_editing,raw,0,
-LanguageCandidates,is_open_closed_world_conflicted,calculated,,"=AND({{IsOpenWorld}} = TRUE(), 
-    {{IsClosedWorld}} = TRUE())"
 LanguageCandidates,is_open_world,raw,0,
 LanguageCandidates,is_closed_world,raw,0,
+LanguageCandidates,is_open_closed_world_conflicted,calculated,,"=AND({{IsOpenWorld}}, {{IsClosedWorld}})"
 LanguageCandidates,distance_from_concept,raw,0,
+LanguageCandidates,is_description_of,calculated,,={{DistanceFromConcept}} > 1
 LanguageCandidates,relationship_to_concept,calculated,,"=IF({{DistanceFromConcept}} = 1, ""IsMirrorOf"", ""IsDescriptionOf"")"
 LanguageCandidates,sort_order,raw,0,

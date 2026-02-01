@@ -1,236 +1,201 @@
-# Binary - x86-64 Assembly Execution Substrate
-
-x86-64 assembly implementation where ALL calculation functions are implemented at the register level.
+# Binary Substrate: Formula-to-Native Evaluator Pipeline
 
 ## Overview
 
-This substrate compiles the ERB rulebook into raw x86-64 assembly. Every calculated field is computed by CPU instructions. Python handles only file I/O (loading and saving JSON); all business logic executes in assembly.
-
-## The Critical Boundary: Computation Logic
-
-The boundary is **computation logic**, not domain awareness.
-
-### Python Layer (`take-test.py`) — CAN have:
-- Field names like `category`, `has_syntax`, `name` (for JSON access)
-- Data structures and JSON loading/saving
-- Calling assembly functions with the right field values
-- Everything from the Python substrate EXCEPT the `calc_*` methods
-
-### Python Layer — CANNOT have:
-- `"language" in category.lower()` — this is computation
-- `"true" if has_syntax else ""` — this is computation
-- `f"Is {name} a language?"` — this is computation
-- Boolean AND chains — this is computation
-- Conditional string building — this is computation
-
-### Assembly Layer (`erb_calc.asm`) — MUST have:
-- All 6 `calc_*` functions from the rulebook
-- The actual logic that decides outputs from inputs
-- Uses libc for string primitives (strlen, strcat, strstr, etc.)
-
-### Why This Matters
-
-If Python contained `if "language" in category.lower()`, we'd just be running Python with assembly as decoration. The assembly must own the actual decision-making.
-
-## libc Usage: Allowed and Expected
-
-This substrate does **NOT** require reimplementing string primitives. Using libc is expected:
-
-| libc Function | Used For |
-|---------------|----------|
-| `strlen` | Get string length |
-| `strcpy`, `strcat` | String concatenation |
-| `strstr` | Substring search |
-| `tolower` | Case conversion |
-| `malloc`, `free` | Buffer allocation |
-| `sprintf` | Formatted string building |
-
-The assembly implements the **decision logic** — checking boolean flags, comparing integers, deciding which strings to concatenate. The libc functions are just tools, like how SQL uses built-in `LOWER()` and `CONCAT()`.
-
-## Comparison: SQL vs Assembly Verbosity
-
-In PostgreSQL, each calculated field is typically **1 line**:
-
-```sql
--- calc_category_contains_language
-POSITION('language' IN LOWER(category)) > 0
-
--- calc_family_fued_question
-'Is ' || name || ' a language?'
-```
-
-In assembly, the same logic requires **many more lines** — setting up registers, calling libc, handling the calling convention, etc. A simple string concatenation might be 20-30 lines. This is expected and acceptable; the goal is proving the contract works, not code golf.
-
-## Architecture
+**Python does all orchestration + compilation + plumbing.**
+**The ONLY runtime computation is:**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  inject-into-binary.py                                      │
-│  (Generic rulebook-to-assembly generator)                   │
-│                                                             │
-│  Reads:  effortless-rulebook.json                           │
-│  Writes: erb_calc.asm (generated assembly source)           │
-│          erb_calc.so  (compiled shared library)             │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│  take-test.py                                               │
-│                                                             │
-│  1. Load test-answers.json (contains nulls)                 │
-│  2. For each record, for each null calculated field:        │
-│     → Call the corresponding assembly function via ctypes   │
-│  3. Update the JSON with computed values                    │
-│  4. Save test-answers.json                                  │
-└─────────────────────────────────────────────────────────────┘
+test_answer bytes → asm evaluator(test_answer_struct_ptr, candidate_id) → scalar result
 ```
 
-## Role in Three-Phase Contract
+This is a domain-agnostic "formula → tiny native evaluator" pipeline where field names, domain concepts, and business logic exist only at compile time. At runtime, it's pure byte offsets and generic operations.
 
-### Phase 1: Inject
+---
 
-`inject-into-binary.py` reads the rulebook and generates:
+Remaining Bugs in Binary Substrate
+1. Calculated fields not computed before dependent formulas
+The family_feud_mismatch formula reads {{TopFamilyFeudAnswer}} from the struct at offset 64, but the test runner packs the original JSON value (which is null/missing for calculated fields), not the computed value. The assembly functions are self-contained and don't call each other.
 
-1. **erb_calc.asm** — Assembly source with all calc functions:
-   - `calc_category_contains_language` (string search)
-   - `calc_has_grammar` (bool to string)
-   - `calc_relationship_to_concept` (conditional string)
-   - `calc_family_fued_question` (string concatenation)
-   - `calc_is_a_family_feud_top_answer` (8-way boolean AND)
-   - `calc_family_feud_mismatch` (conditional string concatenation)
+Fix needed: In take-test.py, call eval_top_family_feud_answer first and write the result back to the struct buffer at offset 64 before calling eval_family_feud_mismatch.
 
-2. **erb_calc.so** — Compiled shared library (via NASM + linker)
+2. String return capturing may not work reliably
+The StringResult struct approach to capture both x0 (ptr) and x1 (len) may not work correctly on ARM64 - ctypes struct returns don't always map to register pairs the way we need.
 
-### Phase 2: Execute
+Fix needed: Either use a wrapper that stores x1 in a global, or have the assembly write the length to a known memory location.
 
-`take-test.py` runs the test:
+3. Static buffer reuse between calls
+The static result buffers (_result_buf_*) are 1KB each and not cleared between calls. Consecutive calls may have leftover data if the new string is shorter.
 
-```bash
-./take-test.sh
+Fix needed: Zero the buffer at the start of each function, or always rely on the returned length (fix #2 first).
+
+4. JSON field name mapping inconsistencies
+The pack_test_answer function tries multiple key formats but may not correctly map all JSON keys (e.g., chosen_language_candidate vs ChosenLanguageCandidate) to struct offsets.
+
+Fix needed: Verify the field name normalization matches between the compiler's build_schema and the runtime's packing logic.
+
+5. family_fued_question formula uses wrong string literal length
+In erb_calc.s:228, the code loads mov x1, #12 for str_1 (" a language?") but str_0 is loaded with mov x1, #3 - need to verify all literal lengths match their actual string contents.
+
+## Original Implementation Plan
+
+### Phase 0: Define a Tiny, Domain-Agnostic ABI
+
+**Input Memory Struct: `TestAnswer`**
+- Laid out as fixed offsets
+- Contains only generic types: `bool`, `i64`, `f64`, `string_ref`, and optionally `null`
+- Strings represented as `(ptr, len)` or `string_id` into an intern table
+
+```
+┌─────────────────────────────────────────────────┐
+│  TestAnswer struct (example layout)             │
+├─────────────────────────────────────────────────┤
+│  Offset 0:   string_ptr   8 bytes               │
+│  Offset 8:   string_len   8 bytes               │
+│  Offset 16:  bool field   1 byte                │
+│  Offset 17:  bool field   1 byte                │
+│  ...                                            │
+│  Offset 24:  i64 field    8 bytes               │
+│  ...                                            │
+└─────────────────────────────────────────────────┘
 ```
 
-Which executes:
-1. Copy `blank-test.json` → `test-answers.json`
-2. Run `take-test.py`:
-   - Load `test-answers.json`
-   - For each null field, call the assembly function
-   - Update with computed result
-   - Save `test-answers.json`
+**Evaluator Signature (per computed value):**
+```c
+TaggedValue eval_X(const TestAnswer* ta, const char* candidate_id_ptr, int candidate_id_len);
+```
 
-### Phase 3: Emit
+**TaggedValue:**
+```c
+typedef struct {
+    uint8_t tag;      // 0=null, 1=bool, 2=i64, 3=f64, 4=string
+    union {
+        bool    as_bool;
+        int64_t as_i64;
+        double  as_f64;
+        struct { char* ptr; size_t len; } as_string;
+    } payload;
+} TaggedValue;
+```
 
-`test-answers.json` contains all computed values, produced by assembly execution.
+---
 
-### Grade
+### Phase 1: Python — Parse + Lower Formulas into Minimal IR DAG
 
-Compare `test-answers.json` against `answer-key.json` — assembly must produce identical results to all other substrates.
+1. Read `test_answers.json`
+2. For each "computed value" to reproduce:
+   - Parse its Excel-dialect expression into an AST
+   - Lower AST → **typed IR DAG** using only generic ops:
+     - `IF`, `AND/OR/NOT`
+     - Comparisons (`=`, `<>`, `<`, `<=`, `>`, `>=`)
+     - Arithmetic (optional)
+     - String ops (`&` concat, `LEN`, etc. if needed)
+   - Resolve cell/field references into **offset reads** from `TestAnswer`
+     - No domain words; just `field_17`, `field_42`, etc.
+   - Constant-fold anything possible
 
-## Generated Assembly Functions
+---
 
-Each calc function from the rulebook becomes an assembly function:
+### Phase 2: Python — Generate Assembly for Each DAG
 
-| Calculated Field | Assembly Function | Operations |
-|------------------|-------------------|------------|
-| `category_contains_language` | `calc_category_contains_language` | String lowercase, substring search |
-| `has_grammar` | `calc_has_grammar` | Boolean to string conversion |
-| `relationship_to_concept` | `calc_relationship_to_concept` | Integer compare, return string pointer |
-| `family_fued_question` | `calc_family_fued_question` | String concatenation |
-| `is_a_family_feud_top_answer` | `calc_is_a_family_feud_top_answer` | 8-way boolean AND |
-| `family_feud_mismatch` | `calc_family_feud_mismatch` | Conditional string building |
+Emit one asm function per computed value:
+- Prologue allocates/uses stack scratch only for that DAG
+- Loads inputs from `TestAnswer` by offset
+- Executes IR ops (branchless where easy, branches for `IF`)
+- Returns a `TaggedValue`
 
-## Python/Assembly Interface
+Include a tiny shared "runtime" in asm/C for:
+- String compare
+- String concat (optional)
+- Boolean short-circuit
+- Null semantics
 
-Python calls assembly via `ctypes`. Python knows field names but delegates all computation:
+Keep it minimal; everything else is inlined per-function.
+
+---
+
+### Phase 3: Python — Build Shared Library and Load It
+
+1. Use `clang`/`nasm`/`as` to compile to `.so`/`.dylib`/`.dll`
+2. Load via `ctypes` (or `cffi`) with the ABI above
+3. Export a simple registry:
+   - `get_fn(name) -> function pointer`
+   - Or stable symbol naming: `eval_<hash>`
+
+---
+
+### Phase 4: Runtime Script (Domain-Agnostic Injector)
 
 ```python
-import ctypes
-import json
-
-lib = ctypes.CDLL("./erb_calc.dylib")
-
-# Setup function signatures
-lib.calc_category_contains_language.argtypes = [ctypes.c_char_p]
-lib.calc_category_contains_language.restype = ctypes.c_bool
-
-lib.calc_family_fued_question.argtypes = [ctypes.c_char_p]
-lib.calc_family_fued_question.restype = ctypes.c_char_p
-
-# Load JSON
-with open("test-answers.json") as f:
-    data = json.load(f)
-
-for record in data["LanguageCandidates"]["data"]:
-    # Python knows field names, but computation happens in assembly
-    category = (record.get("Category") or "").encode('utf-8')
-    record["CategoryContainsLanguage"] = lib.calc_category_contains_language(category)
-
-    name = (record.get("Name") or "").encode('utf-8')
-    result = lib.calc_family_fued_question(name)
-    record["FamilyFuedQuestion"] = result.decode('utf-8') if result else ""
-
-with open("test-answers.json", "w") as f:
-    json.dump(data, f, indent=2)
+# 1. Read test_answers.json
+# 2. For each test_answer:
+#    - Pack it into the TestAnswer struct (bytes)
+#    - Call the selected asm evaluator(s) with:
+#      * pointer to struct
+#      * candidate identifier (bytes)
+#    - Receive TaggedValue, decode to Python scalar
+# 3. Write results back to the XLSX (or any sink)
 ```
 
-The key: Python never contains `"language" in x.lower()` or string concatenation logic — that's all in assembly.
+This follows the same injector pattern as other substrates.
 
-## Files
+---
+
+### Phase 5: "Only 3-4 Syntaxes" Support Strategy
+
+Implement a **small set of IR patterns** that cover the Excel dialect:
+
+| # | Pattern | Covers |
+|---|---------|--------|
+| 1 | Boolean logic blocks | `AND/OR/NOT` |
+| 2 | Ternary blocks | `IF(cond, a, b)` |
+| 3 | Comparisons + arithmetic | `=`, `<>`, `<`, `+`, `-`, etc. |
+| 4 | String ops | concat `&` + equality |
+
+Everything else either:
+- Gets precomputed in Python, or
+- Expands into these primitives during lowering
+
+---
+
+### Phase 6: Correctness Harness
+
+For each computed value, run:
+1. Python reference evaluator (AST interpreted) vs asm evaluator
+2. Diff on a sample of `test_answers`
+3. Only ship asm outputs when the harness matches
+
+---
+
+## File Structure
 
 | File | Description |
 |------|-------------|
-| `inject-into-binary.py` | Generates assembly from rulebook |
-| `erb_calc.asm` | Generated assembly source (all calc functions) |
+| `inject-into-binary.py` | **THE COMPILER**: parses formulas → generates asm → builds .dylib |
+| `erb_calc.asm` | **GENERATED** assembly (never hand-written) |
 | `erb_calc.o` | Assembled object file |
-| `erb_calc.so` / `erb_calc.dylib` | Compiled shared library |
-| `take-test.py` | Test runner (JSON I/O + assembly calls) |
-| `inject-substrate.sh` | Runs injection + compilation |
-| `take-test.sh` | Runs the test |
+| `erb_calc.dylib` / `.so` | Compiled shared library |
+| `take-test.py` | Test runner: packs JSON → calls asm → unpacks results |
+| `take-test.sh` | Shell wrapper |
 | `test-answers.json` | Computed results for grading |
 
-## Build Process
+---
 
-```bash
-# 1. Generate assembly from rulebook
-python inject-into-binary.py
+## The Contract
 
-# 2. Assemble to object file
-nasm -f elf64 erb_calc.asm -o erb_calc.o      # Linux
-nasm -f macho64 erb_calc.asm -o erb_calc.o    # macOS
+The ERB contract: **the same formula definitions work across all substrates**.
 
-# 3. Link to shared library
-ld -shared -o erb_calc.so erb_calc.o          # Linux
-ld -dylib -o erb_calc.dylib erb_calc.o        # macOS
-```
+- SQL substrate: formulas → SQL expressions in views
+- Python substrate: formulas → Python expressions
+- GraphQL substrate: formulas → resolver logic
+- **Binary substrate: formulas → x86-64 assembly**
 
-## DAG Execution Order
+The formula is the single source of truth. The assembly is derived, not authored.
 
-```
-Level 0: Raw fields (from JSON)
-Level 1: category_contains_language, has_grammar, relationship_to_concept, family_fued_question
-Level 2: is_a_family_feud_top_answer (depends on category_contains_language)
-Level 3: family_feud_mismatch (depends on is_a_family_feud_top_answer)
-```
+---
 
-Assembly functions respect this order — Level 2+ functions call Level 1 functions internally.
+## Current Status
 
-## Why Assembly?
+**NOT IMPLEMENTED**
 
-This substrate proves the ERB contract holds at the lowest practical level of abstraction. The same business rules that work in a spreadsheet, in SQL, in Python — work as raw CPU instructions.
-
-The `inject-into-binary.py` generator is domain-agnostic: it reads any ERB rulebook and produces assembly. The pattern is identical to other substrates — only the target language changes.
-
-## Status
-
-Planned implementation.
-
-## Expected Difficulty
-
-This substrate is intentionally harder than higher-level substrates. A score below 100% is meaningful data:
-
-- **Python/SQL**: High-level abstractions handle edge cases automatically
-- **Assembly**: Every edge case must be handled explicitly
-
-If binary scores 80% while Python scores 100%, that demonstrates something real about abstraction levels and their trade-offs. The contract is *possible* at the CPU level, but *harder* — and quantifying that difficulty is part of the experiment.
-
-## Source
-
-Generated from: `effortless-rulebook/effortless-rulebook.json`
+Run `./inject-substrate.sh` to see what's missing.

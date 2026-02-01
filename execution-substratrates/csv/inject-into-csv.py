@@ -416,6 +416,12 @@ def main():
         print(f"Error: {e}")
         sys.exit(1)
 
+    # Capture existing CSV content before regenerating
+    csv_path = Path('language_candidates.csv')
+    old_csv_content = None
+    if csv_path.exists():
+        old_csv_content = csv_path.read_text(encoding='utf-8')
+
     # Create workbook
     wb = Workbook()
 
@@ -464,12 +470,20 @@ def main():
     print(f"  - {len(wb.sheetnames)} worksheets")
 
     # Export LanguageCandidates as CSV
-    csv_path = Path('language_candidates.csv')
     export_language_candidates_csv(rulebook, csv_path)
 
     # Export column formulas as CSV
     formulas_path = Path('column_formulas.csv')
     export_column_formulas_csv(rulebook, formulas_path)
+
+    # Check if CSV changed - if not, delete the xlsx
+    if old_csv_content is not None:
+        new_csv_content = csv_path.read_text(encoding='utf-8')
+        if old_csv_content == new_csv_content:
+            print(f"\nCSV unchanged - deleting {xlsx_path}")
+            xlsx_path.unlink()
+        else:
+            print(f"\nCSV changed - keeping {xlsx_path}")
 
     print(f"\nDone generating {candidate_name}.")
 

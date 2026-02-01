@@ -48,22 +48,22 @@ $$ LANGUAGE SQL STABLE SECURITY DEFINER;
 -- DAG Level 2: References Level 0 (raw fields)
 -- ============================================================================
 
--- Formula: =AND({{HasSyntax}}, NOT({{CanBeHeld}}), {{MeaningIsSerialized}},
---              {{RequiresParsing}}, {{IsOngologyDescriptor}}, NOT({{HasIdentity}}),
+-- Formula: =AND({{HasSyntax}}, NOT({{CanBeHeld}}), {{HasLinearDecodingPressure}},
+--              {{RequiresParsing}}, {{StableOntologyReference}}, NOT({{HasIdentity}}),
 --              {{DistanceFromConcept}}=2)
-CREATE OR REPLACE FUNCTION calc_language_candidates_top_family_feud_answer(p_language_candidate_id TEXT)
-RETURNS BOOLEAN AS $$
-  SELECT
-    COALESCE(has_syntax, FALSE)
-    AND NOT COALESCE(can_be_held, FALSE)
-    AND COALESCE(meaning_is_serialized, FALSE)
-    AND COALESCE(requires_parsing, FALSE)
-    AND COALESCE(is_ongology_descriptor, FALSE)
-    AND NOT COALESCE(has_identity, FALSE)
-    AND COALESCE(distance_from_concept = 2, FALSE)
-  FROM language_candidates
-  WHERE language_candidate_id = p_language_candidate_id;
-$$ LANGUAGE SQL STABLE SECURITY DEFINER;
+-- CREATE OR REPLACE FUNCTION calc_language_candidates_top_family_feud_answer(p_language_candidate_id TEXT)
+-- RETURNS BOOLEAN AS $$
+--   SELECT
+--     COALESCE(has_syntax, FALSE)
+--     AND NOT COALESCE(can_be_held, FALSE)
+--     AND COALESCE(has_linear_decoding_pressure, FALSE)
+--     AND COALESCE(requires_parsing, FALSE)
+--     AND COALESCE(stable_ontology_reference, FALSE)
+--     AND NOT COALESCE(has_identity, FALSE)
+--     AND COALESCE(distance_from_concept = 2, FALSE)
+--   FROM language_candidates
+--   WHERE language_candidate_id = p_language_candidate_id;
+-- $$ LANGUAGE SQL STABLE SECURITY DEFINER;
 
 -- ============================================================================
 -- DAG Level 3: References Level 2 (top_family_feud_answer) and Level 0 (raw fields)

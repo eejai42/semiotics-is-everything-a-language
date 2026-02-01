@@ -1,13 +1,9 @@
-// ERB SDK - Go Implementation
-// ============================
-// Mirrors the PostgreSQL functions from postgres/02-create-functions.sql
-// Source: effortless-rulebook/effortless-rulebook.json
+// ERB SDK - Go Implementation (GENERATED - DO NOT EDIT)
+// ======================================================
+// Generated from: effortless-rulebook/effortless-rulebook.json
 //
-// DAG Execution Order:
-//   Level 0: Raw fields
-//   Level 1: CategoryContainsLanguage, HasGrammar, RelationshipToConcept, FamilyFuedQuestion
-//   Level 2: IsAFamilyFeudTopAnswer (depends on CategoryContainsLanguage)
-//   Level 3: FamilyFeudMismatch (depends on IsAFamilyFeudTopAnswer)
+// This file contains structs and calculation functions
+// for all tables defined in the rulebook.
 
 package main
 
@@ -15,371 +11,189 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 )
 
-// LanguageCandidate represents a candidate item to evaluate whether it qualifies as a 'language'
-type LanguageCandidate struct {
-	// Primary Key
-	LanguageCandidateID string `json:"LanguageCandidateId"`
-
-	// Raw Fields
-	Name                    *string `json:"Name"`
-	Category                *string `json:"Category"`
-	CanBeHeld               *bool   `json:"CanBeHeld"`
-	MeaningIsSerialized     *bool   `json:"MeaningIsSerialized"`
-	RequiresParsing         *bool   `json:"RequiresParsing"`
-	IsOngologyDescriptor    *bool   `json:"IsOngologyDescriptor"`
-	HasSyntax               *bool   `json:"HasSyntax"`
-	ChosenLanguageCandidate *bool   `json:"ChosenLanguageCandidate"`
-	SortOrder               *int    `json:"SortOrder"`
-	HasIdentity             *bool   `json:"HasIdentity"`
-	DistanceFromConcept     *int    `json:"DistanceFromConcept"`
-}
-
 // =============================================================================
-// CALCULATED FIELDS - Mirrors PostgreSQL functions exactly
+// HELPER FUNCTIONS
 // =============================================================================
 
-// Level 1: Simple calculations on raw fields only
-// ------------------------------------------------
-
-// CalcCategoryContainsLanguage mirrors calc_language_candidates_category_contains_language()
-// Formula: FIND("language", LOWER(category)) > 0
-func (lc *LanguageCandidate) CalcCategoryContainsLanguage() bool {
-	if lc.Category == nil {
+// boolVal safely dereferences a *bool, returning false if nil
+func boolVal(b *bool) bool {
+	if b == nil {
 		return false
 	}
-	return strings.Contains(strings.ToLower(*lc.Category), "language")
+	return *b
 }
 
-// CalcHasGrammar mirrors calc_language_candidates_has_grammar()
-// Formula: CAST(has_syntax AS TEXT)
-func (lc *LanguageCandidate) CalcHasGrammar() string {
-	if lc.HasSyntax == nil || !*lc.HasSyntax {
+// stringVal safely dereferences a *string, returning "" if nil
+func stringVal(s *string) string {
+	if s == nil {
 		return ""
 	}
-	return "true"
+	return *s
 }
 
-// CalcRelationshipToConcept mirrors calc_language_candidates_relationship_to_concept()
-// Formula: IF(distance_from_concept = 1, "IsMirrorOf", "IsDescriptionOf")
-func (lc *LanguageCandidate) CalcRelationshipToConcept() string {
-	if lc.DistanceFromConcept != nil && *lc.DistanceFromConcept == 1 {
-		return "IsMirrorOf"
+// nilIfEmpty returns nil for empty strings, otherwise a pointer to the string
+func nilIfEmpty(s string) *string {
+	if s == "" {
+		return nil
 	}
-	return "IsDescriptionOf"
-}
-
-// CalcFamilyFuedQuestion mirrors calc_language_candidates_family_fued_question()
-// Formula: "Is " & name & " a language?"
-func (lc *LanguageCandidate) CalcFamilyFuedQuestion() string {
-	name := ""
-	if lc.Name != nil {
-		name = *lc.Name
-	}
-	return fmt.Sprintf("Is %s a language?", name)
-}
-
-// Level 2: Depends on Level 1 calculations
-// ----------------------------------------
-
-// CalcIsAFamilyFeudTopAnswer mirrors calc_language_candidates_is_a_family_feud_top_answer()
-// Formula: AND(
-//
-//	category_contains_language,
-//	has_syntax,
-//	NOT(can_be_held),
-//	meaning_is_serialized,
-//	requires_parsing,
-//	is_ongology_descriptor,
-//	NOT(has_identity),
-//	distance_from_concept = 2
-//
-// )
-func (lc *LanguageCandidate) CalcIsAFamilyFeudTopAnswer() bool {
-	// Depends on Level 1 calc
-	categoryContainsLanguage := lc.CalcCategoryContainsLanguage()
-
-	// Helper to get bool with default false
-	boolVal := func(b *bool) bool {
-		if b == nil {
-			return false
-		}
-		return *b
-	}
-
-	// All conditions must be true
-	return categoryContainsLanguage &&
-		boolVal(lc.HasSyntax) &&
-		!boolVal(lc.CanBeHeld) &&
-		boolVal(lc.MeaningIsSerialized) &&
-		boolVal(lc.RequiresParsing) &&
-		boolVal(lc.IsOngologyDescriptor) &&
-		!boolVal(lc.HasIdentity) &&
-		(lc.DistanceFromConcept != nil && *lc.DistanceFromConcept == 2)
-}
-
-// Level 3: Depends on Level 2 calculations
-// ----------------------------------------
-
-// CalcFamilyFeudMismatch mirrors calc_language_candidates_family_feud_mismatch()
-// Formula: IF(is_a_family_feud_top_answer != chosen_language_candidate, ...)
-func (lc *LanguageCandidate) CalcFamilyFeudMismatch() *string {
-	// Depends on Level 2 calc
-	isTopAnswer := lc.CalcIsAFamilyFeudTopAnswer()
-
-	chosen := false
-	if lc.ChosenLanguageCandidate != nil {
-		chosen = *lc.ChosenLanguageCandidate
-	}
-
-	if isTopAnswer != chosen {
-		isWord := "Isn't"
-		if isTopAnswer {
-			isWord = "Is"
-		}
-		markedWord := "Is Not"
-		if chosen {
-			markedWord = "Is"
-		}
-
-		name := ""
-		if lc.Name != nil {
-			name = *lc.Name
-		}
-
-		result := fmt.Sprintf("%s %s a Family Feud Language, but %s marked as a 'Language Candidate.'",
-			name, isWord, markedWord)
-		return &result
-	}
-	return nil
+	return &s
 }
 
 // =============================================================================
-// VIEW - Computed view with all calculated fields
+// ISEVERYTHINGALANGUAGE TABLE
 // =============================================================================
 
-// LanguageCandidateView contains all raw + calculated fields (mirrors vw_language_candidates)
-type LanguageCandidateView struct {
-	// Primary Key
-	LanguageCandidateID string `json:"language_candidate_id"`
-
-	// Raw Fields
-	Name                    *string `json:"name"`
-	Category                *string `json:"category"`
-	CanBeHeld               *bool   `json:"can_be_held"`
-	MeaningIsSerialized     *bool   `json:"meaning_is_serialized"`
-	RequiresParsing         *bool   `json:"requires_parsing"`
-	IsOngologyDescriptor    *bool   `json:"is_ongology_descriptor"`
-	HasSyntax               *bool   `json:"has_syntax"`
-	ChosenLanguageCandidate *bool   `json:"chosen_language_candidate"`
-	SortOrder               *int    `json:"sort_order"`
-	HasIdentity             *bool   `json:"has_identity"`
-	DistanceFromConcept     *int    `json:"distance_from_concept"`
-
-	// Calculated Fields
-	CategoryContainsLanguage  bool    `json:"category_contains_language"`
-	HasGrammar                string  `json:"has_grammar"`
-	RelationshipToConcept     string  `json:"relationship_to_concept"`
-	FamilyFuedQuestion        string  `json:"family_fued_question"`
-	IsAFamilyFeudTopAnswer    bool    `json:"is_a_family_feud_top_answer"`
-	FamilyFeudMismatch        *string `json:"family_feud_mismatch"`
-}
-
-// ToView returns all raw + calculated fields (mirrors vw_language_candidates)
-func (lc *LanguageCandidate) ToView() LanguageCandidateView {
-	return LanguageCandidateView{
-		// Primary Key
-		LanguageCandidateID: lc.LanguageCandidateID,
-		// Raw Fields
-		Name:                    lc.Name,
-		Category:                lc.Category,
-		CanBeHeld:               lc.CanBeHeld,
-		MeaningIsSerialized:     lc.MeaningIsSerialized,
-		RequiresParsing:         lc.RequiresParsing,
-		IsOngologyDescriptor:    lc.IsOngologyDescriptor,
-		HasSyntax:               lc.HasSyntax,
-		ChosenLanguageCandidate: lc.ChosenLanguageCandidate,
-		SortOrder:               lc.SortOrder,
-		HasIdentity:             lc.HasIdentity,
-		DistanceFromConcept:     lc.DistanceFromConcept,
-		// Calculated Fields (DAG order)
-		CategoryContainsLanguage:  lc.CalcCategoryContainsLanguage(),
-		HasGrammar:                lc.CalcHasGrammar(),
-		RelationshipToConcept:     lc.CalcRelationshipToConcept(),
-		FamilyFuedQuestion:        lc.CalcFamilyFuedQuestion(),
-		IsAFamilyFeudTopAnswer:    lc.CalcIsAFamilyFeudTopAnswer(),
-		FamilyFeudMismatch:        lc.CalcFamilyFeudMismatch(),
-	}
-}
-
-// =============================================================================
-// IsEverythingALanguage - Argument steps entity
-// =============================================================================
-
-// IsEverythingALanguage represents argument steps in the philosophical debate
+// IsEverythingALanguage represents a row in the IsEverythingALanguage table
 type IsEverythingALanguage struct {
-	IsEverythingALanguageID string  `json:"IsEverythingALanguageId"`
-	Name                    *string `json:"Name"`
-	ArgumentName            *string `json:"ArgumentName"`
-	ArgumentCategory        *string `json:"ArgumentCategory"`
-	StepType                *string `json:"StepType"`
-	Statement               *string `json:"Statement"`
-	Formalization           *string `json:"Formalization"`
-	RelatedCandidateName    *string `json:"RelatedCandidateName"`
-	RelatedCandidateID      *string `json:"RelatedCandidateId"`
-	EvidenceFromRulebook    *string `json:"EvidenceFromRulebook"`
-	Notes                   *string `json:"Notes"`
+	IsEverythingALanguageId string `json:"is_everything_a_language_id"`
+	Name *string `json:"name"`
+	ArgumentName *string `json:"argument_name"`
+	ArgumentCategory *string `json:"argument_category"`
+	StepType *string `json:"step_type"`
+	Statement *string `json:"statement"`
+	Formalization *string `json:"formalization"`
+	RelatedCandidateName *string `json:"related_candidate_name"`
+	RelatedCandidateId *string `json:"related_candidate_id"`
+	EvidenceFromRulebook *string `json:"evidence_from_rulebook"`
+	Notes *string `json:"notes"`
 }
 
 // =============================================================================
-// CORE LANGUAGE DEFINITION (from the rulebook)
+// LANGUAGECANDIDATES TABLE
 // =============================================================================
 
-// IsLanguage checks if a candidate satisfies the core language definition
-// Language(x) := HasSyntax(x) AND RequiresParsing(x) AND Meaning_Is_Serialized(x) AND IsOngologyDescriptor(x)
-func IsLanguage(lc *LanguageCandidate) bool {
-	boolVal := func(b *bool) bool {
-		if b == nil {
-			return false
-		}
-		return *b
-	}
-	return boolVal(lc.HasSyntax) &&
-		boolVal(lc.RequiresParsing) &&
-		boolVal(lc.MeaningIsSerialized) &&
-		boolVal(lc.IsOngologyDescriptor)
+// LanguageCandidate represents a row in the LanguageCandidates table
+type LanguageCandidate struct {
+	LanguageCandidateId string `json:"language_candidate_id"`
+	Name *string `json:"name"`
+	Category *string `json:"category"`
+	ChosenLanguageCandidate *bool `json:"chosen_language_candidate"`
+	HasSyntax *bool `json:"has_syntax"`
+	HasIdentity *bool `json:"has_identity"`
+	CanBeHeld *bool `json:"can_be_held"`
+	RequiresParsing *bool `json:"requires_parsing"`
+	HasLinearDecodingPressure *bool `json:"has_linear_decoding_pressure"`
+	StableOntologyReference *bool `json:"stable_ontology_reference"`
+	DimensionalityWhileEditing *string `json:"dimensionality_while_editing"`
+	IsOpenWorld *bool `json:"is_open_world"`
+	IsClosedWorld *bool `json:"is_closed_world"`
+	DistanceFromConcept *int `json:"distance_from_concept"`
+	SortOrder *int `json:"sort_order"`
+	FamilyFuedQuestion *string `json:"family_fued_question"`
+	TopFamilyFeudAnswer *bool `json:"top_family_feud_answer"`
+	FamilyFeudMismatch *string `json:"family_feud_mismatch"`
+	HasGrammar *bool `json:"has_grammar"`
+	IsOpenClosedWorldConflicted *bool `json:"is_open_closed_world_conflicted"`
+	RelationshipToConcept *string `json:"relationship_to_concept"`
 }
 
-// =============================================================================
-// LOADER - Load from JSON rulebook
-// =============================================================================
+// --- Individual Calculation Functions ---
 
-// Rulebook represents the JSON structure of the effortless rulebook
-type Rulebook struct {
-	LanguageCandidates struct {
-		Data []LanguageCandidate `json:"data"`
-	} `json:"LanguageCandidates"`
-	IsEverythingALanguage struct {
-		Data []IsEverythingALanguage `json:"data"`
-	} `json:"IsEverythingALanguage"`
+// CalcFamilyFuedQuestion computes the FamilyFuedQuestion calculated field
+// Formula: ="Is " & {{Name}} & " a language?"
+func (tc *LanguageCandidate) CalcFamilyFuedQuestion() string {
+	return "Is " + stringVal(tc.Name) + " a language?"
 }
 
-// LoadFromRulebook loads entities from the effortless-rulebook.json file
-func LoadFromRulebook(path string) (*Rulebook, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read rulebook: %w", err)
-	}
-
-	var rulebook Rulebook
-	if err := json.Unmarshal(data, &rulebook); err != nil {
-		return nil, fmt.Errorf("failed to parse rulebook: %w", err)
-	}
-
-	return &rulebook, nil
+// CalcTopFamilyFeudAnswer computes the TopFamilyFeudAnswer calculated field
+// Formula: =AND(   {{HasSyntax}},   NOT({{CanBeHeld}}),   {{HasLinearDecodingPressure}},   {{RequiresParsing}},   {{StableOntologyReference}},   NOT({{HasIdentity}}),   {{DistanceFromConcept}}=2 )
+func (tc *LanguageCandidate) CalcTopFamilyFeudAnswer() bool {
+	return (boolVal(tc.HasSyntax) && !boolVal(tc.CanBeHeld) && boolVal(tc.HasLinearDecodingPressure) && boolVal(tc.RequiresParsing) && boolVal(tc.StableOntologyReference) && !boolVal(tc.HasIdentity) && (tc.DistanceFromConcept != nil && *tc.DistanceFromConcept == 2))
 }
 
-// =============================================================================
-// TEST DATA STRUCTURES - For reading/writing test JSON (snake_case format)
-// =============================================================================
-
-// TestCandidate represents a language candidate in the test JSON format (snake_case)
-type TestCandidate struct {
-	LanguageCandidateID     string  `json:"language_candidate_id"`
-	Name                    *string `json:"name"`
-	Category                *string `json:"category"`
-	FamilyFuedQuestion      *string `json:"family_fued_question"`
-	TopFamilyFeudAnswer     *bool   `json:"top_family_feud_answer"`
-	ChosenLanguageCandidate *bool   `json:"chosen_language_candidate"`
-	FamilyFeudMismatch      *string `json:"family_feud_mismatch"`
-	HasSyntax               *bool   `json:"has_syntax"`
-	HasIdentity             *bool   `json:"has_identity"`
-	CanBeHeld               *bool   `json:"can_be_held"`
-	HasGrammar              *bool   `json:"has_grammar"`
-	RequiresParsing         *bool   `json:"requires_parsing"`
-	MeaningIsSerialized     *bool   `json:"meaning_is_serialized"`
-	IsOngologyDescriptor    *bool   `json:"is_ongology_descriptor"`
-	DistanceFromConcept     *int    `json:"distance_from_concept"`
-	RelationshipToConcept   *string `json:"relationship_to_concept"`
-	SortOrder               *int    `json:"sort_order"`
+// CalcFamilyFeudMismatch computes the FamilyFeudMismatch calculated field
+// Formula: =IF(NOT({{TopFamilyFeudAnswer}} = {{ChosenLanguageCandidate}}),   {{Name}} & " " & IF({{TopFamilyFeudAnswer}}, "Is", "Isn't") & " a Family Feud Language, but " &    IF({{ChosenLanguageCandidate}}, "Is", "Is Not") & " marked as a 'Language Candidate.'") & IF({{IsOpenClosedWorldConflicted}}, " - Open World vs. Closed World Conflict.")
+func (tc *LanguageCandidate) CalcFamilyFeudMismatch() string {
+	return func() string { if !((boolVal(tc.TopFamilyFeudAnswer) == boolVal(tc.ChosenLanguageCandidate))) { return stringVal(tc.Name) + " " + func() string { if boolVal(tc.TopFamilyFeudAnswer) { return "Is" }; return "Isn't" }() + " a Family Feud Language, but " + func() string { if boolVal(tc.ChosenLanguageCandidate) { return "Is" }; return "Is Not" }() + " marked as a 'Language Candidate.'" }; return "" }() + func() string { if boolVal(tc.IsOpenClosedWorldConflicted) { return " - Open World vs. Closed World Conflict." }; return "" }()
 }
 
-// ToLanguageCandidate converts TestCandidate to LanguageCandidate for calculation
-func (tc *TestCandidate) ToLanguageCandidate() *LanguageCandidate {
+// CalcHasGrammar computes the HasGrammar calculated field
+// Formula: =AND({{HasSyntax}})
+func (tc *LanguageCandidate) CalcHasGrammar() bool {
+	return (boolVal(tc.HasSyntax))
+}
+
+// CalcIsOpenClosedWorldConflicted computes the IsOpenClosedWorldConflicted calculated field
+// Formula: =AND({{IsOpenWorld}}, {{IsClosedWorld}})
+func (tc *LanguageCandidate) CalcIsOpenClosedWorldConflicted() bool {
+	return (boolVal(tc.IsOpenWorld) && boolVal(tc.IsClosedWorld))
+}
+
+// CalcRelationshipToConcept computes the RelationshipToConcept calculated field
+// Formula: =IF({{DistanceFromConcept}} = 1, "IsMirrorOf", "IsDescriptionOf")
+func (tc *LanguageCandidate) CalcRelationshipToConcept() string {
+	return func() string { if (tc.DistanceFromConcept != nil && *tc.DistanceFromConcept == 1) { return "IsMirrorOf" }; return "IsDescriptionOf" }()
+}
+
+// --- Compute All Calculated Fields ---
+
+// ComputeAll computes all calculated fields and returns an updated struct
+func (tc *LanguageCandidate) ComputeAll() *LanguageCandidate {
+	// Level 1 calculations
+	familyFuedQuestion := "Is " + stringVal(tc.Name) + " a language?"
+	topFamilyFeudAnswer := (boolVal(tc.HasSyntax) && !boolVal(tc.CanBeHeld) && boolVal(tc.HasLinearDecodingPressure) && boolVal(tc.RequiresParsing) && boolVal(tc.StableOntologyReference) && !boolVal(tc.HasIdentity) && (tc.DistanceFromConcept != nil && *tc.DistanceFromConcept == 2))
+	hasGrammar := (boolVal(tc.HasSyntax))
+	isOpenClosedWorldConflicted := (boolVal(tc.IsOpenWorld) && boolVal(tc.IsClosedWorld))
+	relationshipToConcept := func() string { if (tc.DistanceFromConcept != nil && *tc.DistanceFromConcept == 1) { return "IsMirrorOf" }; return "IsDescriptionOf" }()
+
+	// Level 2 calculations
+	familyFeudMismatch := func() string { if !((topFamilyFeudAnswer == boolVal(tc.ChosenLanguageCandidate))) { return stringVal(tc.Name) + " " + func() string { if topFamilyFeudAnswer { return "Is" }; return "Isn't" }() + " a Family Feud Language, but " + func() string { if boolVal(tc.ChosenLanguageCandidate) { return "Is" }; return "Is Not" }() + " marked as a 'Language Candidate.'" }; return "" }() + func() string { if isOpenClosedWorldConflicted { return " - Open World vs. Closed World Conflict." }; return "" }()
+
 	return &LanguageCandidate{
-		LanguageCandidateID:     tc.LanguageCandidateID,
-		Name:                    tc.Name,
-		Category:                tc.Category,
-		CanBeHeld:               tc.CanBeHeld,
-		MeaningIsSerialized:     tc.MeaningIsSerialized,
-		RequiresParsing:         tc.RequiresParsing,
-		IsOngologyDescriptor:    tc.IsOngologyDescriptor,
-		HasSyntax:               tc.HasSyntax,
+		LanguageCandidateId: tc.LanguageCandidateId,
+		Name: tc.Name,
+		Category: tc.Category,
 		ChosenLanguageCandidate: tc.ChosenLanguageCandidate,
-		SortOrder:               tc.SortOrder,
-		HasIdentity:             tc.HasIdentity,
-		DistanceFromConcept:     tc.DistanceFromConcept,
+		HasSyntax: tc.HasSyntax,
+		HasIdentity: tc.HasIdentity,
+		CanBeHeld: tc.CanBeHeld,
+		RequiresParsing: tc.RequiresParsing,
+		HasLinearDecodingPressure: tc.HasLinearDecodingPressure,
+		StableOntologyReference: tc.StableOntologyReference,
+		DimensionalityWhileEditing: tc.DimensionalityWhileEditing,
+		IsOpenWorld: tc.IsOpenWorld,
+		IsClosedWorld: tc.IsClosedWorld,
+		DistanceFromConcept: tc.DistanceFromConcept,
+		SortOrder: tc.SortOrder,
+		FamilyFuedQuestion: nilIfEmpty(familyFuedQuestion),
+		TopFamilyFeudAnswer: &topFamilyFeudAnswer,
+		FamilyFeudMismatch: nilIfEmpty(familyFeudMismatch),
+		HasGrammar: &hasGrammar,
+		IsOpenClosedWorldConflicted: &isOpenClosedWorldConflicted,
+		RelationshipToConcept: nilIfEmpty(relationshipToConcept),
 	}
 }
 
-// ComputeAnswers computes all calculated fields and returns an updated TestCandidate
-func (tc *TestCandidate) ComputeAnswers() *TestCandidate {
-	lc := tc.ToLanguageCandidate()
+// =============================================================================
+// FILE I/O (for LanguageCandidates)
+// =============================================================================
 
-	// Compute calculated fields
-	familyFuedQuestion := lc.CalcFamilyFuedQuestion()
-	topAnswer := lc.CalcIsAFamilyFeudTopAnswer()
-	hasGrammar := lc.HasSyntax != nil && *lc.HasSyntax
-	relationshipToConcept := lc.CalcRelationshipToConcept()
-	familyFeudMismatch := lc.CalcFamilyFeudMismatch()
-
-	return &TestCandidate{
-		LanguageCandidateID:     tc.LanguageCandidateID,
-		Name:                    tc.Name,
-		Category:                tc.Category,
-		FamilyFuedQuestion:      &familyFuedQuestion,
-		TopFamilyFeudAnswer:     &topAnswer,
-		ChosenLanguageCandidate: tc.ChosenLanguageCandidate,
-		FamilyFeudMismatch:      familyFeudMismatch,
-		HasSyntax:               tc.HasSyntax,
-		HasIdentity:             tc.HasIdentity,
-		CanBeHeld:               tc.CanBeHeld,
-		HasGrammar:              &hasGrammar,
-		RequiresParsing:         tc.RequiresParsing,
-		MeaningIsSerialized:     tc.MeaningIsSerialized,
-		IsOngologyDescriptor:    tc.IsOngologyDescriptor,
-		DistanceFromConcept:     tc.DistanceFromConcept,
-		RelationshipToConcept:   &relationshipToConcept,
-		SortOrder:               tc.SortOrder,
-	}
-}
-
-// LoadTestCandidates loads candidates from a test JSON file (blank-test.json format)
-func LoadTestCandidates(path string) ([]TestCandidate, error) {
+// LoadRecords loads records from a JSON file
+func LoadRecords(path string) ([]LanguageCandidate, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read test file: %w", err)
+		return nil, fmt.Errorf("failed to read file: %w", err)
 	}
 
-	var candidates []TestCandidate
-	if err := json.Unmarshal(data, &candidates); err != nil {
-		return nil, fmt.Errorf("failed to parse test file: %w", err)
+	var records []LanguageCandidate
+	if err := json.Unmarshal(data, &records); err != nil {
+		return nil, fmt.Errorf("failed to parse file: %w", err)
 	}
 
-	return candidates, nil
+	return records, nil
 }
 
-// SaveTestCandidates saves computed candidates to a test JSON file
-func SaveTestCandidates(path string, candidates []TestCandidate) error {
-	data, err := json.MarshalIndent(candidates, "", "  ")
+// SaveRecords saves computed records to a JSON file
+func SaveRecords(path string, records []LanguageCandidate) error {
+	data, err := json.MarshalIndent(records, "", "  ")
 	if err != nil {
-		return fmt.Errorf("failed to marshal test answers: %w", err)
+		return fmt.Errorf("failed to marshal records: %w", err)
 	}
 
 	if err := os.WriteFile(path, data, 0644); err != nil {
-		return fmt.Errorf("failed to write test answers: %w", err)
+		return fmt.Errorf("failed to write records: %w", err)
 	}
 
 	return nil

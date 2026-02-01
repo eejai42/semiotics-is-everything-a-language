@@ -1,12 +1,11 @@
 # ERB Schema - GraphQL Implementation
-# Mirrors the PostgreSQL functions from postgres/02-create-functions.sql
-# Source: effortless-rulebook/effortless-rulebook.json
+# Generated from effortless-rulebook/effortless-rulebook.json
 #
 # DAG Execution Order:
 #   Level 0: Raw fields
-#   Level 1: categoryContainsLanguage, hasGrammar, relationshipToConcept, familyFuedQuestion
-#   Level 2: isAFamilyFeudTopAnswer (depends on categoryContainsLanguage)
-#   Level 3: familyFeudMismatch (depends on isAFamilyFeudTopAnswer)
+#   Level 1: familyFuedQuestion, hasGrammar, relationshipToConcept
+#   Level 2: topFamilyFeudAnswer (depends on raw fields)
+#   Level 3: familyFeudMismatch (depends on topFamilyFeudAnswer)
 
 type Query {
   """Get all language candidates with calculated fields"""
@@ -14,87 +13,12 @@ type Query {
 
   """Get a single language candidate by ID"""
   languageCandidate(id: ID!): LanguageCandidate
-
-  """Get all argument steps"""
-  isEverythingALanguageSteps: [IsEverythingALanguage!]!
-
-  """Check if a candidate satisfies the core language definition"""
-  isLanguage(id: ID!): Boolean!
 }
 
-"""A candidate item to evaluate whether it qualifies as a 'language'"""
-type LanguageCandidate {
-  # Primary Key
-  languageCandidateId: ID!
-
-  # Raw Fields
-  name: String
-  category: String
-  canBeHeld: Boolean
-  meaningIsSerialized: Boolean
-  requiresParsing: Boolean
-  isOngologyDescriptor: Boolean
-  hasSyntax: Boolean
-  chosenLanguageCandidate: Boolean
-  sortOrder: Int
-  hasIdentity: Boolean
-  distanceFromConcept: Int
-
-  # ==========================================================================
-  # CALCULATED FIELDS - Mirrors PostgreSQL functions exactly
-  # ==========================================================================
-
-  # Level 1: Simple calculations on raw fields only
-  # ------------------------------------------------
-
-  """
-  Mirrors: calc_language_candidates_category_contains_language()
-  Formula: FIND("language", LOWER(category)) > 0
-  """
-  categoryContainsLanguage: Boolean!
-
-  """
-  Mirrors: calc_language_candidates_has_grammar()
-  Formula: CAST(has_syntax AS TEXT)
-  """
-  hasGrammar: String!
-
-  """
-  Mirrors: calc_language_candidates_relationship_to_concept()
-  Formula: IF(distance_from_concept = 1, "IsMirrorOf", "IsDescriptionOf")
-  """
-  relationshipToConcept: String!
-
-  """
-  Mirrors: calc_language_candidates_family_fued_question()
-  Formula: "Is " & name & " a language?"
-  """
-  familyFuedQuestion: String!
-
-  # Level 2: Depends on Level 1 calculations
-  # ----------------------------------------
-
-  """
-  Mirrors: calc_language_candidates_is_a_family_feud_top_answer()
-  Formula: AND(categoryContainsLanguage, hasSyntax, NOT(canBeHeld), ...)
-  Depends on: categoryContainsLanguage (Level 1)
-  """
-  isAFamilyFeudTopAnswer: Boolean!
-
-  # Level 3: Depends on Level 2 calculations
-  # ----------------------------------------
-
-  """
-  Mirrors: calc_language_candidates_family_feud_mismatch()
-  Returns mismatch message or null
-  Depends on: isAFamilyFeudTopAnswer (Level 2)
-  """
-  familyFeudMismatch: String
-}
-
-"""Argument steps in the philosophical debate about language definition"""
+"""Entity: IsEverythingALanguage"""
 type IsEverythingALanguage {
-  isEverythingALanguageId: ID!
+  # Raw Fields
+  isEverythingALanguageId: String!
   name: String
   argumentName: String
   argumentCategory: String
@@ -105,52 +29,40 @@ type IsEverythingALanguage {
   relatedCandidateId: String
   evidenceFromRulebook: String
   notes: String
-
-  """Resolved reference to the related language candidate"""
-  relatedCandidate: LanguageCandidate
 }
 
-# =============================================================================
-# ENUMS for constrained values
-# =============================================================================
+"""Entity: LanguageCandidates"""
+type LanguageCandidates {
+  # Raw Fields
+  languageCandidateId: String!
+  name: String
+  category: String
+  chosenLanguageCandidate: Boolean
+  hasSyntax: Boolean
+  hasIdentity: Boolean
+  canBeHeld: Boolean
+  requiresParsing: Boolean
+  hasLinearDecodingPressure: Boolean
+  isStableOntologyReference: Boolean
+  dimensionalityWhileEditing: String
+  isOpenWorld: Boolean
+  isClosedWorld: Boolean
+  distanceFromConcept: Int
+  sortOrder: Int
 
-enum Category {
-  NATURAL_LANGUAGE
-  FORMAL_LANGUAGE
-  PHYSICAL_OBJECT
-  RUNNING_SOFTWARE
-  PHYSICAL_EVENT
-  MISSING
-}
-
-enum ArgumentName {
-  LANGUAGE_CAN_BE_FORMALIZED
-  NOT_EVERYTHING_IS_A_LANGUAGE
-}
-
-enum ArgumentCategory {
-  DEFINITION
-  PREMISE
-  CONCLUSION
-  EXAMPLE
-  OBSERVATION
-  REFINEMENT
-}
-
-enum StepType {
-  MOTIVATION
-  PREDICATE_SET
-  DEFINITION
-  WITNESS
-  CONCLUSION
-  ENTAILMENT
-  COUNTEREXAMPLE
-  NON_LANGUAGE_EXAMPLE
-  FUZZY_BOUNDARY
-  REFINEMENT
-}
-
-enum RelationshipToConcept {
-  IS_MIRROR_OF
-  IS_DESCRIPTION_OF
+  # Calculated Fields
+  """Formula: ="Is " & {{Name}} & " a language?""""
+  familyFuedQuestion: String
+  """Formula: =AND(   {{HasSyntax}},   {{RequiresParsing}},   {{IsDescript..."""
+  topFamilyFeudAnswer: Boolean
+  """Formula: =IF(NOT({{TopFamilyFeudAnswer}} = {{ChosenLanguageCandidate}..."""
+  familyFeudMismatch: String
+  """Formula: ={{HasSyntax}} = TRUE()"""
+  hasGrammar: Boolean
+  """Formula: =AND({{IsOpenWorld}}, {{IsClosedWorld}})"""
+  isOpenClosedWorldConflicted: Boolean
+  """Formula: ={{DistanceFromConcept}} > 1"""
+  isDescriptionOf: Boolean
+  """Formula: =IF({{DistanceFromConcept}} = 1, "IsMirrorOf", "IsDescriptio..."""
+  relationshipToConcept: String
 }

@@ -10,68 +10,65 @@
 
 | Substrate | Passed | Failed | Total | Score | Status |
 |-----------|--------|--------|-------|-------|--------|
-| binary | 125 | 0 | 125 | 100.0% | PASS |
-| csv | 124 | 1 | 125 | 99.2% | FAIL |
-| docx | 23 | 102 | 125 | 18.4% | FAIL |
-| english | 23 | 102 | 125 | 18.4% | FAIL |
-| golang | 125 | 0 | 125 | 100.0% | PASS |
-| graphql | 23 | 102 | 125 | 18.4% | FAIL |
-| owl | 23 | 102 | 125 | 18.4% | FAIL |
-| python | 23 | 102 | 125 | 18.4% | FAIL |
-| rdf | 23 | 102 | 125 | 18.4% | FAIL |
-| uml | 23 | 102 | 125 | 18.4% | FAIL |
-| xlsx | 121 | 4 | 125 | 96.8% | FAIL |
-| yaml | 23 | 102 | 125 | 18.4% | FAIL |
+| binary | 101 | 24 | 125 | 80.8% | FAIL |
+| csv | 125 | 0 | 125 | 100.0% | PASS |
+| english | 113 | 12 | 125 | 90.4% | FAIL |
+| golang | 97 | 28 | 125 | 77.6% | FAIL |
+| graphql | 125 | 0 | 125 | 100.0% | PASS |
+| owl | 125 | 0 | 125 | 100.0% | PASS |
+| python | 125 | 0 | 125 | 100.0% | PASS |
+| rdf | 125 | 0 | 125 | 100.0% | PASS |
+| uml | 125 | 0 | 125 | 100.0% | PASS |
+| xlsx | 125 | 0 | 125 | 100.0% | PASS |
+| yaml | 125 | 0 | 125 | 100.0% | PASS |
 
 ## Overall Statistics
 
 | Metric | Value |
 |--------|-------|
-| Total Substrates | 12 |
-| Total Fields Tested | 1500 |
-| Total Passed | 679 |
-| Total Failed | 821 |
-| Overall Score | 45.3% |
+| Total Substrates | 11 |
+| Total Fields Tested | 1375 |
+| Total Passed | 1311 |
+| Total Failed | 64 |
+| Overall Score | 95.3% |
 
 ## Summary by Test
 
 | Test (Computed Column) | Substrates Passing | Substrates Failing | Pass Rate |
 |------------------------|--------------------|--------------------|-----------|
-| `family_feud_mismatch` | 3 | 9 | 25.0% |
-| `family_fued_question` | 3 | 9 | 25.0% |
-| `top_family_feud_answer` | 3 | 9 | 25.0% |
-| `has_grammar` | 3 | 9 | 25.0% |
-| `relationship_to_concept` | 3 | 9 | 25.0% |
+| `family_feud_mismatch` | 8 | 3 | 72.7% |
+| `family_fued_question` | 11 | 0 | 100.0% |
+| `top_family_feud_answer` | 10 | 1 | 90.9% |
+| `relationship_to_concept` | 10 | 1 | 90.9% |
+| `is_open_closed_world_conflicted` | 11 | 0 | 100.0% |
 
 ### Test Details
 
 **`family_feud_mismatch`**
-- Passing: binary, golang, xlsx
-- Failing: csv, docx, english, graphql, owl, python, rdf, uml, yaml
+- Passing: csv, graphql, owl, python, rdf, uml, xlsx, yaml
+- Failing: binary, english, golang
 
 **`family_fued_question`**
-- Passing: binary, csv, golang
-- Failing: docx, english, graphql, owl, python, rdf, uml, xlsx, yaml
+- Passing: binary, csv, english, golang, graphql, owl, python, rdf, uml, xlsx, yaml
 
 **`top_family_feud_answer`**
-- Passing: binary, csv, golang
-- Failing: docx, english, graphql, owl, python, rdf, uml, xlsx, yaml
-
-**`has_grammar`**
-- Passing: binary, csv, golang
-- Failing: docx, english, graphql, owl, python, rdf, uml, xlsx, yaml
+- Passing: binary, csv, english, graphql, owl, python, rdf, uml, xlsx, yaml
+- Failing: golang
 
 **`relationship_to_concept`**
-- Passing: binary, csv, golang
-- Failing: docx, english, graphql, owl, python, rdf, uml, xlsx, yaml
+- Passing: binary, csv, golang, graphql, owl, python, rdf, uml, xlsx, yaml
+- Failing: english
+
+**`is_open_closed_world_conflicted`**
+- Passing: binary, csv, english, golang, graphql, owl, python, rdf, uml, xlsx, yaml
 
 ## Computed Columns Being Tested
 
 - `family_feud_mismatch`
 - `family_fued_question`
 - `top_family_feud_answer`
-- `has_grammar`
 - `relationship_to_concept`
+- `is_open_closed_world_conflicted`
 
 ---
 

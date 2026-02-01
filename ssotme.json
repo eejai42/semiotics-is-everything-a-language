@@ -103,13 +103,6 @@
     },
     {
       "IsSSoTTranspiler": false,
-      "Name": "rulebooktodocx",
-      "RelativePath": "/execution-substratrates/docx",
-      "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
-    },
-    {
-      "IsSSoTTranspiler": false,
       "Name": "rulebooktoyaml",
       "RelativePath": "/execution-substratrates/yaml",
       "CommandLine": "-exec ./inject-substrate.sh",

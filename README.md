@@ -6,7 +6,7 @@ This repository implements a philosophical argument as executable code. The thes
 
 ## NOTE: There Is just a Single Source of Truth
 
-The ontology this entire repository is 1 level up from postgres.  The rulebook at the hub of this repo is a derived artifact from this ***[Public Airtable Base](https://airtable.com/appC8XTj95lubn6hz/shro5WGKLfkfxltQK)*** that generates the rulebook in the first place. 
+The ontology this entire repository is 1 level up from postgres.  The rulebook at the hub of this repo is a derived artifact from this ***[Public Airtable Base](https://airtable.com/appC8XTj95lubn6hz/shro5WGKLfkfxltQK)*** that generates the rulebook in the first place.
 
 https://airtable.com/appC8XTj95lubn6hz/shro5WGKLfkfxltQK
 
@@ -47,24 +47,29 @@ https://airtable.com/appC8XTj95lubn6hz/shro5WGKLfkfxltQK
 
 **The Operational Definition:**
 
-An item **x** is a **Language** if and only if:
+An item **x** is a **Language** (i.e., a "Top Family Feud Answer") if and only if:
 
 ```
-Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) ∧ IsOntologyDescriptor(x)
+TopFamilyFeudAnswer(x) := HasSyntax(x) ∧ ¬CanBeHeld(x) ∧ HasLinearDecodingPressure(x) ∧
+                          RequiresParsing(x) ∧ StableOntologyReference(x) ∧
+                          ¬HasIdentity(x) ∧ DistanceFromConcept(x) = 2
 ```
 
 In plain English:
 - **HasSyntax** — It has explicit grammar rules
+- **CanBeHeld** — It is NOT a tangible physical object (must be false)
+- **HasLinearDecodingPressure** — It requires sequential/linear interpretation
 - **RequiresParsing** — It must be parsed to be understood
-- **Meaning_Is_Serialized** — Its meaning can be encoded/stored
-- **IsOntologyDescriptor** — It functions as a system for describing things
+- **StableOntologyReference** — It provides stable references to concepts
+- **HasIdentity** — It does NOT have persistent individual identity (must be false)
+- **DistanceFromConcept = 2** — It describes things rather than being the thing itself
 
 **Witnesses:** This definition isn't empty. Clear witnesses satisfy it:
 
-| Witness | HasSyntax | RequiresParsing | MeaningSerialized | IsOntologyDescriptor | Language? |
-|---------|:---------:|:---------------:|:-----------------:|:--------------------:|:---------:|
-| English | ✓ | ✓ | ✓ | ✓ | **Yes** |
-| Python  | ✓ | ✓ | ✓ | ✓ | **Yes** |
+| Witness | HasSyntax | CanBeHeld | LinearDecoding | RequiresParsing | StableOntology | HasIdentity | Distance | Language? |
+|---------|:---------:|:---------:|:--------------:|:---------------:|:--------------:|:-----------:|:--------:|:---------:|
+| English | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 | **Yes** |
+| Python  | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 | **Yes** |
 
 **Conclusion:** Language *can* be formalized as a computable classification over explicit predicates.
 
@@ -72,20 +77,21 @@ In plain English:
 
 ### Part II: Not Everything Is a Language
 
-**The Exclusion Principle:** If Language(x) requires all four predicates, then failing *any one* means x is not a language:
+**The Exclusion Principle:** If TopFamilyFeudAnswer(x) requires all seven conditions, then failing *any one* means x is not a language:
 
 ```
-∀x (¬(HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) ∧ IsOntologyDescriptor(x)) → ¬Language(x))
+∀x (¬(HasSyntax(x) ∧ ¬CanBeHeld(x) ∧ HasLinearDecodingPressure(x) ∧ RequiresParsing(x) ∧
+      StableOntologyReference(x) ∧ ¬HasIdentity(x) ∧ DistanceFromConcept(x) = 2) → ¬Language(x))
 ```
 
 **Counterexamples:**
 
 | Candidate | Why It Fails | Verdict |
 |-----------|--------------|:-------:|
-| A Chair | No syntax, no parsing, meaning not serialized, not a descriptor | ❌ Not a language |
-| A Coffee Mug | No syntax, no parsing, meaning not serialized, not a descriptor | ❌ Not a language |
-| A Thunderstorm | No syntax, meaning not serialized, not a descriptor | ❌ Not a language |
-| The Mona Lisa | No syntax, no parsing, meaning not serialized | ❌ Not a language |
+| A Chair | No syntax, can be held, no linear decoding, no parsing, has identity, distance=1 | ❌ Not a language |
+| A Coffee Mug | No syntax, can be held, no linear decoding, no parsing, has identity, distance=1 | ❌ Not a language |
+| A Thunderstorm | No syntax, can be held, no linear decoding, has identity, distance=1 | ❌ Not a language |
+| The Mona Lisa | No syntax, can be held, no linear decoding, no parsing, has identity, distance=1 | ❌ Not a language |
 
 These things can be *interpreted* (semiotically meaningful), but they don't constitute *language systems*.
 
@@ -95,14 +101,14 @@ Running applications present an interesting case. They often *contain* languages
 
 | Candidate | Contains Language? | Is A Language? | Why? |
 |-----------|:------------------:|:--------------:|------|
-| Running Calculator App | Yes (code inside) | ❌ No | Dynamic process, not serialized artifact |
-| A Game of Fortnite | Yes (code inside) | ❌ No | Interactive system, has identity |
-| Editing an XLSX Doc | Yes (Excel formulas) | ❌ No | Runtime state, not the document itself |
+| Running Calculator App | Yes (code inside) | ❌ No | No syntax, has identity, distance=1 |
+| A Game of Fortnite | Yes (code inside) | ❌ No | No syntax, has identity, distance=1 |
+| Editing an XLSX Doc | Yes (Excel formulas) | ❌ No | No syntax, no parsing, distance=1 |
 
 **Refinement — Three Categories:**
 
 ```
-LanguageSystem(x)    — syntax + parsing + serialized meaning + descriptor role
+LanguageSystem(x)    — meets all 7 conditions (top family feud answer)
 SemioticProcess(x)   — interactive/dynamic meaning production (running apps)
 SignVehicle(x)       — object/phenomenon used as a sign (chair, thunderstorm)
 ```
@@ -125,70 +131,94 @@ Formalizable(Language) ∧ ∃x ¬Language(x) ⇒ ¬(EverythingIsALanguage)
 
 ## The Predicates
 
-The evaluation uses 8 predicates—4 core definitional predicates and 4 auxiliary predicates that refine the classification:
+The evaluation uses 12 raw predicates (input properties) and 5 calculated fields:
 
-### Core Predicates (the definition)
+### Raw Predicates (Inputs)
 
-| Predicate | Question | Required for Language? |
-|-----------|----------|:----------------------:|
-| `has_syntax` | Does it have explicit grammar rules? | ✓ Yes |
-| `requires_parsing` | Must it be parsed to extract meaning? | ✓ Yes |
-| `meaning_is_serialized` | Can its meaning be encoded/stored? | ✓ Yes |
-| `is_ontology_descriptor` | Does it describe/classify things? | ✓ Yes |
+| Predicate | Type | Question |
+|-----------|------|----------|
+| `has_syntax` | boolean | Does it have explicit grammar rules? |
+| `requires_parsing` | boolean | Must it be parsed to extract meaning? |
+| `can_be_held` | boolean | Is it a tangible physical object? |
+| `has_identity` | boolean | Does it have persistent individual identity? |
+| `has_linear_decoding_pressure` | boolean | Does it require sequential/linear interpretation? |
+| `stable_ontology_reference` | boolean | Does it provide stable references to concepts? |
+| `is_open_world` | boolean | Does it operate under open-world assumption? |
+| `is_closed_world` | boolean | Does it operate under closed-world assumption? |
+| `distance_from_concept` | integer | Is it the thing (1) or a description of it (2)? |
+| `dimensionality_while_editing` | string | What dimensionality during editing? (OneDimensionalSymbolic, MultiDimensionalNonSymbolic, N/A) |
+| `chosen_language_candidate` | boolean | Is it manually marked as a language candidate? |
+| `has_grammar` | boolean | Alias for has_syntax |
 
-### Auxiliary Predicates (refinements)
+### Calculated Fields (Derived)
 
-| Predicate | Question | For Language, should be: |
-|-----------|----------|:------------------------:|
-| `can_be_held` | Is it a tangible physical object? | ✗ False |
-| `has_identity` | Does it have persistent individual identity? | ✗ False |
-| `distance_from_concept` | Is it the thing (1) or a description of it (2)? | = 2 |
-| `category_contains_language` | Does its category name include "language"? | ✓ True |
+| Field | Type | Formula |
+|-------|------|---------|
+| `family_fued_question` | string | `"Is " & Name & " a language?"` |
+| `top_family_feud_answer` | boolean | 7-condition AND formula (see below) |
+| `family_feud_mismatch` | string/null | Reports discrepancy if computed ≠ marked |
+| `is_open_closed_world_conflicted` | boolean | `is_open_world AND is_closed_world` |
+| `relationship_to_concept` | string | `IF(distance=1, "IsMirrorOf", "IsDescriptionOf")` |
+
+### The Core Formula: `top_family_feud_answer`
+
+```
+top_family_feud_answer = AND(
+  has_syntax,
+  NOT(can_be_held),
+  has_linear_decoding_pressure,
+  requires_parsing,
+  stable_ontology_reference,
+  NOT(has_identity),
+  distance_from_concept = 2
+)
+```
 
 ---
 
 ## The Evaluation Matrix
 
-Here's the punchline—24 candidates evaluated against the predicates:
+Here's the punchline—25 candidates evaluated against the predicates:
 
 ### ✅ Languages (pass all criteria)
 
-| Candidate | Category | Syntax | Parsing | Serialized | Descriptor | Held | Identity | Distance |
-|-----------|----------|:------:|:-------:|:----------:|:----------:|:----:|:--------:|:--------:|
-| English | Natural Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
-| Spoken Words | Natural Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
-| Sign Language | Natural Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
-| French | Natural Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
-| Python | Formal Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
-| JavaScript | Formal Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
-| Binary Code | Formal Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
-| A CSV File | Formal Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
-| A UML File | Formal Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
-| An XLSX Doc | Formal Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
-| An DOCX Doc | Formal Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
-| OWL/RDF/GraphQL/... | Natural Language | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | 2 |
+| Candidate | Category | Syntax | CanBeHeld | LinearDecoding | Parsing | StableOntology | Identity | Distance |
+|-----------|----------|:------:|:---------:|:--------------:|:-------:|:--------------:|:--------:|:--------:|
+| English | Natural Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
+| Spoken Words | Natural Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
+| Sign Language | Natural Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
+| French | Natural Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
+| Python | Formal Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
+| JavaScript | Formal Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
+| Binary Code | Formal Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
+| A CSV File | Formal Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
+| A UML File | Formal Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
+| An XLSX Doc | Formal Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
+| An DOCX Doc | Formal Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
+| OWL/RDF/GraphQL/... | Natural Language | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | 2 |
 
 ### ❌ Not Languages (fail one or more criteria)
 
-| Candidate | Category | Syntax | Parsing | Serialized | Descriptor | Held | Identity | Distance | Fails On |
-|-----------|----------|:------:|:-------:|:----------:|:----------:|:----:|:--------:|:--------:|----------|
-| A Chair | Physical Object | ✗ | ✗ | ✗ | ✗ | ✓ | ✓ | 1 | All core predicates |
-| A Coffee Mug | Physical Object | ✗ | ✗ | ✗ | ✗ | ✓ | ✓ | 1 | All core predicates |
-| A Smartphone | Physical Object | ✗ | ✗ | ✓ | ✗ | ✓ | ✓ | 1 | Syntax, parsing, descriptor |
-| The Mona Lisa | Physical Object | ✗ | ✗ | ✗ | ✓ | ✓ | ✓ | 1 | Syntax, parsing, serialized |
-| A Thunderstorm | Physical Event | ✗ | ✓ | ✗ | ✗ | ✗ | ✓ | 1 | Syntax, serialized, descriptor |
-| Running Calculator App | Running Software | ✗ | ✓ | ✗ | ✗ | ✗ | ✓ | 1 | Syntax, serialized, descriptor, identity |
-| A Running App | Running Software | ✗ | ✓ | ✓ | ✗ | ✗ | ✓ | 1 | Syntax, descriptor, identity |
-| A Game of Fortnite | Running Software | ✗ | ✓ | ✗ | ✗ | ✗ | ✓ | 1 | Syntax, serialized, descriptor, identity |
-| Editing an XLSX Doc | Running Software | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ | 1 | Syntax, parsing, serialized, distance |
-| Editing an DOCX Doc | Running Software | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ | 1 | Syntax, parsing, serialized, distance |
+| Candidate | Category | Syntax | CanBeHeld | LinearDecoding | Parsing | StableOntology | Identity | Distance | Fails On |
+|-----------|----------|:------:|:---------:|:--------------:|:-------:|:--------------:|:--------:|:--------:|----------|
+| A Chair | Physical Object | ✗ | ✓ | ✗ | ✗ | ✗ | ✓ | 1 | Most conditions |
+| A Coffee Mug | Physical Object | ✗ | ✓ | ✗ | ✗ | ✗ | ✓ | 1 | Most conditions |
+| A Smartphone | Physical Object | ✗ | ✓ | ✓ | ✗ | ✗ | ✓ | 1 | Syntax, can_be_held, parsing, identity |
+| The Mona Lisa | Physical Object | ✗ | ✓ | ✗ | ✗ | ✓ | ✓ | 1 | Syntax, can_be_held, identity, distance |
+| A Thunderstorm | Physical event | ✗ | ✓ | ✗ | ✓ | ✗ | ✓ | 1 | Syntax, can_be_held, linear_decoding |
+| Running Calculator App | Running Software | ✗ | ✗ | ✗ | ✓ | ✗ | ✓ | 1 | Syntax, linear_decoding, identity |
+| A Running App | Running Software | ✗ | ✗ | ✓ | ✓ | ✗ | ✓ | 1 | Syntax, stable_ontology, identity |
+| A Game of Fortnite | Running Software | ✗ | ✗ | ✗ | ✓ | ✗ | ✓ | 1 | Syntax, linear_decoding, identity |
+| Editing an XLSX Doc | Running Software | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | 1 | Syntax, parsing, linear_decoding |
+| Editing an DOCX Doc | Running Software | ✗ | ✗ | ✗ | ✗ | ✓ | ✗ | 1 | Syntax, parsing, linear_decoding |
 
 ### 🧪 Falsifiers (test cases for the formula)
 
 | Candidate | Category | Computed Result | Marked As | Mismatch? |
 |-----------|----------|:---------------:|:---------:|:---------:|
-| Falsifier A | "MISSING: Have you seen this Language?" | ❌ No (category fails) | ❌ No | — |
-| Falsifier B | "MISSING: Have you seen this Language?" | ❌ No (multiple failures) | ✓ Yes | **Yes** — marked as language but formula says no |
+| Falsifier A | "MISSING: Have you seen this Language?" | ✓ Yes | ✗ No | **Yes** — computed as language but not marked |
+| Falsifier B | "MISSING: Have you seen this Language?" | ✗ No | ✓ Yes | **Yes** — marked as language but formula says no |
+| Falsifier C | "MISSING: Have you seen this Language?" | ✓ Yes | ✓ Yes | **Yes** — Open World vs. Closed World Conflict |
 
 ---
 
@@ -199,30 +229,32 @@ Calculated fields are computed in dependency order:
 ```
 Level 0 (Raw Data)
     │
-    ├── has_syntax, requires_parsing, meaning_is_serialized, is_ontology_descriptor
-    ├── can_be_held, has_identity, distance_from_concept
-    ├── category, name, chosen_language_candidate
+    ├── has_syntax, requires_parsing, can_be_held, has_identity
+    ├── has_linear_decoding_pressure, stable_ontology_reference
+    ├── is_open_world, is_closed_world, distance_from_concept
+    ├── dimensionality_while_editing, chosen_language_candidate
+    ├── category, name, has_grammar
     │
     ▼
 Level 1 (Simple Derivations)
     │
-    ├── category_contains_language  ← FIND("language", LOWER(category)) > 0
-    ├── has_grammar                 ← CAST(has_syntax AS TEXT)
+    ├── family_fued_question        ← "Is " + name + " a language?"
     ├── relationship_to_concept     ← IF(distance = 1, "IsMirrorOf", "IsDescriptionOf")
-    ├── family_feud_question        ← "Is " + name + " a language?"
+    ├── is_open_closed_world_conflicted ← AND(is_open_world, is_closed_world)
     │
     ▼
 Level 2 (Core Classification)
     │
-    └── is_a_family_feud_top_answer ← AND(category_contains_language, has_syntax,
-    │                                      NOT(can_be_held), meaning_is_serialized,
-    │                                      requires_parsing, is_ontology_descriptor,
-    │                                      NOT(has_identity), distance_from_concept = 2)
+    └── top_family_feud_answer      ← AND(has_syntax, NOT(can_be_held),
+    │                                      has_linear_decoding_pressure, requires_parsing,
+    │                                      stable_ontology_reference, NOT(has_identity),
+    │                                      distance_from_concept = 2)
     │
     ▼
 Level 3 (Validation)
     │
     └── family_feud_mismatch        ← IF(computed ≠ marked, report discrepancy)
+                                       Also appends conflict warning if is_open_closed_world_conflicted
 ```
 
 ### For Instance: "Is Python a language?"
@@ -233,29 +265,31 @@ name: "Python"
 category: "Formal Language"
 has_syntax: true
 requires_parsing: true
-meaning_is_serialized: true
-is_ontology_descriptor: true
 can_be_held: false
 has_identity: false
+has_linear_decoding_pressure: true
+stable_ontology_reference: true
 distance_from_concept: 2
+is_open_world: true
+is_closed_world: false
+chosen_language_candidate: true
 ```
 
 **Level 1** — Derived values:
 ```
-category_contains_language: true   ← "formal language" contains "language"
+family_fued_question: "Is Python a language?"
 relationship_to_concept: "IsDescriptionOf"  ← distance = 2
-family_feud_question: "Is Python a language?"
+is_open_closed_world_conflicted: false      ← NOT(true AND false)
 ```
 
 **Level 2** — The verdict:
 ```
-is_a_family_feud_top_answer: true
-  ← category_contains_language (✓)
+top_family_feud_answer: true
   ← has_syntax (✓)
   ← NOT(can_be_held) (✓)
-  ← meaning_is_serialized (✓)
+  ← has_linear_decoding_pressure (✓)
   ← requires_parsing (✓)
-  ← is_ontology_descriptor (✓)
+  ← stable_ontology_reference (✓)
   ← NOT(has_identity) (✓)
   ← distance_from_concept = 2 (✓)
 ```
@@ -271,52 +305,51 @@ family_feud_mismatch: null   ← computed (true) matches marked (true)
 
 The same logic is implemented in 12+ formats, proving the argument is computable across paradigms.
 
-### For Instance: `is_a_family_feud_top_answer` in Three Languages
+### For Instance: `top_family_feud_answer` in Three Languages
 
 **PostgreSQL** ([postgres/02-create-functions.sql](postgres/02-create-functions.sql)):
 ```sql
-CREATE OR REPLACE FUNCTION calc_language_candidates_is_a_family_feud_top_answer(p_id TEXT)
+CREATE OR REPLACE FUNCTION calc_language_candidates_top_family_feud_answer(p_language_candidate_id TEXT)
 RETURNS BOOLEAN AS $$
-  SELECT
-    calc_language_candidates_category_contains_language(p_id)
-    AND COALESCE(has_syntax, FALSE)
-    AND NOT COALESCE(can_be_held, FALSE)
-    AND COALESCE(meaning_is_serialized, FALSE)
-    AND COALESCE(requires_parsing, FALSE)
-    AND COALESCE(is_ongology_descriptor, FALSE)
-    AND NOT COALESCE(has_identity, FALSE)
-    AND distance_from_concept = 2
-  FROM language_candidates WHERE language_candidate_id = p_id;
-$$ LANGUAGE SQL STABLE;
+BEGIN
+  RETURN (
+    COALESCE((SELECT has_syntax FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE)
+    AND NOT COALESCE((SELECT can_be_held FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE)
+    AND COALESCE((SELECT has_linear_decoding_pressure FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE)
+    AND COALESCE((SELECT requires_parsing FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE)
+    AND COALESCE((SELECT stable_ontology_reference FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE)
+    AND NOT COALESCE((SELECT has_identity FROM language_candidates WHERE language_candidate_id = p_language_candidate_id), FALSE)
+    AND COALESCE((SELECT distance_from_concept FROM language_candidates WHERE language_candidate_id = p_language_candidate_id) = 2, FALSE)
+  )::boolean;
+END;
+$$ LANGUAGE plpgsql STABLE;
 ```
 
 **Python** ([execution-substratrates/python/erb_sdk.py](execution-substratrates/python/erb_sdk.py)):
 ```python
-def calc_is_a_family_feud_top_answer(self) -> bool:
-    category_contains_language = self.calc_category_contains_language()
+def calc_top_family_feud_answer(self) -> bool:
     return (
-        category_contains_language
-        and (self.has_syntax or False)
+        (self.has_syntax or False)
         and not (self.can_be_held or False)
-        and (self.meaning_is_serialized or False)
+        and (self.has_linear_decoding_pressure or False)
         and (self.requires_parsing or False)
-        and (self.is_ongology_descriptor or False)
+        and (self.stable_ontology_reference or False)
         and not (self.has_identity or False)
         and self.distance_from_concept == 2
     )
 ```
 
-**RDF/Turtle** ([execution-substratrates/rdf/schema.ttl](execution-substratrates/rdf/schema.ttl)):
-```turtle
-erb:isAFamilyFeudTopAnswer a rdf:Property ;
-    rdfs:domain erb:LanguageCandidate ;
-    rdfs:range xsd:boolean ;
-    rdfs:comment """
-        Formula: AND(categoryContainsLanguage, hasSyntax, NOT(canBeHeld),
-                     meaningIsSerialized, requiresParsing, isOngologyDescriptor,
-                     NOT(hasIdentity), distanceFromConcept = 2)
-        DAG Level: 2
-    """ .
+**English Specification** ([execution-substratrates/english/specification.md](execution-substratrates/english/specification.md)):
+```
+TopFamilyFeudAnswer = AND(
+  HasSyntax,
+  NOT(CanBeHeld),
+  HasLinearDecodingPressure,
+  RequiresParsing,
+  StableOntologyReference,
+  NOT(HasIdentity),
+  DistanceFromConcept = 2
+)
 ```
 
 ### Substrate Roles in the Three-Phase Contract
@@ -467,24 +500,30 @@ The injector reads the rulebook and generates:
 ```go
 // GENERATED: Entity struct (one per rulebook entity)
 type LanguageCandidate struct {
-    LanguageCandidateID   *string `json:"language_candidate_id"`
-    Name                  *string `json:"name"`
-    Category              *string `json:"category"`
-    HasSyntax             *bool   `json:"has_syntax"`
+    LanguageCandidateID         *string `json:"language_candidate_id"`
+    Name                        *string `json:"name"`
+    Category                    *string `json:"category"`
+    HasSyntax                   *bool   `json:"has_syntax"`
+    CanBeHeld                   *bool   `json:"can_be_held"`
+    HasLinearDecodingPressure   *bool   `json:"has_linear_decoding_pressure"`
+    RequiresParsing             *bool   `json:"requires_parsing"`
+    StableOntologyReference     *bool   `json:"stable_ontology_reference"`
+    HasIdentity                 *bool   `json:"has_identity"`
+    DistanceFromConcept         *int    `json:"distance_from_concept"`
     // ... all raw fields from rulebook
 }
 
 // GENERATED: Calc function (one per computed column in rulebook)
-func (c *LanguageCandidate) CalcCategoryContainsLanguage() bool {
-    // Implements the formula from the rulebook
+func (c *LanguageCandidate) CalcTopFamilyFeudAnswer() bool {
+    // Implements the 7-condition formula from the rulebook
 }
 
-func (c *LanguageCandidate) CalcIsAFamilyFeudTopAnswer() bool {
-    // Implements the formula, calling other Calc functions per DAG order
+func (c *LanguageCandidate) CalcIsOpenClosedWorldConflicted() bool {
+    // Implements: is_open_world AND is_closed_world
 }
 ```
 
-**Note:** The struct field names (`HasSyntax`, `Category`) and method names (`CalcCategoryContainsLanguage`) come directly from the rulebook schema. The injector doesn't know these fields relate to linguistics—it just translates whatever entities/fields/formulas the rulebook defines.
+**Note:** The struct field names (`HasSyntax`, `CanBeHeld`) and method names (`CalcTopFamilyFeudAnswer`) come directly from the rulebook schema. The injector doesn't know these fields relate to linguistics—it just translates whatever entities/fields/formulas the rulebook defines.
 
 ### Phase 2: Test Execution (main())
 
@@ -536,8 +575,8 @@ func main() {
     // 2. For each record, compute derived fields using generated Calc functions
     for i := range candidates {
         c := &candidates[i]
-        categoryContainsLang := c.CalcCategoryContainsLanguage()
-        isTopAnswer := c.CalcIsAFamilyFeudTopAnswer()
+        topAnswer := c.CalcTopFamilyFeudAnswer()
+        conflicted := c.CalcIsOpenClosedWorldConflicted()
         mismatch := c.CalcFamilyFeudMismatch()
         // ... assign computed values back to struct
     }
@@ -738,13 +777,12 @@ python erb_sdk.py
 
 Output:
 ```
-Loaded 24 language candidates
-Loaded 16 argument steps
+Loaded 25 language candidates
 
 First candidate: English
   language_candidate_id: english
   name: English
-  is_a_family_feud_top_answer: True
+  top_family_feud_answer: True
   family_feud_mismatch: None
   ...
 ```
@@ -753,7 +791,7 @@ First candidate: English
 
 ```sql
 -- See all candidates with computed classification
-SELECT name, category, is_a_family_feud_top_answer, family_feud_mismatch
+SELECT name, category, top_family_feud_answer, family_feud_mismatch
 FROM vw_language_candidates
 ORDER BY sort_order;
 
@@ -832,6 +870,14 @@ ssotme -build -id
 ```
 
 See [ssotme.json](ssotme.json) for full configuration.
+
+---
+
+## Known Quirks
+
+### The "fued" Typo
+
+The field `family_fued_question` contains a typo ("fued" instead of "feud"), while `top_family_feud_answer` uses the correct spelling. This inconsistency originates from the Airtable source of truth and is preserved across all substrates for consistency.
 
 ---
 

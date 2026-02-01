@@ -1,14 +1,16 @@
 #!/bin/bash
+set -e
 
-# take-test.sh for uml execution substrate
-# This script will eventually run the uml substrate to produce test answers
+# take-test.sh for UML execution substrate
+# This script runs the OCL-based computation to produce test answers
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Step 1: Copy blank test template to this folder as test-answers.json
-cp "$SCRIPT_DIR/../../testing/blank-test.json" "$SCRIPT_DIR/test-answers.json"
+# Step 1: Delete previous test-answers.json to prevent stale results
+rm -f "$SCRIPT_DIR/test-answers.json"
 
-# TODO: Step 2: Run the uml substrate solution to populate answers
-# (Future implementation will go here)
+# Step 2: Run the UML substrate solution to populate answers
+# This loads the model, evaluates OCL expressions, and extracts results
+python3 "$SCRIPT_DIR/take-test.py"
 
-echo "uml: test-answers.json created from blank template"
+echo "uml: test-answers.json populated with OCL-computed values"

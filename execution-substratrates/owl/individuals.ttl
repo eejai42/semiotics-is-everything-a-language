@@ -1,0 +1,641 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix erb: <http://example.org/erb#> .
+
+# === Individuals: IsEverythingALanguage ===
+
+erb:IsEverythingALanguage_0 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-001" ;
+    erb:name "NEIAL-001" ;
+    erb:argumentName "LanguageCanBeFormalized" ;
+    erb:argumentCategory "Definition" ;
+    erb:stepType "Motivation" ;
+    erb:statement "To avoid the slogan 'Everything is a language', treat 'language' as a typed construct defined by testable properties (syntax, parsing, linear decoding pressure, and descriptor-role)." ;
+    erb:formalization "" ;
+    erb:relatedCandidateName "" ;
+    erb:relatedCandidateId "" ;
+    erb:evidenceFromRulebook "" ;
+    erb:notes "This keeps 'can be interpreted' separate from 'is a language system'." .
+
+erb:IsEverythingALanguage_1 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-002" ;
+    erb:name "NEIAL-002" ;
+    erb:argumentName "LanguageCanBeFormalized" ;
+    erb:argumentCategory "Definition" ;
+    erb:stepType "PredicateSet" ;
+    erb:statement "Use the repo predicates: HasSyntax, RequiresParsing, HasLinearDecodingPressure, StableOntologyReference (spelled IsOngologyDescriptor in the dataset), plus auxiliary checks like CanBeHeld and HasIdentity." ;
+    erb:formalization "Predicates: Syntax(x), Parse(x), SerializeMeaning(x), OntDesc(x), Tangible(x)" ;
+    erb:relatedCandidateName "" ;
+    erb:relatedCandidateId "" ;
+    erb:evidenceFromRulebook "" ;
+    erb:notes "We preserve the dataset's field name even when misspelled to match the generated schema." .
+
+erb:IsEverythingALanguage_2 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-003" ;
+    erb:name "NEIAL-003" ;
+    erb:argumentName "LanguageCanBeFormalized" ;
+    erb:argumentCategory "Definition" ;
+    erb:stepType "Definition" ;
+    erb:statement "Operational definition: an item x counts as a Language if it has syntax, requires parsing, serializes meaning, and functions as an ontology/descriptor system." ;
+    erb:formalization "Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ HasLinearDecodingPressure(x) ∧ StableOntologyReference(x)" ;
+    erb:relatedCandidateName "" ;
+    erb:relatedCandidateId "" ;
+    erb:evidenceFromRulebook "" ;
+    erb:notes "This is a deliberately 'strong' definition: it matches formal languages and many natural language representations." .
+
+erb:IsEverythingALanguage_3 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-004" ;
+    erb:name "NEIAL-004" ;
+    erb:argumentName "LanguageCanBeFormalized" ;
+    erb:argumentCategory "Premise" ;
+    erb:stepType "Witness" ;
+    erb:statement "There exists at least one clear witness that satisfies the operational definition: English." ;
+    erb:formalization "∃x (x=English ∧ Language(x))" ;
+    erb:relatedCandidateName "English" ;
+    erb:relatedCandidateId "english" ;
+    erb:evidenceFromRulebook "HasSyntax=True; RequiresParsing=True; HasLinearDecodingPressure=True; IsOngologyDescriptor=True; CanBeHeld=False; HasIdentity=False; DistanceFromConcept=2; Category=Natural Language" ;
+    erb:notes "If any predicate is false in your current dataset for this witness, adjust the candidate record or relax the definition." .
+
+erb:IsEverythingALanguage_4 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-005" ;
+    erb:name "NEIAL-005" ;
+    erb:argumentName "LanguageCanBeFormalized" ;
+    erb:argumentCategory "Premise" ;
+    erb:stepType "Witness" ;
+    erb:statement "There exists at least one clear witness that satisfies the operational definition: Python." ;
+    erb:formalization "∃x (x=Python ∧ Language(x))" ;
+    erb:relatedCandidateName "Python" ;
+    erb:relatedCandidateId "python" ;
+    erb:evidenceFromRulebook "HasSyntax=True; RequiresParsing=True; HasLinearDecodingPressure=True; IsOngologyDescriptor=True; CanBeHeld=False; HasIdentity=False; DistanceFromConcept=2; Category=Formal Language" ;
+    erb:notes "If any predicate is false in your current dataset for this witness, adjust the candidate record or relax the definition." .
+
+erb:IsEverythingALanguage_5 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-006" ;
+    erb:name "NEIAL-006" ;
+    erb:argumentName "LanguageCanBeFormalized" ;
+    erb:argumentCategory "Conclusion" ;
+    erb:stepType "Conclusion" ;
+    erb:statement "Therefore, 'language' can be formalized as a computable classification boundary over explicit predicates." ;
+    erb:formalization "(Definition ∧ Witnesses) ⇒ Formalizable(Language)" ;
+    erb:relatedCandidateName "" ;
+    erb:relatedCandidateId "" ;
+    erb:evidenceFromRulebook "" ;
+    erb:notes "This is the concession: language is formalizable (at least operationally)." .
+
+erb:IsEverythingALanguage_6 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-007" ;
+    erb:name "NEIAL-007" ;
+    erb:argumentName "NotEverythingIsALanguage" ;
+    erb:argumentCategory "Premise" ;
+    erb:stepType "Entailment" ;
+    erb:statement "If Language(x) is defined by necessary conditions, then any x that fails at least one condition is not a language." ;
+    erb:formalization "∀x (¬(HasSyntax(x) ∧ RequiresParsing(x) ∧ HasLinearDecodingPressure(x) ∧ StableOntologyReference(x)) → ¬Language(x))" ;
+    erb:relatedCandidateName "" ;
+    erb:relatedCandidateId "" ;
+    erb:evidenceFromRulebook "" ;
+    erb:notes "This is the standard move: a definition implies exclusions." .
+
+erb:IsEverythingALanguage_7 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-008" ;
+    erb:name "NEIAL-008" ;
+    erb:argumentName "NotEverythingIsALanguage" ;
+    erb:argumentCategory "Example" ;
+    erb:stepType "Counterexample" ;
+    erb:statement "Counterexample: a chair can be interpreted as a sign (status, design, function), but it does not constitute a language system under the operational definition." ;
+    erb:formalization "¬Language(Chair)" ;
+    erb:relatedCandidateName "A Chair" ;
+    erb:relatedCandidateId "" ;
+    erb:evidenceFromRulebook "" ;
+    erb:notes "This separates semiotic availability (can signify) from linguistic structure (has syntax/parsing/serialized meaning)." .
+
+erb:IsEverythingALanguage_8 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-009" ;
+    erb:name "NEIAL-009" ;
+    erb:argumentName "NotEverythingIsALanguage" ;
+    erb:argumentCategory "Example" ;
+    erb:stepType "NonLanguageExample" ;
+    erb:statement "Non-language example: A Thunderstorm can be meaningful, but meaning here is not generated by an explicit syntax+parsing+serialization descriptor system." ;
+    erb:formalization "¬Language(A Thunderstorm)" ;
+    erb:relatedCandidateName "A Thunderstorm" ;
+    erb:relatedCandidateId "a-thunderstorm" ;
+    erb:evidenceFromRulebook "HasSyntax=False; RequiresParsing=True; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Physical event" ;
+    erb:notes "These are strong candidates for 'sign vehicles' rather than 'languages'." .
+
+erb:IsEverythingALanguage_9 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-010" ;
+    erb:name "NEIAL-010" ;
+    erb:argumentName "NotEverythingIsALanguage" ;
+    erb:argumentCategory "Example" ;
+    erb:stepType "NonLanguageExample" ;
+    erb:statement "Non-language example: A Coffee Mug can be meaningful, but meaning here is not generated by an explicit syntax+parsing+serialization descriptor system." ;
+    erb:formalization "¬Language(A Coffee Mug)" ;
+    erb:relatedCandidateName "A Coffee Mug" ;
+    erb:relatedCandidateId "a-coffee-mug" ;
+    erb:evidenceFromRulebook "HasSyntax=False; RequiresParsing=False; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object" ;
+    erb:notes "These are strong candidates for 'sign vehicles' rather than 'languages'." .
+
+erb:IsEverythingALanguage_10 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-011" ;
+    erb:name "NEIAL-011" ;
+    erb:argumentName "NotEverythingIsALanguage" ;
+    erb:argumentCategory "Example" ;
+    erb:stepType "NonLanguageExample" ;
+    erb:statement "Non-language example: The Mona Lisa can be meaningful, but meaning here is not generated by an explicit syntax+parsing+serialization descriptor system." ;
+    erb:formalization "¬Language(The Mona Lisa)" ;
+    erb:relatedCandidateName "The Mona Lisa" ;
+    erb:relatedCandidateId "the-mona-lisa" ;
+    erb:evidenceFromRulebook "HasSyntax=False; RequiresParsing=False; HasLinearDecodingPressure=False; IsOngologyDescriptor=True; CanBeHeld=True; HasIdentity=True; DistanceFromConcept=1; Category=Physical Object" ;
+    erb:notes "These are strong candidates for 'sign vehicles' rather than 'languages'." .
+
+erb:IsEverythingALanguage_11 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-012" ;
+    erb:name "NEIAL-012" ;
+    erb:argumentName "NotEverythingIsALanguage" ;
+    erb:argumentCategory "Observation" ;
+    erb:stepType "FuzzyBoundary" ;
+    erb:statement "Fuzzy case: A Running App often contains embedded languages (code, UI grammars), but as an executing/interactive process it behaves like a dynamic system rather than a static serialized language artifact." ;
+    erb:formalization "Borderline(A Running App): may contain ∃y Language(y) but ¬Language(A Running App) under static-serialization criteria" ;
+    erb:relatedCandidateName "A Running App" ;
+    erb:relatedCandidateId "" ;
+    erb:evidenceFromRulebook "" ;
+    erb:notes "This is where traditional semiotics' 'anything is a sign' doesn’t neatly distinguish: (1) language-as-system vs (2) meaning-making interactive processes." .
+
+erb:IsEverythingALanguage_12 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-013" ;
+    erb:name "NEIAL-013" ;
+    erb:argumentName "NotEverythingIsALanguage" ;
+    erb:argumentCategory "Observation" ;
+    erb:stepType "FuzzyBoundary" ;
+    erb:statement "Fuzzy case: Running Calculator App often contains embedded languages (code, UI grammars), but as an executing/interactive process it behaves like a dynamic system rather than a static serialized language artifact." ;
+    erb:formalization "Borderline(Running Calculator App): may contain ∃y Language(y) but ¬Language(Running Calculator App) under static-serialization criteria" ;
+    erb:relatedCandidateName "Running Calculator App" ;
+    erb:relatedCandidateId "running-calculator-app" ;
+    erb:evidenceFromRulebook "HasSyntax=False; RequiresParsing=True; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Running Software" ;
+    erb:notes "This is where traditional semiotics' 'anything is a sign' doesn’t neatly distinguish: (1) language-as-system vs (2) meaning-making interactive processes." .
+
+erb:IsEverythingALanguage_13 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-014" ;
+    erb:name "NEIAL-014" ;
+    erb:argumentName "NotEverythingIsALanguage" ;
+    erb:argumentCategory "Observation" ;
+    erb:stepType "FuzzyBoundary" ;
+    erb:statement "Fuzzy case: A Game of Fortnite often contains embedded languages (code, UI grammars), but as an executing/interactive process it behaves like a dynamic system rather than a static serialized language artifact." ;
+    erb:formalization "Borderline(A Game of Fortnite): may contain ∃y Language(y) but ¬Language(A Game of Fortnite) under static-serialization criteria" ;
+    erb:relatedCandidateName "A Game of Fortnite" ;
+    erb:relatedCandidateId "a-game-of-fortnite" ;
+    erb:evidenceFromRulebook "HasSyntax=False; RequiresParsing=True; HasLinearDecodingPressure=False; IsOngologyDescriptor=False; CanBeHeld=False; HasIdentity=True; DistanceFromConcept=1; Category=Running Software" ;
+    erb:notes "This is where traditional semiotics' 'anything is a sign' doesn’t neatly distinguish: (1) language-as-system vs (2) meaning-making interactive processes." .
+
+erb:IsEverythingALanguage_14 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-015" ;
+    erb:name "NEIAL-015" ;
+    erb:argumentName "NotEverythingIsALanguage" ;
+    erb:argumentCategory "Definition" ;
+    erb:stepType "Refinement" ;
+    erb:statement "Refinement: distinguish LanguageSystem (syntax/parsing/serialization descriptor) from SemioticProcess (interactive/dynamic meaning production) and from SignVehicle (object/phenomenon used as a sign)." ;
+    erb:formalization "Kinds: LanguageSystem(x) | SemioticProcess(x) | SignVehicle(x)" ;
+    erb:relatedCandidateName "" ;
+    erb:relatedCandidateId "" ;
+    erb:evidenceFromRulebook "" ;
+    erb:notes "This gives you a place to put running apps and games without forcing 'language' to swallow everything." .
+
+erb:IsEverythingALanguage_15 a erb:IsEverythingALanguage ;
+    erb:isEverythingALanguageId "neial-016" ;
+    erb:name "NEIAL-016" ;
+    erb:argumentName "NotEverythingIsALanguage" ;
+    erb:argumentCategory "Conclusion" ;
+    erb:stepType "Conclusion" ;
+    erb:statement "Given a formalizable definition of language, not everything is a language; some things are better treated as sign vehicles or semiotic processes, with running applications as a key fuzzy region that benefits from explicit modeling." ;
+    erb:formalization "Formalizable(Language) ∧ ∃x ¬Language(x) ⇒ ¬(EverythingIsALanguage)" ;
+    erb:relatedCandidateName "" ;
+    erb:relatedCandidateId "" ;
+    erb:evidenceFromRulebook "" ;
+    erb:notes "This is the repo's thesis in one line." .
+
+# === Individuals: LanguageCandidates ===
+
+erb:LanguageCandidates_0 a erb:LanguageCandidates ;
+    erb:languageCandidateId "falsifier-a" ;
+    erb:name "Falsifier A" ;
+    erb:category "MISSING: Have you seen this Language?" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "N/A" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 0 .
+
+erb:LanguageCandidates_1 a erb:LanguageCandidates ;
+    erb:languageCandidateId "falsifier-b" ;
+    erb:name "Falsifier B" ;
+    erb:category "MISSING: Have you seen this Language?" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld true ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "N/A" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 1 ;
+    erb:sortOrder 1 .
+
+erb:LanguageCandidates_2 a erb:LanguageCandidates ;
+    erb:languageCandidateId "falsifier-c" ;
+    erb:name "Falsifier C" ;
+    erb:category "MISSING: Have you seen this Language?" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld true ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 2 .
+
+erb:LanguageCandidates_3 a erb:LanguageCandidates ;
+    erb:languageCandidateId "english" ;
+    erb:name "English" ;
+    erb:category "Natural Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld true ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 3 .
+
+erb:LanguageCandidates_4 a erb:LanguageCandidates ;
+    erb:languageCandidateId "spoken-words" ;
+    erb:name "Spoken Words" ;
+    erb:category "Natural Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld true ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 4 .
+
+erb:LanguageCandidates_5 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-chair" ;
+    erb:name "A Chair " ;
+    erb:category "Physical Object" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld true ;
+    erb:requiresParsing false ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference false ;
+    erb:dimensionalityWhileEditing "N/A" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 1 ;
+    erb:sortOrder 5 .
+
+erb:LanguageCandidates_6 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-game-of-fortnite" ;
+    erb:name "A Game of Fortnite" ;
+    erb:category "Running Software" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference false ;
+    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 1 ;
+    erb:sortOrder 6 .
+
+erb:LanguageCandidates_7 a erb:LanguageCandidates ;
+    erb:languageCandidateId "sign-language" ;
+    erb:name "Sign Language" ;
+    erb:category "Natural Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld true ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 7 .
+
+erb:LanguageCandidates_8 a erb:LanguageCandidates ;
+    erb:languageCandidateId "python" ;
+    erb:name "Python" ;
+    erb:category "Formal Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld true ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 8 .
+
+erb:LanguageCandidates_9 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-smartphone" ;
+    erb:name "A Smartphone" ;
+    erb:category "Physical Object" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld true ;
+    erb:requiresParsing false ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference false ;
+    erb:dimensionalityWhileEditing "N/A" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 1 ;
+    erb:sortOrder 9 .
+
+erb:LanguageCandidates_10 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-running-app" ;
+    erb:name "A Running App " ;
+    erb:category "Running Software" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference false ;
+    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 1 ;
+    erb:sortOrder 22 .
+
+erb:LanguageCandidates_11 a erb:LanguageCandidates ;
+    erb:languageCandidateId "an-xlsx-doc" ;
+    erb:name "An XLSX Doc" ;
+    erb:category "Formal Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 23 .
+
+erb:LanguageCandidates_12 a erb:LanguageCandidates ;
+    erb:languageCandidateId "editing-an-xlsx-doc" ;
+    erb:name "Editing an XLSX Doc" ;
+    erb:category "Running Software" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing false ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference false ;
+    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 1 ;
+    erb:sortOrder 24 .
+
+erb:LanguageCandidates_13 a erb:LanguageCandidates ;
+    erb:languageCandidateId "an-docx-doc" ;
+    erb:name "An DOCX Doc" ;
+    erb:category "Formal Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 25 .
+
+erb:LanguageCandidates_14 a erb:LanguageCandidates ;
+    erb:languageCandidateId "editing-an-docx-doc" ;
+    erb:name "Editing an DOCX Doc" ;
+    erb:category "Running Software" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing false ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 1 ;
+    erb:sortOrder 25 .
+
+erb:LanguageCandidates_15 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-csv-file" ;
+    erb:name "A CSV File" ;
+    erb:category "Formal Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld true ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 10 .
+
+erb:LanguageCandidates_16 a erb:LanguageCandidates ;
+    erb:languageCandidateId "owl-rdf-graphql-generally" ;
+    erb:name "OWL/RDF/GraphQL/... generally" ;
+    erb:category "Natural Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 11 .
+
+erb:LanguageCandidates_17 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-coffee-mug" ;
+    erb:name "A Coffee Mug" ;
+    erb:category "Physical Object" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld true ;
+    erb:requiresParsing false ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference false ;
+    erb:dimensionalityWhileEditing "N/A" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 1 ;
+    erb:sortOrder 12 .
+
+erb:LanguageCandidates_18 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-thunderstorm" ;
+    erb:name "A Thunderstorm" ;
+    erb:category "Physical event" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld true ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference false ;
+    erb:dimensionalityWhileEditing "N/A" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 1 ;
+    erb:sortOrder 13 .
+
+erb:LanguageCandidates_19 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-uml-file" ;
+    erb:name "A UML File" ;
+    erb:category "Formal Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 14 .
+
+erb:LanguageCandidates_20 a erb:LanguageCandidates ;
+    erb:languageCandidateId "binary-code" ;
+    erb:name "Binary Code" ;
+    erb:category "Formal Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 15 .
+
+erb:LanguageCandidates_21 a erb:LanguageCandidates ;
+    erb:languageCandidateId "the-mona-lisa" ;
+    erb:name "The Mona Lisa" ;
+    erb:category "Physical Object" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld true ;
+    erb:requiresParsing false ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "N/A" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 1 ;
+    erb:sortOrder 16 .
+
+erb:LanguageCandidates_22 a erb:LanguageCandidates ;
+    erb:languageCandidateId "running-calculator-app" ;
+    erb:name "Running Calculator App" ;
+    erb:category "Running Software" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference false ;
+    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 1 ;
+    erb:sortOrder 17 .
+
+erb:LanguageCandidates_23 a erb:LanguageCandidates ;
+    erb:languageCandidateId "javascript" ;
+    erb:name "JavaScript" ;
+    erb:category "Formal Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 18 .
+
+erb:LanguageCandidates_24 a erb:LanguageCandidates ;
+    erb:languageCandidateId "french" ;
+    erb:name "French" ;
+    erb:category "Natural Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:sortOrder 19 .

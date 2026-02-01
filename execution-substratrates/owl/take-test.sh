@@ -1,14 +1,21 @@
 #!/bin/bash
 
 # take-test.sh for owl execution substrate
-# This script will eventually run the owl substrate to produce test answers
+# This script runs the SHACL reasoner to compute derived values
+
+set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Step 1: Copy blank test template to this folder as test-answers.json
-cp "$SCRIPT_DIR/../../testing/blank-test.json" "$SCRIPT_DIR/test-answers.json"
+# Step 1: Delete previous test-answers.json to prevent stale results
+echo "Deleting previous test-answers.json..."
+rm -f "$SCRIPT_DIR/test-answers.json"
 
-# TODO: Step 2: Run the owl substrate solution to populate answers
-# (Future implementation will go here)
+# Step 2: Install dependencies if needed (auto-handled by take-test.py)
+# pip install rdflib pyshacl --quiet
 
-echo "owl: test-answers.json created from blank template"
+# Step 3: Run the OWL/SHACL substrate solution to populate answers
+echo "Running OWL substrate test (SHACL reasoner)..."
+python3 "$SCRIPT_DIR/take-test.py"
+
+echo "owl: test-answers.json populated with computed values"

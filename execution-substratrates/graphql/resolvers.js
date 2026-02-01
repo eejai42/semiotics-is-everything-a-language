@@ -1,168 +1,83 @@
 /**
  * ERB SDK - GraphQL Resolvers (JavaScript)
  * =========================================
- * Mirrors the PostgreSQL functions from postgres/02-create-functions.sql
- * Source: effortless-rulebook/effortless-rulebook.json
+ * Generated from effortless-rulebook/effortless-rulebook.json
  *
- * DAG Execution Order:
- *   Level 0: Raw fields
- *   Level 1: categoryContainsLanguage, hasGrammar, relationshipToConcept, familyFuedQuestion
- *   Level 2: isAFamilyFeudTopAnswer (depends on categoryContainsLanguage)
- *   Level 3: familyFeudMismatch (depends on isAFamilyFeudTopAnswer)
+ * All calculation functions are dynamically generated from rulebook formulas.
  */
 
 // =============================================================================
-// CALCULATED FIELD FUNCTIONS - Mirrors PostgreSQL functions exactly
+// CALCULATED FIELD FUNCTIONS
 // =============================================================================
 
-// Level 1: Simple calculations on raw fields only
-// ------------------------------------------------
+// Level 1 calculations
+// ----------------------------------------
 
 /**
- * Mirrors: calc_language_candidates_category_contains_language()
- * Formula: FIND("language", LOWER(category)) > 0
- */
-function calcCategoryContainsLanguage(candidate) {
-  if (!candidate.category) return false;
-  return candidate.category.toLowerCase().includes('language');
-}
-
-/**
- * Mirrors: calc_language_candidates_has_grammar()
- * Formula: CAST(has_syntax AS TEXT)
- */
-function calcHasGrammar(candidate) {
-  if (!candidate.hasSyntax) return '';
-  return 'true';
-}
-
-/**
- * Mirrors: calc_language_candidates_relationship_to_concept()
- * Formula: IF(distance_from_concept = 1, "IsMirrorOf", "IsDescriptionOf")
- */
-function calcRelationshipToConcept(candidate) {
-  if (candidate.distanceFromConcept === 1) return 'IsMirrorOf';
-  return 'IsDescriptionOf';
-}
-
-/**
- * Mirrors: calc_language_candidates_family_fued_question()
- * Formula: "Is " & name & " a language?"
+ * Formula: ="Is " & {{Name}} & " a language?"
  */
 function calcFamilyFuedQuestion(candidate) {
-  return `Is ${candidate.name || ''} a language?`;
+  return `Is ${candidate.name || ""} a language?`;
 }
 
-// Level 2: Depends on Level 1 calculations
-// ----------------------------------------
-
 /**
- * Mirrors: calc_language_candidates_is_a_family_feud_top_answer()
- * Formula: AND(categoryContainsLanguage, hasSyntax, NOT(canBeHeld), ...)
+ * Formula: ={{HasSyntax}} = TRUE()
  */
-function calcIsAFamilyFeudTopAnswer(candidate) {
-  // Depends on Level 1 calc
-  const categoryContainsLanguage = calcCategoryContainsLanguage(candidate);
-
-  return (
-    categoryContainsLanguage &&
-    (candidate.hasSyntax || false) &&
-    !(candidate.canBeHeld || false) &&
-    (candidate.meaningIsSerialized || false) &&
-    (candidate.requiresParsing || false) &&
-    (candidate.isOngologyDescriptor || false) &&
-    !(candidate.hasIdentity || false) &&
-    candidate.distanceFromConcept === 2
-  );
+function calcHasGrammar(candidate) {
+  return (candidate.hasSyntax === true);
 }
 
-// Level 3: Depends on Level 2 calculations
+/**
+ * Formula: =AND({{IsOpenWorld}}, {{IsClosedWorld}})
+ */
+function calcIsOpenClosedWorldConflicted(candidate) {
+  return ((candidate.isOpenWorld === true) && (candidate.isClosedWorld === true));
+}
+
+/**
+ * Formula: ={{DistanceFromConcept}} > 1
+ */
+function calcIsDescriptionOf(candidate) {
+  return (candidate.distanceFromConcept > 1);
+}
+
+/**
+ * Formula: =IF({{DistanceFromConcept}} = 1, "IsMirrorOf", "IsDescriptionOf")
+ */
+function calcRelationshipToConcept(candidate) {
+  return ((candidate.distanceFromConcept === 1) ? 'IsMirrorOf' : 'IsDescriptionOf');
+}
+
+// Level 2 calculations
 // ----------------------------------------
 
 /**
- * Mirrors: calc_language_candidates_family_feud_mismatch()
- * Formula: IF(is_a_family_feud_top_answer != chosen_language_candidate, ...)
+ * Formula: =AND(   {{HasSyntax}},   {{RequiresParsing}},   {{IsDescriptionOf}},   {{HasLinearDecodingPressure}},   {{IsStableOntologyReference}},   NOT({{CanBeHeld}}),   NOT({{HasIdentity}}) )
+ */
+function calcTopFamilyFeudAnswer(candidate) {
+  return ((candidate.hasSyntax === true) && (candidate.requiresParsing === true) && (candidate.isDescriptionOf === true) && (candidate.hasLinearDecodingPressure === true) && (candidate.isStableOntologyReference === true) && ((candidate.canBeHeld !== true) === true) && ((candidate.hasIdentity !== true) === true));
+}
+
+// Level 3 calculations
+// ----------------------------------------
+
+/**
+ * Formula: =IF(NOT({{TopFamilyFeudAnswer}} = {{ChosenLanguageCandidate}}),   {{Name}} & " " & IF({{TopFamilyFeudAnswer}}, "Is", "Isn't") & " a Family Feud Language, but " &    IF({{ChosenLanguageCandidate}}, "Is", "Is Not") & " marked as a 'Language Candidate.'") & IF({{IsOpenClosedWorldConflicted}}, " - Open World vs. Closed World Conflict.")
  */
 function calcFamilyFeudMismatch(candidate) {
-  // Depends on Level 2 calc
-  const isTopAnswer = calcIsAFamilyFeudTopAnswer(candidate);
-  const chosen = candidate.chosenLanguageCandidate || false;
-
-  if (isTopAnswer !== chosen) {
-    const isWord = isTopAnswer ? 'Is' : "Isn't";
-    const markedWord = chosen ? 'Is' : 'Is Not';
-    return `${candidate.name || ''} ${isWord} a Family Feud Language, but ${markedWord} marked as a 'Language Candidate.'`;
-  }
-  return null;
+  return `${(((candidate.topFamilyFeudAnswer === candidate.chosenLanguageCandidate) !== true) ? `${candidate.name || ""} ${(candidate.topFamilyFeudAnswer ? 'Is' : 'Isn\'t') || ""} a Family Feud Language, but ${(candidate.chosenLanguageCandidate ? 'Is' : 'Is Not') || ""} marked as a 'Language Candidate.'` : null) || ""}${(candidate.isOpenClosedWorldConflicted ? ' - Open World vs. Closed World Conflict.' : null) || ""}`;
 }
 
 // =============================================================================
-// CORE LANGUAGE DEFINITION (from the rulebook)
+// EXPORTS
 // =============================================================================
-
-/**
- * Language(x) := HasSyntax(x) AND RequiresParsing(x) AND Meaning_Is_Serialized(x) AND IsOngologyDescriptor(x)
- */
-function isLanguage(candidate) {
-  return (
-    (candidate.hasSyntax || false) &&
-    (candidate.requiresParsing || false) &&
-    (candidate.meaningIsSerialized || false) &&
-    (candidate.isOngologyDescriptor || false)
-  );
-}
-
-// =============================================================================
-// GRAPHQL RESOLVERS
-// =============================================================================
-
-const resolvers = {
-  Query: {
-    languageCandidates: (_, __, { dataSources }) => {
-      return dataSources.rulebook.getLanguageCandidates();
-    },
-    languageCandidate: (_, { id }, { dataSources }) => {
-      return dataSources.rulebook.getLanguageCandidateById(id);
-    },
-    isEverythingALanguageSteps: (_, __, { dataSources }) => {
-      return dataSources.rulebook.getIsEverythingALanguageSteps();
-    },
-    isLanguage: (_, { id }, { dataSources }) => {
-      const candidate = dataSources.rulebook.getLanguageCandidateById(id);
-      return candidate ? isLanguage(candidate) : false;
-    },
-  },
-
-  LanguageCandidate: {
-    // Level 1 calculated fields
-    categoryContainsLanguage: (parent) => calcCategoryContainsLanguage(parent),
-    hasGrammar: (parent) => calcHasGrammar(parent),
-    relationshipToConcept: (parent) => calcRelationshipToConcept(parent),
-    familyFuedQuestion: (parent) => calcFamilyFuedQuestion(parent),
-
-    // Level 2 calculated fields
-    isAFamilyFeudTopAnswer: (parent) => calcIsAFamilyFeudTopAnswer(parent),
-
-    // Level 3 calculated fields
-    familyFeudMismatch: (parent) => calcFamilyFeudMismatch(parent),
-  },
-
-  IsEverythingALanguage: {
-    relatedCandidate: (parent, _, { dataSources }) => {
-      if (!parent.relatedCandidateId) return null;
-      return dataSources.rulebook.getLanguageCandidateById(parent.relatedCandidateId);
-    },
-  },
-};
 
 module.exports = {
-  resolvers,
-  // Export calc functions for direct use
-  calcCategoryContainsLanguage,
-  calcHasGrammar,
-  calcRelationshipToConcept,
   calcFamilyFuedQuestion,
-  calcIsAFamilyFeudTopAnswer,
+  calcHasGrammar,
+  calcIsOpenClosedWorldConflicted,
+  calcIsDescriptionOf,
+  calcRelationshipToConcept,
+  calcTopFamilyFeudAnswer,
   calcFamilyFeudMismatch,
-  isLanguage,
 };

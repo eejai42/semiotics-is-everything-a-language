@@ -1,41 +1,588 @@
 #!/usr/bin/env python3
 """
-Generate Go (Golang) representation from the Effortless Rulebook.
+Generic Rulebook-to-Go transpiler.
 
-This script runs from /execution-substratrates/golang/ and reads
-the rulebook from ../../effortless-rulebook/effortless-rulebook.json
+This script reads the effortless-rulebook.json and generates a Go SDK
+with structs and calculation functions for ALL tables defined in the rulebook.
+
+Following the pattern of the xlsx generator, this script is domain-agnostic -
+it reads whatever tables and schemas are defined and generates corresponding Go code.
+
+Generated files:
+- erb_sdk.go - Structs, individual Calc* methods, and ComputeAll functions
+- main.go - Test runner for the primary table (LanguageCandidates)
 """
 
 import sys
+import re
 from pathlib import Path
+from typing import Dict, List, Any, Set
 
 # Add project root to path for shared imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from orchestration.shared import load_rulebook, write_readme, get_candidate_name_from_cwd
+from orchestration.formula_parser import (
+    parse_formula, compile_to_go, get_field_dependencies,
+    to_snake_case, to_pascal_case, ASTNode
+)
+
+
+# =============================================================================
+# UTILITY FUNCTIONS (Domain-agnostic helpers)
+# =============================================================================
+
+def get_table_names(rulebook: Dict) -> List[str]:
+    """Extract table names from the rulebook (excluding metadata keys).
+
+    This matches the xlsx generator's approach to discovering tables.
+    """
+    metadata_keys = {'$schema', 'model_name', 'Description', '_meta'}
+    return [key for key in rulebook.keys() if key not in metadata_keys]
+
+
+def get_calculated_fields(schema: List[Dict]) -> List[Dict]:
+    """Extract all calculated fields from a schema."""
+    return [
+        field for field in schema
+        if field.get('type') == 'calculated' and field.get('formula')
+    ]
+
+
+def get_raw_fields(schema: List[Dict]) -> List[Dict]:
+    """Extract all raw fields from a schema."""
+    return [field for field in schema if field.get('type') == 'raw']
+
+
+def datatype_to_go(datatype: str, nullable: bool = True) -> str:
+    """Convert rulebook datatype to Go type."""
+    dt = datatype.lower()
+    if dt == 'boolean':
+        return '*bool' if nullable else 'bool'
+    elif dt == 'integer':
+        return '*int' if nullable else 'int'
+    else:
+        return '*string' if nullable else 'string'
+
+
+def table_name_to_struct_name(table_name: str) -> str:
+    """Convert a table name to a Go struct name.
+
+    Examples:
+        LanguageCandidates -> LanguageCandidate (singular)
+        IsEverythingALanguage -> IsEverythingALanguage (unchanged)
+    """
+    # Simple pluralization handling - remove trailing 's' if present
+    if table_name.endswith('s') and not table_name.endswith('ss'):
+        return table_name[:-1]
+    return table_name
+
+
+def build_dag_levels(calculated_fields: List[Dict], raw_field_names: Set[str]) -> List[List[Dict]]:
+    """Build DAG levels for calculated fields based on dependencies.
+
+    This ensures fields are computed in the correct order - fields that depend
+    on other calculated fields are placed in later levels.
+    """
+    field_deps = {}
+    for field in calculated_fields:
+        formula = field.get('formula', '')
+        try:
+            ast = parse_formula(formula)
+            deps = get_field_dependencies(ast)
+            field_deps[field['name']] = set(d for d in deps)
+        except Exception as e:
+            print(f"Warning: Failed to parse formula for {field['name']}: {e}")
+            field_deps[field['name']] = set()
+
+    levels = []
+    assigned = set(raw_field_names)
+    remaining = {f['name']: f for f in calculated_fields}
+
+    while remaining:
+        current_level = []
+        for name, field in list(remaining.items()):
+            deps = field_deps.get(name, set())
+            if deps <= assigned:
+                current_level.append(field)
+
+        if not current_level:
+            print(f"Warning: Could not resolve dependencies for: {list(remaining.keys())}")
+            levels.append(list(remaining.values()))
+            break
+
+        levels.append(current_level)
+        for field in current_level:
+            assigned.add(field['name'])
+            del remaining[field['name']]
+
+    return levels
+
+
+# =============================================================================
+# CODE GENERATION FUNCTIONS
+# =============================================================================
+
+def generate_struct_field(field: Dict) -> str:
+    """Generate a Go struct field definition."""
+    name = field['name']
+    datatype = field.get('datatype', 'string')
+    nullable = field.get('nullable', True)
+    go_type = datatype_to_go(datatype, nullable)
+    json_tag = to_snake_case(name)
+    return f'\t{name} {go_type} `json:"{json_tag}"`'
+
+
+def compile_formula_to_go(field: Dict, struct_var: str = 'tc', calc_vars: Dict[str, str] = None) -> str:
+    """Compile a field's formula to a Go expression.
+
+    Returns the Go expression string, or a panic statement if parsing fails.
+
+    Args:
+        field: The field definition with 'formula' key
+        struct_var: Variable name for the struct (e.g., 'tc' for tc.FieldName)
+        calc_vars: Dict mapping calculated field names to their local variable names.
+                   Used to substitute struct field refs with local vars for deps.
+    """
+    formula = field.get('formula', '')
+    try:
+        ast = parse_formula(formula)
+        go_expr = compile_to_go(ast, struct_var)
+
+        # Substitute references to already-computed calculated fields
+        # with their local variable names. Order matters - more specific patterns first.
+        if calc_vars:
+            for field_name, var_name in calc_vars.items():
+                # Pattern 1: boolVal(tc.Field) -> var_name (already a bool)
+                go_expr = go_expr.replace(f'boolVal({struct_var}.{field_name})', var_name)
+
+                # Pattern 2: stringVal(tc.Field) -> var_name (already a string)
+                go_expr = go_expr.replace(f'stringVal({struct_var}.{field_name})', var_name)
+
+                # Pattern 3: (tc.Field != nil && *tc.Field == X) -> (var_name == boolVal(X))
+                def wrap_rhs_in_boolval(match):
+                    rhs = match.group(1)
+                    if rhs.startswith(f'{struct_var}.'):
+                        return f'({var_name} == boolVal({rhs}))'
+                    return f'({var_name} == {rhs})'
+                pattern = rf'\({struct_var}\.{field_name} != nil && \*{struct_var}\.{field_name} == ([^)]+)\)'
+                go_expr = re.sub(pattern, wrap_rhs_in_boolval, go_expr)
+
+                # Pattern 4: tc.Field != nil && *tc.Field (without == ) -> var_name
+                go_expr = go_expr.replace(f'{struct_var}.{field_name} != nil && *{struct_var}.{field_name}', var_name)
+
+                # Pattern 5: Any remaining tc.Field -> var_name
+                go_expr = go_expr.replace(f'{struct_var}.{field_name}', var_name)
+
+        # Fix IF conditions with pointer fields: `if tc.Field {` -> `if boolVal(tc.Field) {`
+        go_expr = re.sub(rf'if ({struct_var}\.\w+) \{{', r'if boolVal(\1) {', go_expr)
+
+        return go_expr
+    except Exception as e:
+        return f'func() interface{{}} {{ panic("Formula parse error: {e}") }}()'
+
+
+def generate_calc_function(field: Dict, struct_name: str, struct_var: str = 'tc') -> List[str]:
+    """Generate an individual Calc* function for a calculated field.
+
+    This mirrors the postgres calc_* function pattern - each calculated field
+    gets its own method that can be called independently.
+    """
+    lines = []
+    name = field['name']
+    datatype = field.get('datatype', 'string')
+
+    # Determine return type
+    if datatype == 'boolean':
+        return_type = 'bool'
+    elif datatype == 'integer':
+        return_type = 'int'
+    else:
+        return_type = 'string'
+
+    # Generate the function signature
+    lines.append(f'// Calc{name} computes the {name} calculated field')
+    lines.append(f'// Formula: {field.get("formula", "").replace(chr(10), " ").strip()}')
+    lines.append(f'func ({struct_var} *{struct_name}) Calc{name}() {return_type} {{')
+
+    # Compile the formula
+    go_expr = compile_formula_to_go(field, struct_var)
+    lines.append(f'\treturn {go_expr}')
+    lines.append('}')
+
+    return lines
+
+
+def generate_compute_all_function(
+    struct_name: str,
+    raw_fields: List[Dict],
+    calculated_fields: List[Dict],
+    dag_levels: List[List[Dict]],
+    struct_var: str = 'tc'
+) -> List[str]:
+    """Generate the ComputeAll function that computes all calculated fields.
+
+    This function calls each individual Calc* method in DAG order and returns
+    a new struct with all fields populated.
+    """
+    lines = []
+
+    lines.append('// ComputeAll computes all calculated fields and returns an updated struct')
+    lines.append(f'func ({struct_var} *{struct_name}) ComputeAll() *{struct_name} {{')
+
+    # Generate calls to each Calc* function in DAG order
+    calc_vars = {}  # Track variable names for calculated fields
+    for level_idx, level_fields in enumerate(dag_levels):
+        lines.append(f'\t// Level {level_idx + 1} calculations')
+        for field in level_fields:
+            name = field['name']
+            var_name = name[0].lower() + name[1:]  # camelCase
+
+            # For level 1, call the Calc method directly
+            # For level 2+, we need to pass already-computed values
+            # But since Calc* methods read from struct, we need to update struct first
+            # Actually, let's compute inline for proper dependency handling
+            go_expr = compile_formula_to_go(field, struct_var, calc_vars)
+            lines.append(f'\t{var_name} := {go_expr}')
+
+            calc_vars[name] = var_name
+        lines.append('')
+
+    # Generate return struct with all fields
+    lines.append(f'\treturn &{struct_name}{{')
+    for field in raw_fields:
+        name = field['name']
+        lines.append(f'\t\t{name}: {struct_var}.{name},')
+    for field in calculated_fields:
+        name = field['name']
+        var_name = calc_vars[name]
+        datatype = field.get('datatype', 'string')
+        # Use nilIfEmpty for string fields to return null for empty strings
+        if datatype == 'string' or datatype not in ('boolean', 'integer'):
+            lines.append(f'\t\t{name}: nilIfEmpty({var_name}),')
+        else:
+            lines.append(f'\t\t{name}: &{var_name},')
+    lines.append('\t}')
+    lines.append('}')
+
+    return lines
+
+
+def generate_struct_for_table(table_name: str, schema: List[Dict]) -> List[str]:
+    """Generate the struct definition for a table."""
+    lines = []
+    struct_name = table_name_to_struct_name(table_name)
+
+    raw_fields = get_raw_fields(schema)
+    calculated_fields = get_calculated_fields(schema)
+
+    # Struct needs all fields - calculated fields override raw fields with same name
+    calculated_names = {f['name'] for f in calculated_fields}
+    all_fields = [f for f in raw_fields if f['name'] not in calculated_names] + calculated_fields
+
+    lines.append(f'// {struct_name} represents a row in the {table_name} table')
+    lines.append(f'type {struct_name} struct {{')
+    for field in all_fields:
+        lines.append(generate_struct_field(field))
+    lines.append('}')
+
+    return lines
+
+
+def generate_table_sdk(table_name: str, table_data: Dict) -> List[str]:
+    """Generate complete SDK code for a single table.
+
+    This includes:
+    - Struct definition
+    - Individual Calc* functions for each calculated field
+    - ComputeAll function to compute all calculated fields
+    """
+    lines = []
+    schema = table_data.get('schema', [])
+    struct_name = table_name_to_struct_name(table_name)
+
+    raw_fields = get_raw_fields(schema)
+    calculated_fields = get_calculated_fields(schema)
+    raw_field_names = {f['name'] for f in raw_fields}
+
+    # Section header
+    lines.append(f'// =============================================================================')
+    lines.append(f'// {table_name.upper()} TABLE')
+    lines.append(f'// =============================================================================')
+    lines.append('')
+
+    # Struct definition
+    lines.extend(generate_struct_for_table(table_name, schema))
+    lines.append('')
+
+    if calculated_fields:
+        # Build DAG for calculation ordering
+        dag_levels = build_dag_levels(calculated_fields, raw_field_names)
+
+        # Individual Calc* functions
+        lines.append(f'// --- Individual Calculation Functions ---')
+        lines.append('')
+        for field in calculated_fields:
+            lines.extend(generate_calc_function(field, struct_name))
+            lines.append('')
+
+        # ComputeAll function
+        lines.append(f'// --- Compute All Calculated Fields ---')
+        lines.append('')
+        lines.extend(generate_compute_all_function(
+            struct_name, raw_fields, calculated_fields, dag_levels
+        ))
+        lines.append('')
+
+    return lines
+
+
+def generate_erb_sdk(rulebook: Dict) -> str:
+    """Generate the complete erb_sdk.go content.
+
+    This function is domain-agnostic - it reads whatever tables are defined
+    in the rulebook and generates corresponding Go code for all of them.
+    """
+    lines = []
+
+    # Header
+    lines.append('// ERB SDK - Go Implementation (GENERATED - DO NOT EDIT)')
+    lines.append('// ======================================================')
+    lines.append('// Generated from: effortless-rulebook/effortless-rulebook.json')
+    lines.append('//')
+    lines.append('// This file contains structs and calculation functions')
+    lines.append('// for all tables defined in the rulebook.')
+    lines.append('')
+    lines.append('package main')
+    lines.append('')
+    lines.append('import (')
+    lines.append('\t"encoding/json"')
+    lines.append('\t"fmt"')
+    lines.append('\t"os"')
+    lines.append(')')
+    lines.append('')
+
+    # Helper functions
+    lines.append('// =============================================================================')
+    lines.append('// HELPER FUNCTIONS')
+    lines.append('// =============================================================================')
+    lines.append('')
+    lines.append('// boolVal safely dereferences a *bool, returning false if nil')
+    lines.append('func boolVal(b *bool) bool {')
+    lines.append('\tif b == nil {')
+    lines.append('\t\treturn false')
+    lines.append('\t}')
+    lines.append('\treturn *b')
+    lines.append('}')
+    lines.append('')
+    lines.append('// stringVal safely dereferences a *string, returning "" if nil')
+    lines.append('func stringVal(s *string) string {')
+    lines.append('\tif s == nil {')
+    lines.append('\t\treturn ""')
+    lines.append('\t}')
+    lines.append('\treturn *s')
+    lines.append('}')
+    lines.append('')
+    lines.append('// nilIfEmpty returns nil for empty strings, otherwise a pointer to the string')
+    lines.append('func nilIfEmpty(s string) *string {')
+    lines.append('\tif s == "" {')
+    lines.append('\t\treturn nil')
+    lines.append('\t}')
+    lines.append('\treturn &s')
+    lines.append('}')
+    lines.append('')
+
+    # Get all table names from the rulebook (domain-agnostic discovery)
+    table_names = get_table_names(rulebook)
+
+    # Generate SDK for each table
+    for table_name in table_names:
+        table_data = rulebook[table_name]
+
+        if not isinstance(table_data, dict) or 'schema' not in table_data:
+            continue
+
+        lines.extend(generate_table_sdk(table_name, table_data))
+
+    # Find the primary table (first table with calculated fields)
+    primary_table = None
+    for table_name in table_names:
+        table_data = rulebook.get(table_name, {})
+        if isinstance(table_data, dict) and 'schema' in table_data:
+            calc_fields = get_calculated_fields(table_data.get('schema', []))
+            if calc_fields:
+                primary_table = table_name
+                break
+
+    if primary_table:
+        struct_name = table_name_to_struct_name(primary_table)
+
+        # File I/O functions for the primary table
+        lines.append('// =============================================================================')
+        lines.append(f'// FILE I/O (for {primary_table})')
+        lines.append('// =============================================================================')
+        lines.append('')
+        lines.append(f'// LoadRecords loads records from a JSON file')
+        lines.append(f'func LoadRecords(path string) ([]{struct_name}, error) {{')
+        lines.append('\tdata, err := os.ReadFile(path)')
+        lines.append('\tif err != nil {')
+        lines.append('\t\treturn nil, fmt.Errorf("failed to read file: %w", err)')
+        lines.append('\t}')
+        lines.append('')
+        lines.append(f'\tvar records []{struct_name}')
+        lines.append('\tif err := json.Unmarshal(data, &records); err != nil {')
+        lines.append('\t\treturn nil, fmt.Errorf("failed to parse file: %w", err)')
+        lines.append('\t}')
+        lines.append('')
+        lines.append('\treturn records, nil')
+        lines.append('}')
+        lines.append('')
+        lines.append(f'// SaveRecords saves computed records to a JSON file')
+        lines.append(f'func SaveRecords(path string, records []{struct_name}) error {{')
+        lines.append('\tdata, err := json.MarshalIndent(records, "", "  ")')
+        lines.append('\tif err != nil {')
+        lines.append('\t\treturn fmt.Errorf("failed to marshal records: %w", err)')
+        lines.append('\t}')
+        lines.append('')
+        lines.append('\tif err := os.WriteFile(path, data, 0644); err != nil {')
+        lines.append('\t\treturn fmt.Errorf("failed to write records: %w", err)')
+        lines.append('\t}')
+        lines.append('')
+        lines.append('\treturn nil')
+        lines.append('}')
+
+    return '\n'.join(lines)
+
+
+def generate_main_go(struct_name: str) -> str:
+    """Generate main.go content for the given struct type."""
+    return f'''// ERB SDK - Go Test Runner (GENERATED - DO NOT EDIT)
+package main
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+)
+
+func main() {{
+	scriptDir, err := os.Getwd()
+	if err != nil {{
+		fmt.Printf("Failed to get working directory: %v\\n", err)
+		os.Exit(1)
+	}}
+
+	// Paths
+	blankTestPath := filepath.Join(scriptDir, "..", "..", "testing", "blank-test.json")
+	answersPath := filepath.Join(scriptDir, "test-answers.json")
+
+	// Step 1: Load blank test data
+	records, err := LoadRecords(blankTestPath)
+	if err != nil {{
+		fmt.Printf("Failed to load blank test: %v\\n", err)
+		os.Exit(1)
+	}}
+
+	fmt.Printf("Golang substrate: Processing %d records...\\n", len(records))
+
+	// Step 2: Compute all calculated fields using the SDK
+	var computed []{struct_name}
+	for _, r := range records {{
+		computed = append(computed, *r.ComputeAll())
+	}}
+
+	// Step 3: Save test answers
+	if err := SaveRecords(answersPath, computed); err != nil {{
+		fmt.Printf("Failed to save test answers: %v\\n", err)
+		os.Exit(1)
+	}}
+
+	fmt.Printf("Golang substrate: Saved results to %s\\n", answersPath)
+}}
+'''
 
 
 def main():
     candidate_name = get_candidate_name_from_cwd()
-    print(f"Generating {candidate_name} language candidate...")
+    script_dir = Path(__file__).resolve().parent
 
-    # Load the rulebook (for future use)
+    print("=" * 70)
+    print("Golang Execution Substrate - Generic Rulebook Transpiler")
+    print("=" * 70)
+    print()
+
+    # Load the rulebook
+    print("Loading rulebook...")
     try:
         rulebook = load_rulebook()
-        print(f"Loaded rulebook with {len(rulebook)} top-level keys")
     except FileNotFoundError as e:
-        print(f"Warning: {e}")
-        rulebook = None
+        print(f"ERROR: {e}")
+        sys.exit(1)
 
-    # Write placeholder README
+    # Get all table names (domain-agnostic discovery)
+    table_names = get_table_names(rulebook)
+    print(f"Found {len(table_names)} tables: {', '.join(table_names)}")
+    print()
+
+    # Report on calculated fields per table and find primary table
+    total_calc_fields = 0
+    primary_table = None
+    for table_name in table_names:
+        table_data = rulebook.get(table_name, {})
+        if isinstance(table_data, dict) and 'schema' in table_data:
+            schema = table_data.get('schema', [])
+            calc_fields = get_calculated_fields(schema)
+            if calc_fields:
+                if primary_table is None:
+                    primary_table = table_name
+                print(f"  {table_name}: {len(calc_fields)} calculated fields")
+                for field in calc_fields:
+                    print(f"    - {field['name']}")
+                total_calc_fields += len(calc_fields)
+
+    print()
+    print(f"Total calculated fields to compile: {total_calc_fields}")
+    if primary_table:
+        print(f"Primary table for test runner: {primary_table}")
+    print()
+    print("-" * 70)
+    print()
+
+    # Generate erb_sdk.go
+    print("Generating erb_sdk.go...")
+    erb_sdk_content = generate_erb_sdk(rulebook)
+
+    erb_sdk_path = script_dir / "erb_sdk.go"
+    erb_sdk_path.write_text(erb_sdk_content, encoding='utf-8')
+    print(f"Wrote: {erb_sdk_path} ({len(erb_sdk_content)} bytes)")
+
+    # Generate main.go
+    print("Generating main.go...")
+    struct_name = table_name_to_struct_name(primary_table) if primary_table else "Record"
+    main_go_content = generate_main_go(struct_name)
+
+    main_go_path = script_dir / "main.go"
+    main_go_path.write_text(main_go_content, encoding='utf-8')
+    print(f"Wrote: {main_go_path} ({len(main_go_content)} bytes)")
+
+    # Write README
     write_readme(
         candidate_name,
-        "Go (Golang) code generation from the Effortless Rulebook.\n\n"
-        "Future implementation will generate Go structs, "
-        "interfaces, and validation functions."
+        f"Go calculation library generated from the Effortless Rulebook.\n\n"
+        f"Generated SDK for {len(table_names)} tables with {total_calc_fields} total calculation functions.\n\n"
+        "Architecture:\n"
+        "- Individual Calc* methods for each calculated field (mirrors postgres calc_* pattern)\n"
+        "- ComputeAll() method to compute all fields in DAG order\n"
+        "- Domain-agnostic: works with any rulebook schema\n\n"
+        "Files:\n"
+        "- erb_sdk.go - Generated structs and calculation functions\n"
+        "- main.go - Test runner"
     )
 
-    print(f"Done generating {candidate_name} candidate.")
+    print()
+    print("=" * 70)
+    print("Generation complete!")
+    print("=" * 70)
 
 
 if __name__ == "__main__":

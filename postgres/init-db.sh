@@ -39,4 +39,6 @@ for sql_file in "${SQL_FILES[@]}"; do
     echo ""
 done
 
+${SCRIPT_DIR}/../orchestration/orchestrate.sh
+
 echo "Database initialization complete!"

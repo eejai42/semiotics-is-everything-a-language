@@ -1,14 +1,17 @@
 #!/bin/bash
 
 # take-test.sh for yaml execution substrate
-# This script will eventually run the yaml substrate to produce test answers
+# Executes the YAML schema deterministically using Python
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Step 1: Copy blank test template to this folder as test-answers.json
+# Step 1: Delete previous test-answers.json to prevent stale results
+rm -f "$SCRIPT_DIR/test-answers.json"
+
+# Step 2: Copy blank test template to this folder as test-answers.json
 cp "$SCRIPT_DIR/../../testing/blank-test.json" "$SCRIPT_DIR/test-answers.json"
 
-# TODO: Step 2: Run the yaml substrate solution to populate answers
-# (Future implementation will go here)
+# Step 3: Run YAML substrate to compute calculated fields
+python3 "$SCRIPT_DIR/take-test.py"
 
-echo "yaml: test-answers.json created from blank template"
+echo "yaml: test-answers.json computed and saved"

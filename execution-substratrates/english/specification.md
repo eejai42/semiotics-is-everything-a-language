@@ -1,238 +1,125 @@
-# ERB Specification - English Prose Implementation
+# ERB Specification - Language Classification Rulebook
 
-*Mirrors the PostgreSQL functions from postgres/02-create-functions.sql*
-*Source: effortless-rulebook/effortless-rulebook.json*
+---
 
 ## Overview
 
-This specification defines how to evaluate whether a candidate item qualifies as a **language** according to the Effortless Rulebook.
+This rulebook system aims to provide a structured framework for understanding and defining "language" in a way that counters the overly broad assertion that "everything is a language." The objective is to formalize the concept of language by establishing clear criteria grounded in testable properties, such as syntax, parsing requirements, linear decoding pressure, and stability in ontology reference. By doing so, the system not only clarifies what constitutes a language but also delineates the boundaries that separate true languages from other forms of expression or communication.
+
+At the core of this system is an operational definition of language, which posits that an item qualifies as a language if it possesses syntax, necessitates parsing, serializes meaning, and serves as an ontology or descriptor system. This definition is formalized into a set of necessary conditions that any candidate must satisfy to be classified as a language. The operational framework is reinforced by clear witnesses, such as English and Python, which fulfill these criteria, thereby validating the definition.
+
+The model structure of this system is built upon a series of predicates that evaluate the properties of potential language candidates. Raw input properties are assessed using these predicates, which lead to calculated outputs that indicate whether a candidate meets the established criteria for being classified as a language. This structured approach allows for an analytical assessment of various entities, resulting in a classification system that identifies 14 candidates as languages and 11 as not languages, demonstrating the effectiveness of the framework.
+
+The key insight of this system lies in its ability to differentiate between language systems, which adhere to the defined criteria, and other phenomena that may carry meaning but do not function as languages. By distinguishing language systems from sign vehicles and semiotic processes, this framework enriches our understanding of communication and meaning-making. It highlights the importance of formal definitions in academic and practical applications, ensuring that the term "language" retains its specific and meaningful connotation rather than being diluted by broad interpretations.
+
+---
+
+## Model Structure
+
+The model operates on a set of raw predicates (input properties) that are evaluated for each candidate,
+which then feed into calculated fields that derive the final classification.
+
+### Raw Predicates (Inputs)
+
+These are the fundamental properties evaluated for each candidate:
+
+- **ChosenLanguageCandidate** (boolean)
+- **HasSyntax** (boolean)
+- **HasIdentity** (boolean)
+- **CanBeHeld** (boolean)
+- **HasGrammar** (boolean)
+- **RequiresParsing** (boolean)
+- **HasLinearDecodingPressure** (boolean)
+- **StableOntologyReference** (boolean)
+- **DimensionalityWhileEditing** (string)
+- **IsOpenWorld** (boolean)
+- **IsClosedWorld** (boolean)
+- **DistanceFromConcept** (integer)
+
+### Calculated Fields (Derived)
+
+These fields are computed from the raw predicates:
+
+- **FamilyFuedQuestion**
+- **TopFamilyFeudAnswer**
+- **FamilyFeudMismatch**
+- **IsOpenClosedWorldConflicted**
+- **RelationshipToConcept**
+
+---
 
 ## Core Language Definition
 
-A candidate **x** is classified as a **Language** if and only if it satisfies all of the following predicates:
+An item qualifies as a **Language** if and only if ALL of these are true:
 
-1. **HasSyntax(x)** - The item has explicit grammar rules
-2. **RequiresParsing(x)** - The item needs parsing to be interpreted
-3. **Meaning_Is_Serialized(x)** - The item's meaning can be represented in serialized form
-4. **IsOngologyDescriptor(x)** - The item functions as an ontology/descriptor system
-
-**Formal Definition:**
-```
-Language(x) := HasSyntax(x) ∧ RequiresParsing(x) ∧ Meaning_Is_Serialized(x) ∧ IsOngologyDescriptor(x)
-```
-
-## Entities
-
-### 1. Language Candidate
-
-A **Language Candidate** is any item being evaluated for language classification.
-
-#### Raw Fields (Level 0)
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `language_candidate_id` | string | Primary key identifier |
-| `name` | string | Display name of the candidate |
-| `category` | string | Classification category (Natural Language, Formal Language, Physical Object, Running Software) |
-| `can_be_held` | boolean | Can this be physically held? (Tangibility predicate) |
-| `meaning_is_serialized` | boolean | Can meaning be represented in serialized form? |
-| `requires_parsing` | boolean | Does it need parsing to be interpreted? |
-| `is_ongology_descriptor` | boolean | Does it function as an ontology/descriptor system? |
-| `has_syntax` | boolean | Does it have explicit grammar rules? |
-| `chosen_language_candidate` | boolean | Manually marked as a "true" language candidate |
-| `sort_order` | integer | Display ordering |
-| `has_identity` | boolean | Does it have persistent identity? |
-| `distance_from_concept` | integer | 1=Mirror (is the thing), 2=Description (describes the thing) |
-
-#### Calculated Fields
-
-Calculated fields follow a **DAG (Directed Acyclic Graph)** execution order to ensure dependencies are resolved.
+1. HasSyntax = true
+2. RequiresParsing = true
+3. Meaning_Is_Serialized = true (MeaningIsSerialized)
+4. IsOngologyDescriptor = true
+5. CanBeHeld = false
+6. HasIdentity = false
+7. DistanceFromConcept = 2
 
 ---
 
-**Level 1: Simple Calculations**
+## Calculated Field Instructions
 
-These calculations depend only on raw fields.
+### FamilyFuedQuestion
 
-##### Category Contains Language
+**Formula:** `="Is " & {{Name}} & " a language?"`
 
-*Mirrors: `calc_language_candidates_category_contains_language()`*
+**How to compute:**
 
-**Question:** Does the category string contain the word "language"?
-
-**Formula:** `FIND("language", LOWER(category)) > 0`
-
-**Algorithm:**
-1. Take the `category` field value
-2. Convert to lowercase
-3. Search for the substring "language"
-4. Return `true` if found, `false` otherwise
+1. Take the value of the 'Name' field. 2. Combine it with the phrase 'Is ' and the phrase ' a language?' 3. The result is your Family Fued Question.
 
 ---
 
-##### Has Grammar
+### TopFamilyFeudAnswer
 
-*Mirrors: `calc_language_candidates_has_grammar()`*
+**Formula:** `=AND(
+  {{HasSyntax}},
+  NOT({{CanBeHeld}}),
+  {{HasLinearDecodingPressure}},
+  {{RequiresParsing}},
+  {{StableOntologyReference}},
+  NOT({{HasIdentity}}),
+  {{DistanceFromConcept}}=2
+)`
 
-**Question:** What is the string representation of the syntax status?
+**How to compute:**
 
-**Formula:** `CAST(has_syntax AS TEXT)`
-
-**Algorithm:**
-1. Take the `has_syntax` field value
-2. If `true`, return the string "true"
-3. If `false` or `null`, return an empty string ""
-
----
-
-##### Relationship To Concept
-
-*Mirrors: `calc_language_candidates_relationship_to_concept()`*
-
-**Question:** What is the semantic relationship to the language concept?
-
-**Formula:** `IF(distance_from_concept = 1, "IsMirrorOf", "IsDescriptionOf")`
-
-**Algorithm:**
-1. Take the `distance_from_concept` field value
-2. If equal to 1, return "IsMirrorOf" (the item IS the thing)
-3. Otherwise, return "IsDescriptionOf" (the item DESCRIBES the thing)
+1. Check if 'HasSyntax' is true. 2. Ensure 'CanBeHeld' is false. 3. Confirm 'HasLinearDecodingPressure' is true. 4. Verify 'RequiresParsing' is true. 5. Check if 'StableOntologyReference' is true. 6. Ensure 'HasIdentity' is false. 7. Confirm that 'DistanceFromConcept' equals 2. 8. If all conditions are met, the result is true; otherwise, it is false.
 
 ---
 
-##### Family Feud Question
+### FamilyFeudMismatch
 
-*Mirrors: `calc_language_candidates_family_fued_question()`*
+**Formula:** `=IF(NOT({{TopFamilyFeudAnswer}} = {{ChosenLanguageCandidate}}),
+  {{Name}} & " " & IF({{TopFamilyFeudAnswer}}, "Is", "Isn't") & " a Family Feud Language, but " & 
+  IF({{ChosenLanguageCandidate}}, "Is", "Is Not") & " marked as a 'Language Candidate.'") & IF({{IsOpenClosedWorldConflicted}}, " - Open World vs. Closed World Conflict.")`
 
-**Question:** What is the Family Feud style question for this candidate?
+**How to compute:**
 
-**Formula:** `"Is " & name & " a language?"`
-
-**Algorithm:**
-1. Take the `name` field value
-2. Concatenate: "Is " + name + " a language?"
-3. Return the resulting question string
+1. Evaluate if 'TopFamilyFeudAnswer' does not equal 'ChosenLanguageCandidate'. 2. If they do not match, take the 'Name' value. 3. Add 'Is' or 'Isn't' based on 'TopFamilyFeudAnswer'. 4. Add the phrase 'a Family Feud Language, but'. 5. Add 'Is' or 'Is Not' based on 'ChosenLanguageCandidate'. 6. Optionally, add ' - Open World vs. Closed World Conflict.' if 'IsOpenClosedWorldConflicted' is true.
 
 ---
 
-**Level 2: Dependent Calculations**
+### IsOpenClosedWorldConflicted
 
-These calculations depend on Level 1 calculations.
+**Formula:** `=AND({{IsOpenWorld}}, {{IsClosedWorld}})`
 
-##### Is A Family Feud Top Answer
+**How to compute:**
 
-*Mirrors: `calc_language_candidates_is_a_family_feud_top_answer()`*
-
-**Question:** Would this be a "top answer" on Family Feud for "Is X a language?"
-
-**Dependencies:** `category_contains_language` (Level 1)
-
-**Formula:**
-```
-AND(
-  category_contains_language,
-  has_syntax,
-  NOT(can_be_held),
-  meaning_is_serialized,
-  requires_parsing,
-  is_ongology_descriptor,
-  NOT(has_identity),
-  distance_from_concept = 2
-)
-```
-
-**Algorithm:**
-1. First, compute `category_contains_language` (Level 1)
-2. Then check ALL of the following conditions are true:
-   - `category_contains_language` is true
-   - `has_syntax` is true
-   - `can_be_held` is false (NOT tangible)
-   - `meaning_is_serialized` is true
-   - `requires_parsing` is true
-   - `is_ongology_descriptor` is true
-   - `has_identity` is false (NOT persistent)
-   - `distance_from_concept` equals 2 (is a description)
-3. If ALL conditions pass, return `true`
-4. If ANY condition fails, return `false`
+1. Check if 'IsOpenWorld' is true. 2. Also, check if 'IsClosedWorld' is true. 3. If both are true, then 'IsOpenClosedWorldConflicted' is true; otherwise, it is false.
 
 ---
 
-**Level 3: Higher-Order Calculations**
+### RelationshipToConcept
 
-These calculations depend on Level 2 calculations.
+**Formula:** `=IF({{DistanceFromConcept}} = 1, "IsMirrorOf", "IsDescriptionOf")`
 
-##### Family Feud Mismatch
+**How to compute:**
 
-*Mirrors: `calc_language_candidates_family_feud_mismatch()`*
-
-**Question:** Is there a mismatch between the computed classification and the manual classification?
-
-**Dependencies:** `is_a_family_feud_top_answer` (Level 2)
-
-**Formula:**
-```
-IF(is_a_family_feud_top_answer != chosen_language_candidate,
-  name & " " &
-  IF(is_a_family_feud_top_answer, "Is", "Isn't") &
-  " a Family Feud Language, but " &
-  IF(chosen_language_candidate, "Is", "Is Not") &
-  " marked as a 'Language Candidate.'",
-  NULL
-)
-```
-
-**Algorithm:**
-1. First, compute `is_a_family_feud_top_answer` (Level 2)
-2. Compare to `chosen_language_candidate` (raw field)
-3. If they match, return `null` (no mismatch)
-4. If they differ, construct a mismatch message:
-   - Example: "Falsifier A Is a Family Feud Language, but Is Not marked as a 'Language Candidate.'"
+1. Check the value of 'DistanceFromConcept'. 2. If it equals 1, the result is 'IsMirrorOf'. 3. If it does not equal 1, the result is 'IsDescriptionOf'.
 
 ---
-
-### 2. Is Everything A Language (Argument Steps)
-
-This entity captures the philosophical argument about whether "everything is a language."
-
-#### Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `is_everything_a_language_id` | string | Primary key |
-| `name` | string | Identifier (e.g., NEIAL-001) |
-| `argument_name` | string | Branch: "LanguageCanBeFormalized" or "NotEverythingIsALanguage" |
-| `argument_category` | string | Role: Definition, Premise, Conclusion, Example, Observation, Refinement |
-| `step_type` | string | Subtype of the argument step |
-| `statement` | string | Natural language argument text |
-| `formalization` | string | Formal logic notation |
-| `related_candidate_id` | string | FK to language candidate |
-| `evidence_from_rulebook` | string | Predicate values supporting the argument |
-| `notes` | string | Additional context |
-
----
-
-## DAG Execution Order Summary
-
-```
-Level 0 (Raw):     All base table fields
-                        ↓
-Level 1 (Simple):  category_contains_language
-                   has_grammar
-                   relationship_to_concept
-                   family_fued_question
-                        ↓
-Level 2 (Dependent): is_a_family_feud_top_answer
-                        ↓
-Level 3 (Higher):  family_feud_mismatch
-```
-
----
-
-## Implementation Notes
-
-When implementing this specification in any language:
-
-1. **Respect the DAG** - Always compute Level 1 before Level 2, and Level 2 before Level 3
-2. **Handle nulls** - Use COALESCE/default values as shown in the formulas
-3. **String matching** - Category contains language check should be case-insensitive
-4. **Mirror PostgreSQL** - The source of truth is `postgres/02-create-functions.sql`

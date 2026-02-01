@@ -34,13 +34,14 @@ SELECT
   t.can_be_held,
   calc_language_candidates_has_grammar(t.language_candidate_id) AS has_grammar,
   t.requires_parsing,
-  t.meaning_is_serialized,
-  t.is_ongology_descriptor,
+  t.has_linear_decoding_pressure,
+  t.is_stable_ontology_reference,
   t.dimensionality_while_editing,
-  calc_language_candidates_is_open_closed_world_conflicted(t.language_candidate_id) AS is_open_closed_world_conflicted,
   t.is_open_world,
   t.is_closed_world,
+  calc_language_candidates_is_open_closed_world_conflicted(t.language_candidate_id) AS is_open_closed_world_conflicted,
   t.distance_from_concept,
+  calc_language_candidates_is_description_of(t.language_candidate_id) AS is_description_of,
   calc_language_candidates_relationship_to_concept(t.language_candidate_id) AS relationship_to_concept,
   t.sort_order
 FROM language_candidates t;
