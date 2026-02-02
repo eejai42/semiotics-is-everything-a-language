@@ -13,9 +13,9 @@ This document evaluates various candidates against the formal definition of 'lan
 - **Formal Language**: 7/7 qualify as languages
 - **MISSING: Have you seen this Language?**: 2/3 qualify as languages
 - **Natural Language**: 5/5 qualify as languages
-- **Physical Object**: 0/4 qualify as languages
+- **Physical Object**: 0/3 qualify as languages
 - **Physical event**: 0/1 qualify as languages
-- **Running Software**: 0/5 qualify as languages
+- **Running Software**: 0/6 qualify as languages
 
 ---
 
@@ -25,8 +25,8 @@ To qualify as a **language**, a candidate must satisfy ALL of the following:
 
 - HasSyntax = true
 - RequiresParsing = true
-- MeaningIsSerialized = true
-- IsOngologyDescriptor = true
+- HasLinearDecodingPressure = true
+- StableOntologyReference = true
 - CanBeHeld = false
 - HasIdentity = false
 - DistanceFromConcept = 2
@@ -40,7 +40,7 @@ To qualify as a **language**, a candidate must satisfy ALL of the following:
 **Category:** MISSING: Have you seen this Language?
 **Classification:** ✓ Language
 
-Falsifier A qualifies as a language because it has syntax, requires parsing, and meets the distance from concept requirement. Additionally, it has no identity and cannot be held, aligning with the formal definition of a language.
+Falsifier A qualifies as a language because it has syntax, requires parsing, and has a distance from concept of 2. Additionally, it meets the criteria of being an ontology descriptor and does not have identity or can be held.
 
 ---
 
@@ -49,7 +49,7 @@ Falsifier A qualifies as a language because it has syntax, requires parsing, and
 **Category:** MISSING: Have you seen this Language?
 **Classification:** ✗ Not a Language
 
-Falsifier B does not qualify as a language because it lacks syntax, which is a fundamental requirement. Although it requires parsing, the presence of identity and the ability to be held disqualifies it from being considered a language.
+Falsifier B does not qualify as a language because, while it requires parsing and has a distance from concept of 1, it lacks syntax, can be held, and has identity, failing several key language criteria.
 
 ---
 
@@ -58,7 +58,7 @@ Falsifier B does not qualify as a language because it lacks syntax, which is a f
 **Category:** MISSING: Have you seen this Language?
 **Classification:** ✓ Language
 
-Falsifier C qualifies as a language since it has syntax, requires parsing, and meets all necessary conditions including distance from concept. It also has no identity and cannot be held, fitting the formal definition.
+Falsifier C qualifies as a language due to having syntax, requiring parsing, and maintaining a distance from concept of 2. It also does not have identity and cannot be held, satisfying all necessary language conditions.
 
 ---
 
@@ -67,7 +67,16 @@ Falsifier C qualifies as a language since it has syntax, requires parsing, and m
 **Category:** Natural Language
 **Classification:** ✓ Language
 
-English qualifies as a language because it possesses syntax, requires parsing, and meets the distance from concept criteria. It also cannot be held and has no identity, fulfilling all aspects of the formal definition.
+English qualifies as a language because it has syntax, requires parsing, and has a distance from concept of 2. It also does not have identity and cannot be held, meeting all the formal definition requirements.
+
+---
+
+## Airtable - Editing
+
+**Category:** Running Software
+**Classification:** ✗ Not a Language
+
+Airtable - Editing does not qualify as a language because, despite requiring parsing, it lacks syntax and can be held. It also has identity, which disqualifies it from being considered a language.
 
 ---
 
@@ -76,70 +85,7 @@ English qualifies as a language because it possesses syntax, requires parsing, a
 **Category:** Natural Language
 **Classification:** ✓ Language
 
-Spoken Words qualify as a language due to their syntax, parsing requirements, and the appropriate distance from concept. They also cannot be held and have no identity, aligning perfectly with the definition of a language.
-
----
-
-## A Chair 
-
-**Category:** Physical Object
-**Classification:** ✗ Not a Language
-
-[Profile for A Chair  not generated]
-
----
-
-## A Game of Fortnite
-
-**Category:** Running Software
-**Classification:** ✗ Not a Language
-
-A Game of Fortnite does not qualify as a language because it has identity and can be held, which contradicts the definition. It also lacks syntax, despite requiring parsing.
-
----
-
-## Sign Language
-
-**Category:** Natural Language
-**Classification:** ✓ Language
-
-Sign Language qualifies as a language as it has syntax, requires parsing, and meets the distance from concept requirement. It cannot be held and has no identity, making it compliant with the formal definition.
-
----
-
-## Python
-
-**Category:** Formal Language
-**Classification:** ✓ Language
-
-Python qualifies as a language because it has syntax, requires parsing, and meets the distance from concept criteria. It also cannot be held and has no identity, fulfilling all aspects of the formal definition.
-
----
-
-## A Smartphone
-
-**Category:** Physical Object
-**Classification:** ✗ Not a Language
-
-A Smartphone does not qualify as a language because it can be held and has identity, which disqualifies it from being considered a language. Additionally, it lacks syntax and does not require parsing.
-
----
-
-## A CSV File
-
-**Category:** Formal Language
-**Classification:** ✓ Language
-
-A CSV File qualifies as a language because it has syntax, requires parsing, and meets the distance from concept requirement. It also cannot be held and has no identity, aligning with the formal definition of a language.
-
----
-
-## OWL/RDF/GraphQL/... generally
-
-**Category:** Natural Language
-**Classification:** ✓ Language
-
-OWL/RDF/GraphQL/... generally qualifies as a language due to its syntax, parsing requirements, and appropriate distance from concept. It also cannot be held and has no identity, fitting the definition of a language.
+Spoken Words qualifies as a language because it has syntax, requires parsing, and maintains a distance from concept of 2. Additionally, it does not have identity and cannot be held, thus meeting all the necessary criteria.
 
 ---
 
@@ -148,7 +94,61 @@ OWL/RDF/GraphQL/... generally qualifies as a language due to its syntax, parsing
 **Category:** Physical Object
 **Classification:** ✗ Not a Language
 
-A Coffee Mug does not qualify as a language because it can be held and has identity, which are disqualifying factors. It also lacks syntax and does not require parsing.
+A Coffee Mug does not qualify as a language because it can be held and has identity. It also lacks syntax and does not require parsing, failing to meet multiple language criteria.
+
+---
+
+## A Game of Fortnite
+
+**Category:** Running Software
+**Classification:** ✗ Not a Language
+
+A Game of Fortnite does not qualify as a language because it has identity and can be held. Although it requires parsing, it lacks syntax, which is essential for qualifying as a language.
+
+---
+
+## Sign Language
+
+**Category:** Natural Language
+**Classification:** ✓ Language
+
+Sign Language qualifies as a language due to having syntax, requiring parsing, and maintaining a distance from concept of 2. It does not have identity and cannot be held, fulfilling all the criteria needed for a language.
+
+---
+
+## Python
+
+**Category:** Formal Language
+**Classification:** ✓ Language
+
+Python qualifies as a language because it has syntax, requires parsing, and has a distance from concept of 2. It also does not have identity and cannot be held, meeting all the formal definition requirements.
+
+---
+
+## A Smartphone
+
+**Category:** Physical Object
+**Classification:** ✗ Not a Language
+
+A Smartphone does not qualify as a language because it can be held and has identity. It also lacks syntax and does not require parsing, failing to meet several key criteria.
+
+---
+
+## A CSV File
+
+**Category:** Formal Language
+**Classification:** ✓ Language
+
+A CSV File qualifies as a language due to having syntax, requiring parsing, and maintaining a distance from concept of 2. It also does not have identity and cannot be held, thus meeting all necessary criteria.
+
+---
+
+## OWL/RDF/GraphQL/... generally
+
+**Category:** Natural Language
+**Classification:** ✓ Language
+
+OWL/RDF/GraphQL generally qualifies as a language because it has syntax, requires parsing, and has a distance from concept of 2. Additionally, it does not have identity and cannot be held, fulfilling all the necessary conditions.
 
 ---
 
@@ -157,7 +157,7 @@ A Coffee Mug does not qualify as a language because it can be held and has ident
 **Category:** Physical event
 **Classification:** ✗ Not a Language
 
-A Thunderstorm does not qualify as a language because it can be held and has identity, which disqualifies it from being considered a language. Additionally, it lacks syntax and does not require parsing.
+A Thunderstorm does not qualify as a language because it can be held and has identity. Although it requires parsing, it lacks syntax, which is essential for qualifying as a language.
 
 ---
 
@@ -166,7 +166,7 @@ A Thunderstorm does not qualify as a language because it can be held and has ide
 **Category:** Formal Language
 **Classification:** ✓ Language
 
-A UML File qualifies as a language because it has syntax, requires parsing, and meets the distance from concept criteria. It also cannot be held and has no identity, fulfilling all aspects of the formal definition.
+A UML File qualifies as a language due to having syntax, requiring parsing, and maintaining a distance from concept of 2. It also does not have identity and cannot be held, thus meeting all necessary criteria.
 
 ---
 
@@ -175,7 +175,7 @@ A UML File qualifies as a language because it has syntax, requires parsing, and 
 **Category:** Formal Language
 **Classification:** ✓ Language
 
-Binary Code qualifies as a language due to its syntax, parsing requirements, and appropriate distance from concept. It also cannot be held and has no identity, making it compliant with the formal definition.
+Binary Code qualifies as a language because it has syntax, requires parsing, and maintains a distance from concept of 2. It does not have identity and cannot be held, fulfilling all the criteria needed for a language.
 
 ---
 
@@ -184,7 +184,7 @@ Binary Code qualifies as a language due to its syntax, parsing requirements, and
 **Category:** Physical Object
 **Classification:** ✗ Not a Language
 
-The Mona Lisa does not qualify as a language because it can be held and has identity, which are both disqualifying factors. Additionally, it lacks syntax and does not require parsing.
+The Mona Lisa does not qualify as a language because it can be held and has identity. It also lacks syntax and does not require parsing, failing to meet multiple key criteria.
 
 ---
 
@@ -193,7 +193,7 @@ The Mona Lisa does not qualify as a language because it can be held and has iden
 **Category:** Running Software
 **Classification:** ✗ Not a Language
 
-Running Calculator App does not qualify as a language because it has identity and can be held, which contradicts the definition. It also lacks syntax, despite requiring parsing.
+Running Calculator App does not qualify as a language because it has identity and can be held. Although it requires parsing, it lacks syntax, which is essential for qualifying as a language.
 
 ---
 
@@ -202,7 +202,7 @@ Running Calculator App does not qualify as a language because it has identity an
 **Category:** Formal Language
 **Classification:** ✓ Language
 
-JavaScript qualifies as a language because it has syntax, requires parsing, and meets the distance from concept criteria. It also cannot be held and has no identity, fulfilling all aspects of the formal definition.
+JavaScript qualifies as a language due to having syntax, requiring parsing, and maintaining a distance from concept of 2. It does not have identity and cannot be held, thus meeting all necessary criteria.
 
 ---
 
@@ -211,7 +211,7 @@ JavaScript qualifies as a language because it has syntax, requires parsing, and 
 **Category:** Natural Language
 **Classification:** ✓ Language
 
-French qualifies as a language as it possesses syntax, requires parsing, and meets the distance from concept requirement. It also cannot be held and has no identity, aligning perfectly with the definition of a language.
+French qualifies as a language because it has syntax, requires parsing, and has a distance from concept of 2. It also does not have identity and cannot be held, meeting all the formal definition requirements.
 
 ---
 
@@ -229,16 +229,16 @@ French qualifies as a language as it possesses syntax, requires parsing, and mee
 **Category:** Formal Language
 **Classification:** ✓ Language
 
-An XLSX Doc qualifies as a language because it has syntax, requires parsing, and meets the distance from concept criteria. It also cannot be held and has no identity, fulfilling all aspects of the formal definition.
+An XLSX Doc qualifies as a language due to having syntax, requiring parsing, and maintaining a distance from concept of 2. It also does not have identity and cannot be held, thus meeting all necessary criteria.
 
 ---
 
-## Editing an XLSX Doc
+## XLSX - Editing
 
 **Category:** Running Software
 **Classification:** ✗ Not a Language
 
-Editing an XLSX Doc does not qualify as a language because it lacks syntax and does not require parsing, which are essential to the definition. It also has identity and cannot be held.
+XLSX - Editing does not qualify as a language because it lacks syntax and cannot be held. Although it requires parsing, it has identity, which disqualifies it from being considered a language.
 
 ---
 
@@ -247,15 +247,15 @@ Editing an XLSX Doc does not qualify as a language because it lacks syntax and d
 **Category:** Formal Language
 **Classification:** ✓ Language
 
-An DOCX Doc qualifies as a language because it has syntax, requires parsing, and meets the distance from concept criteria. It also cannot be held and has no identity, fulfilling all aspects of the formal definition.
+An DOCX Doc qualifies as a language because it has syntax, requires parsing, and maintains a distance from concept of 2. It also does not have identity and cannot be held, meeting all the formal definition requirements.
 
 ---
 
-## Editing an DOCX Doc
+## DOCX - Editing
 
 **Category:** Running Software
 **Classification:** ✗ Not a Language
 
-Editing an DOCX Doc does not qualify as a language because it lacks syntax and does not require parsing, which are essential to the definition. It also has identity and cannot be held.
+DOCX - Editing does not qualify as a language because it lacks syntax and cannot be held. Although it requires parsing, it has identity, which disqualifies it from being considered a language.
 
 ---

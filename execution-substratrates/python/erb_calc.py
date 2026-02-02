@@ -39,17 +39,18 @@ def calc_relationship_to_concept(distance_from_concept):
 # LEVEL 2 CALCULATIONS
 # =============================================================================
 
-def calc_top_family_feud_answer(has_syntax, requires_parsing, is_description_of, has_linear_decoding_pressure, is_stable_ontology_reference, can_be_held, has_identity):
+def calc_top_family_feud_answer(has_syntax, requires_parsing, is_description_of, has_linear_decoding_pressure, resolves_to_an_ast, is_stable_ontology_reference, can_be_held, has_identity):
     """Formula: =AND(
   {{HasSyntax}},
   {{RequiresParsing}},
   {{IsDescriptionOf}},
   {{HasLinearDecodingPressure}},
+  {{ResolvesToAnAST}},
   {{IsStableOntologyReference}},
   NOT({{CanBeHeld}}),
   NOT({{HasIdentity}})
 )"""
-    return ((has_syntax is True) and (requires_parsing is True) and (is_description_of is True) and (has_linear_decoding_pressure is True) and (is_stable_ontology_reference is True) and (can_be_held is not True) and (has_identity is not True))
+    return ((has_syntax is True) and (requires_parsing is True) and (is_description_of is True) and (has_linear_decoding_pressure is True) and (resolves_to_an_ast is True) and (is_stable_ontology_reference is True) and (can_be_held is not True) and (has_identity is not True))
 
 
 # =============================================================================
@@ -82,7 +83,7 @@ def compute_all_calculated_fields(record: dict) -> dict:
     result['relationship_to_concept'] = calc_relationship_to_concept(result.get('distance_from_concept'))
 
     # Level 2 calculations
-    result['top_family_feud_answer'] = calc_top_family_feud_answer(result.get('has_syntax'), result.get('requires_parsing'), result.get('is_description_of'), result.get('has_linear_decoding_pressure'), result.get('is_stable_ontology_reference'), result.get('can_be_held'), result.get('has_identity'))
+    result['top_family_feud_answer'] = calc_top_family_feud_answer(result.get('has_syntax'), result.get('requires_parsing'), result.get('is_description_of'), result.get('has_linear_decoding_pressure'), result.get('resolves_to_an_ast'), result.get('is_stable_ontology_reference'), result.get('can_be_held'), result.get('has_identity'))
 
     # Level 3 calculations
     result['family_feud_mismatch'] = calc_family_feud_mismatch(result.get('top_family_feud_answer'), result.get('chosen_language_candidate'), result.get('name'), result.get('is_open_closed_world_conflicted'))

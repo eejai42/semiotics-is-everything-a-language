@@ -6,8 +6,8 @@ context LanguageCandidates
 -- Formula: ="Is " & {{Name}} & " a language?"
 derive FamilyFuedQuestion: 'Is ' + self.name + ' a language?'
 
--- Formula: =AND(   {{HasSyntax}},   {{RequiresParsing}},   {{IsDescriptionOf}},   {{HasLinearDecodingPressure}},   {{IsStableOntologyReference}},   NOT({{CanBeHeld}}),   NOT({{HasIdentity}}) )
-derive TopFamilyFeudAnswer: (self.hasSyntax and self.requiresParsing and self.isDescriptionOf and self.hasLinearDecodingPressure and self.isStableOntologyReference and not (self.canBeHeld) and not (self.hasIdentity))
+-- Formula: =AND(   {{HasSyntax}},   {{RequiresParsing}},   {{IsDescriptionOf}},   {{HasLinearDecodingPressure}},   {{ResolvesToAnAST}},   {{IsStableOntologyReference}},   NOT({{CanBeHeld}}),   NOT({{HasIdentity}}) )
+derive TopFamilyFeudAnswer: (self.hasSyntax and self.requiresParsing and self.isDescriptionOf and self.hasLinearDecodingPressure and self.resolvesToAnAST and self.isStableOntologyReference and not (self.canBeHeld) and not (self.hasIdentity))
 
 -- Formula: =IF(NOT({{TopFamilyFeudAnswer}} = {{ChosenLanguageCandidate}}),   {{Name}} & " " & IF({{TopFamilyFeudAnswer}}, "Is", "Isn't") & " a Family Feud Language, but " &    IF({{ChosenLanguageCandidate}}, "Is", "Is Not") & " marked as a 'Language Candidate.'") & IF({{IsOpenClosedWorldConflicted}}, " - Open World vs. Closed World Conflict.")
 derive FamilyFeudMismatch: if not ((self.topFamilyFeudAnswer = self.chosenLanguageCandidate)) then self.name + ' ' + if self.topFamilyFeudAnswer then 'Is' else 'Isn\'t' endif + ' a Family Feud Language, but ' + if self.chosenLanguageCandidate then 'Is' else 'Is Not' endif + ' marked as a \'Language Candidate.\'' else '' endif + if self.isOpenClosedWorldConflicted then ' - Open World vs. Closed World Conflict.' else '' endif

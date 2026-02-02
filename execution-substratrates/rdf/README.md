@@ -2,9 +2,21 @@
 
 RDF (Resource Description Framework) execution substrate for the Effortless Rulebook.
 
-## Status: Planned
+## Current Status
 
-The current implementation is a placeholder. This document describes how to implement genuine RDF+SPARQL computation.
+**Implemented and fully functional.** The compiler generates RDFS schema, RDF data triples, and SPARQL CONSTRUCT queries from rulebook formulas. The test runner uses rdflib to execute the SPARQL queries and compute derived values.
+
+Current test score: **100%** - All calculated fields pass.
+
+## Running
+
+```bash
+# Generate RDF schema, data, and SPARQL queries
+python3 inject-into-rdf.py
+
+# Run tests (rdflib executes SPARQL CONSTRUCT queries)
+./take-test.sh
+```
 
 ## Can RDF Actually Compute?
 
@@ -390,6 +402,41 @@ Python only provides scaffolding - the actual computation is performed by the SP
 - Built-in functions: CONCAT, IF, CONTAINS, LCASE, etc.
 
 **rdflib** is the standard Python library for RDF, with a built-in SPARQL engine.
+
+## Generated Files
+
+| File | Description |
+|------|-------------|
+| `schema.ttl` | **GENERATED** - RDFS schema (classes and properties) |
+| `data.ttl` | **GENERATED** - RDF triples (raw data values) |
+| `queries.sparql` | **GENERATED** - SPARQL CONSTRUCT queries for calculations |
+| `test-answers.json` | **GENERATED** - Test execution results for grading |
+| `test-results.md` | **GENERATED** - Human-readable test report |
+
+## Source Files (Not Cleaned)
+
+| File | Description |
+|------|-------------|
+| `inject-into-rdf.py` | The compiler: parses formulas and generates RDF/SPARQL |
+| `inject-substrate.sh` | Shell wrapper for orchestration |
+| `take-test.py` | Test runner using rdflib SPARQL engine |
+| `take-test.sh` | Shell wrapper for test runner |
+| `README.md` | This documentation |
+
+## Cleaning
+
+To remove all generated files:
+
+```bash
+python3 inject-into-rdf.py --clean
+```
+
+This will remove:
+- `schema.ttl`
+- `data.ttl`
+- `queries.sparql`
+- `test-answers.json`
+- `test-results.md`
 
 ## Source
 

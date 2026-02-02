@@ -661,10 +661,21 @@ def compile_to_go(ast: ASTNode, struct_name: str = 'lc') -> str:
             # Field ref compared to integer - need nil check and dereference
             left_field = ast.left.name
             right = compile_to_go(ast.right, struct_name)
+            op_go = {'=': '==', '<>': '!=', '<': '<', '<=': '<=', '>': '>', '>=': '>='}[ast.op]
             if ast.op == '=':
                 return f'({struct_name}.{left_field} != nil && *{struct_name}.{left_field} == {right})'
             elif ast.op == '<>':
                 return f'({struct_name}.{left_field} == nil || *{struct_name}.{left_field} != {right})'
+            else:
+                # For <, <=, >, >= - nil is treated as false (0 comparison semantics)
+                return f'({struct_name}.{left_field} != nil && *{struct_name}.{left_field} {op_go} {right})'
+
+        if isinstance(ast.left, FieldRef) and isinstance(ast.right, LiteralBool):
+            # Field ref compared to boolean literal - use boolVal for nil-safe access
+            left = compile_to_go(ast.left, struct_name)
+            right = compile_to_go(ast.right, struct_name)
+            op_map = {'=': '==', '<>': '!='}
+            return f'(boolVal({left}) {op_map[ast.op]} {right})'
 
         left = compile_to_go(ast.left, struct_name)
         right = compile_to_go(ast.right, struct_name)

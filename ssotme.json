@@ -43,77 +43,77 @@
       "Name": "rulebooktopython",
       "RelativePath": "/execution-substratrates/python",
       "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
+      "IsDisabled": true
     },
     {
       "IsSSoTTranspiler": false,
       "Name": "rulebooktoenglish",
       "RelativePath": "/execution-substratrates/english",
       "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
+      "IsDisabled": true
     },
     {
       "IsSSoTTranspiler": false,
       "Name": "rulebooktogolang",
       "RelativePath": "/execution-substratrates/golang",
       "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
+      "IsDisabled": true
     },
     {
       "IsSSoTTranspiler": false,
       "Name": "rulebooktobinary",
       "RelativePath": "/execution-substratrates/binary",
       "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
+      "IsDisabled": true
     },
     {
       "IsSSoTTranspiler": false,
       "Name": "rulebooktocsv",
       "RelativePath": "/execution-substratrates/csv",
       "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
+      "IsDisabled": true
     },
     {
       "IsSSoTTranspiler": false,
       "Name": "rulebooktouml",
       "RelativePath": "/execution-substratrates/uml",
       "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
+      "IsDisabled": true
     },
     {
       "IsSSoTTranspiler": false,
       "Name": "rulebooktoowl",
       "RelativePath": "/execution-substratrates/owl",
       "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
+      "IsDisabled": true
     },
     {
       "IsSSoTTranspiler": false,
       "Name": "rulebooktordf",
       "RelativePath": "/execution-substratrates/rdf",
       "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
+      "IsDisabled": true
     },
     {
       "IsSSoTTranspiler": false,
       "Name": "rulebooktographql",
       "RelativePath": "/execution-substratrates/graphql",
       "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
+      "IsDisabled": true
     },
     {
       "IsSSoTTranspiler": false,
       "Name": "rulebooktoyaml",
       "RelativePath": "/execution-substratrates/yaml",
       "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
+      "IsDisabled": true
     },
     {
       "IsSSoTTranspiler": false,
       "Name": "rulebooktoxlsx",
       "RelativePath": "/execution-substratrates/xlsx",
       "CommandLine": "-exec ./inject-substrate.sh",
-      "IsDisabled": false
+      "IsDisabled": true
     },
     {
       "IsSSoTTranspiler": false,

@@ -8,19 +8,19 @@
 
 ## Summary by Substrate
 
-| Substrate | Passed | Failed | Total | Score | Status |
-|-----------|--------|--------|-------|-------|--------|
-| binary | 101 | 24 | 125 | 80.8% | FAIL |
-| csv | 125 | 0 | 125 | 100.0% | PASS |
-| english | 113 | 12 | 125 | 90.4% | FAIL |
-| golang | 97 | 28 | 125 | 77.6% | FAIL |
-| graphql | 125 | 0 | 125 | 100.0% | PASS |
-| owl | 125 | 0 | 125 | 100.0% | PASS |
-| python | 125 | 0 | 125 | 100.0% | PASS |
-| rdf | 125 | 0 | 125 | 100.0% | PASS |
-| uml | 125 | 0 | 125 | 100.0% | PASS |
-| xlsx | 125 | 0 | 125 | 100.0% | PASS |
-| yaml | 125 | 0 | 125 | 100.0% | PASS |
+| Substrate | Passed | Failed | Total | Score | Duration | Status |
+|-----------|--------|--------|-------|-------|----------|--------|
+| binary | 87 | 38 | 125 | 69.6% | 292ms | FAIL |
+| csv | 125 | 0 | 125 | 100.0% | 220ms | PASS |
+| english | 113 | 12 | 125 | 90.4% | 16.33s | FAIL |
+| golang | 125 | 0 | 125 | 100.0% | 121ms | PASS |
+| graphql | 125 | 0 | 125 | 100.0% | 112ms | PASS |
+| owl | 125 | 0 | 125 | 100.0% | 2.19s | PASS |
+| python | 125 | 0 | 125 | 100.0% | 113ms | PASS |
+| rdf | 125 | 0 | 125 | 100.0% | 264ms | PASS |
+| uml | 125 | 0 | 125 | 100.0% | 100ms | PASS |
+| xlsx | 125 | 0 | 125 | 100.0% | 329ms | PASS |
+| yaml | 125 | 0 | 125 | 100.0% | 95ms | PASS |
 
 ## Overall Statistics
 
@@ -28,15 +28,16 @@
 |--------|-------|
 | Total Substrates | 11 |
 | Total Fields Tested | 1375 |
-| Total Passed | 1311 |
-| Total Failed | 64 |
-| Overall Score | 95.3% |
+| Total Passed | 1325 |
+| Total Failed | 50 |
+| Overall Score | 96.4% |
+| Total Duration | 20.16s |
 
 ## Summary by Test
 
 | Test (Computed Column) | Substrates Passing | Substrates Failing | Pass Rate |
 |------------------------|--------------------|--------------------|-----------|
-| `family_feud_mismatch` | 8 | 3 | 72.7% |
+| `family_feud_mismatch` | 9 | 2 | 81.8% |
 | `family_fued_question` | 11 | 0 | 100.0% |
 | `top_family_feud_answer` | 10 | 1 | 90.9% |
 | `relationship_to_concept` | 10 | 1 | 90.9% |
@@ -45,15 +46,15 @@
 ### Test Details
 
 **`family_feud_mismatch`**
-- Passing: csv, graphql, owl, python, rdf, uml, xlsx, yaml
-- Failing: binary, english, golang
+- Passing: csv, golang, graphql, owl, python, rdf, uml, xlsx, yaml
+- Failing: binary, english
 
 **`family_fued_question`**
 - Passing: binary, csv, english, golang, graphql, owl, python, rdf, uml, xlsx, yaml
 
 **`top_family_feud_answer`**
-- Passing: binary, csv, english, graphql, owl, python, rdf, uml, xlsx, yaml
-- Failing: golang
+- Passing: csv, english, golang, graphql, owl, python, rdf, uml, xlsx, yaml
+- Failing: binary
 
 **`relationship_to_concept`**
 - Passing: binary, csv, golang, graphql, owl, python, rdf, uml, xlsx, yaml

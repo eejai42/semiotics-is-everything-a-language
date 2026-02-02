@@ -224,12 +224,15 @@ erb:LanguageCandidates_0 a erb:LanguageCandidates ;
     erb:hasIdentity false ;
     erb:canBeHeld false ;
     erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
     erb:hasLinearDecodingPressure true ;
     erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "N/A" ;
     erb:isOpenWorld false ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M1" ;
     erb:sortOrder 0 .
 
 erb:LanguageCandidates_1 a erb:LanguageCandidates ;
@@ -241,12 +244,15 @@ erb:LanguageCandidates_1 a erb:LanguageCandidates ;
     erb:hasIdentity true ;
     erb:canBeHeld true ;
     erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
     erb:hasLinearDecodingPressure false ;
     erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "N/A" ;
     erb:isOpenWorld false ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 1 ;
+    erb:modelObjectFacilityLayer "NA" ;
     erb:sortOrder 1 .
 
 erb:LanguageCandidates_2 a erb:LanguageCandidates ;
@@ -258,12 +264,15 @@ erb:LanguageCandidates_2 a erb:LanguageCandidates ;
     erb:hasIdentity false ;
     erb:canBeHeld false ;
     erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
     erb:hasLinearDecodingPressure true ;
     erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
     erb:isOpenWorld true ;
     erb:isClosedWorld true ;
     erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M1" ;
     erb:sortOrder 2 .
 
 erb:LanguageCandidates_3 a erb:LanguageCandidates ;
@@ -275,15 +284,38 @@ erb:LanguageCandidates_3 a erb:LanguageCandidates ;
     erb:hasIdentity false ;
     erb:canBeHeld false ;
     erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
     erb:hasLinearDecodingPressure true ;
     erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
     erb:isOpenWorld true ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M1" ;
     erb:sortOrder 3 .
 
 erb:LanguageCandidates_4 a erb:LanguageCandidates ;
+    erb:languageCandidateId "airtable-editing" ;
+    erb:name "Airtable - Editing" ;
+    erb:category "Running Software" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld false ;
+    erb:requiresParsing false ;
+    erb:resolvesToAnAST true ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor true ;
+    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M4" ;
+    erb:sortOrder 3 .
+
+erb:LanguageCandidates_5 a erb:LanguageCandidates ;
     erb:languageCandidateId "spoken-words" ;
     erb:name "Spoken Words" ;
     erb:category "Natural Language" ;
@@ -292,219 +324,18 @@ erb:LanguageCandidates_4 a erb:LanguageCandidates ;
     erb:hasIdentity false ;
     erb:canBeHeld false ;
     erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
     erb:hasLinearDecodingPressure true ;
     erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
     erb:isOpenWorld true ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M1" ;
     erb:sortOrder 4 .
 
-erb:LanguageCandidates_5 a erb:LanguageCandidates ;
-    erb:languageCandidateId "a-chair" ;
-    erb:name "A Chair " ;
-    erb:category "Physical Object" ;
-    erb:chosenLanguageCandidate false ;
-    erb:hasSyntax false ;
-    erb:hasIdentity true ;
-    erb:canBeHeld true ;
-    erb:requiresParsing false ;
-    erb:hasLinearDecodingPressure false ;
-    erb:isStableOntologyReference false ;
-    erb:dimensionalityWhileEditing "N/A" ;
-    erb:isOpenWorld false ;
-    erb:isClosedWorld true ;
-    erb:distanceFromConcept 1 ;
-    erb:sortOrder 5 .
-
 erb:LanguageCandidates_6 a erb:LanguageCandidates ;
-    erb:languageCandidateId "a-game-of-fortnite" ;
-    erb:name "A Game of Fortnite" ;
-    erb:category "Running Software" ;
-    erb:chosenLanguageCandidate false ;
-    erb:hasSyntax false ;
-    erb:hasIdentity true ;
-    erb:canBeHeld false ;
-    erb:requiresParsing true ;
-    erb:hasLinearDecodingPressure false ;
-    erb:isStableOntologyReference false ;
-    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
-    erb:isOpenWorld false ;
-    erb:isClosedWorld true ;
-    erb:distanceFromConcept 1 ;
-    erb:sortOrder 6 .
-
-erb:LanguageCandidates_7 a erb:LanguageCandidates ;
-    erb:languageCandidateId "sign-language" ;
-    erb:name "Sign Language" ;
-    erb:category "Natural Language" ;
-    erb:chosenLanguageCandidate true ;
-    erb:hasSyntax true ;
-    erb:hasIdentity false ;
-    erb:canBeHeld false ;
-    erb:requiresParsing true ;
-    erb:hasLinearDecodingPressure true ;
-    erb:isStableOntologyReference true ;
-    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
-    erb:isOpenWorld true ;
-    erb:isClosedWorld false ;
-    erb:distanceFromConcept 2 ;
-    erb:sortOrder 7 .
-
-erb:LanguageCandidates_8 a erb:LanguageCandidates ;
-    erb:languageCandidateId "python" ;
-    erb:name "Python" ;
-    erb:category "Formal Language" ;
-    erb:chosenLanguageCandidate true ;
-    erb:hasSyntax true ;
-    erb:hasIdentity false ;
-    erb:canBeHeld false ;
-    erb:requiresParsing true ;
-    erb:hasLinearDecodingPressure true ;
-    erb:isStableOntologyReference true ;
-    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
-    erb:isOpenWorld true ;
-    erb:isClosedWorld false ;
-    erb:distanceFromConcept 2 ;
-    erb:sortOrder 8 .
-
-erb:LanguageCandidates_9 a erb:LanguageCandidates ;
-    erb:languageCandidateId "a-smartphone" ;
-    erb:name "A Smartphone" ;
-    erb:category "Physical Object" ;
-    erb:chosenLanguageCandidate false ;
-    erb:hasSyntax false ;
-    erb:hasIdentity true ;
-    erb:canBeHeld true ;
-    erb:requiresParsing false ;
-    erb:hasLinearDecodingPressure true ;
-    erb:isStableOntologyReference false ;
-    erb:dimensionalityWhileEditing "N/A" ;
-    erb:isOpenWorld false ;
-    erb:isClosedWorld true ;
-    erb:distanceFromConcept 1 ;
-    erb:sortOrder 9 .
-
-erb:LanguageCandidates_10 a erb:LanguageCandidates ;
-    erb:languageCandidateId "a-running-app" ;
-    erb:name "A Running App " ;
-    erb:category "Running Software" ;
-    erb:chosenLanguageCandidate false ;
-    erb:hasSyntax false ;
-    erb:hasIdentity true ;
-    erb:canBeHeld false ;
-    erb:requiresParsing true ;
-    erb:hasLinearDecodingPressure true ;
-    erb:isStableOntologyReference false ;
-    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
-    erb:isOpenWorld false ;
-    erb:isClosedWorld true ;
-    erb:distanceFromConcept 1 ;
-    erb:sortOrder 22 .
-
-erb:LanguageCandidates_11 a erb:LanguageCandidates ;
-    erb:languageCandidateId "an-xlsx-doc" ;
-    erb:name "An XLSX Doc" ;
-    erb:category "Formal Language" ;
-    erb:chosenLanguageCandidate true ;
-    erb:hasSyntax true ;
-    erb:hasIdentity false ;
-    erb:canBeHeld false ;
-    erb:requiresParsing true ;
-    erb:hasLinearDecodingPressure true ;
-    erb:isStableOntologyReference true ;
-    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
-    erb:isOpenWorld false ;
-    erb:isClosedWorld false ;
-    erb:distanceFromConcept 2 ;
-    erb:sortOrder 23 .
-
-erb:LanguageCandidates_12 a erb:LanguageCandidates ;
-    erb:languageCandidateId "editing-an-xlsx-doc" ;
-    erb:name "Editing an XLSX Doc" ;
-    erb:category "Running Software" ;
-    erb:chosenLanguageCandidate false ;
-    erb:hasSyntax false ;
-    erb:hasIdentity false ;
-    erb:canBeHeld false ;
-    erb:requiresParsing false ;
-    erb:hasLinearDecodingPressure false ;
-    erb:isStableOntologyReference false ;
-    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
-    erb:isOpenWorld false ;
-    erb:isClosedWorld false ;
-    erb:distanceFromConcept 1 ;
-    erb:sortOrder 24 .
-
-erb:LanguageCandidates_13 a erb:LanguageCandidates ;
-    erb:languageCandidateId "an-docx-doc" ;
-    erb:name "An DOCX Doc" ;
-    erb:category "Formal Language" ;
-    erb:chosenLanguageCandidate true ;
-    erb:hasSyntax true ;
-    erb:hasIdentity false ;
-    erb:canBeHeld false ;
-    erb:requiresParsing true ;
-    erb:hasLinearDecodingPressure true ;
-    erb:isStableOntologyReference true ;
-    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
-    erb:isOpenWorld false ;
-    erb:isClosedWorld false ;
-    erb:distanceFromConcept 2 ;
-    erb:sortOrder 25 .
-
-erb:LanguageCandidates_14 a erb:LanguageCandidates ;
-    erb:languageCandidateId "editing-an-docx-doc" ;
-    erb:name "Editing an DOCX Doc" ;
-    erb:category "Running Software" ;
-    erb:chosenLanguageCandidate false ;
-    erb:hasSyntax false ;
-    erb:hasIdentity false ;
-    erb:canBeHeld false ;
-    erb:requiresParsing false ;
-    erb:hasLinearDecodingPressure false ;
-    erb:isStableOntologyReference true ;
-    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
-    erb:isOpenWorld false ;
-    erb:isClosedWorld false ;
-    erb:distanceFromConcept 1 ;
-    erb:sortOrder 25 .
-
-erb:LanguageCandidates_15 a erb:LanguageCandidates ;
-    erb:languageCandidateId "a-csv-file" ;
-    erb:name "A CSV File" ;
-    erb:category "Formal Language" ;
-    erb:chosenLanguageCandidate true ;
-    erb:hasSyntax true ;
-    erb:hasIdentity false ;
-    erb:canBeHeld false ;
-    erb:requiresParsing true ;
-    erb:hasLinearDecodingPressure true ;
-    erb:isStableOntologyReference true ;
-    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
-    erb:isOpenWorld true ;
-    erb:isClosedWorld false ;
-    erb:distanceFromConcept 2 ;
-    erb:sortOrder 10 .
-
-erb:LanguageCandidates_16 a erb:LanguageCandidates ;
-    erb:languageCandidateId "owl-rdf-graphql-generally" ;
-    erb:name "OWL/RDF/GraphQL/... generally" ;
-    erb:category "Natural Language" ;
-    erb:chosenLanguageCandidate true ;
-    erb:hasSyntax true ;
-    erb:hasIdentity false ;
-    erb:canBeHeld false ;
-    erb:requiresParsing true ;
-    erb:hasLinearDecodingPressure true ;
-    erb:isStableOntologyReference true ;
-    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
-    erb:isOpenWorld false ;
-    erb:isClosedWorld true ;
-    erb:distanceFromConcept 2 ;
-    erb:sortOrder 11 .
-
-erb:LanguageCandidates_17 a erb:LanguageCandidates ;
     erb:languageCandidateId "a-coffee-mug" ;
     erb:name "A Coffee Mug" ;
     erb:category "Physical Object" ;
@@ -513,13 +344,236 @@ erb:LanguageCandidates_17 a erb:LanguageCandidates ;
     erb:hasIdentity true ;
     erb:canBeHeld true ;
     erb:requiresParsing false ;
+    erb:resolvesToAnAST false ;
     erb:hasLinearDecodingPressure false ;
     erb:isStableOntologyReference false ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "N/A" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 1 ;
+    erb:modelObjectFacilityLayer "NA" ;
+    erb:sortOrder 5 .
+
+erb:LanguageCandidates_7 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-game-of-fortnite" ;
+    erb:name "A Game of Fortnite" ;
+    erb:category "Running Software" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference false ;
+    erb:isLiveOntologyEditor false ;
+    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 1 ;
+    erb:modelObjectFacilityLayer "M4" ;
+    erb:sortOrder 6 .
+
+erb:LanguageCandidates_8 a erb:LanguageCandidates ;
+    erb:languageCandidateId "sign-language" ;
+    erb:name "Sign Language" ;
+    erb:category "Natural Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld true ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M1" ;
+    erb:sortOrder 7 .
+
+erb:LanguageCandidates_9 a erb:LanguageCandidates ;
+    erb:languageCandidateId "python" ;
+    erb:name "Python" ;
+    erb:category "Formal Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld true ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M1" ;
+    erb:sortOrder 8 .
+
+erb:LanguageCandidates_10 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-smartphone" ;
+    erb:name "A Smartphone" ;
+    erb:category "Physical Object" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld true ;
+    erb:requiresParsing false ;
+    erb:resolvesToAnAST false ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference false ;
+    erb:isLiveOntologyEditor false ;
+    erb:dimensionalityWhileEditing "N/A" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 1 ;
+    erb:modelObjectFacilityLayer "NA" ;
+    erb:sortOrder 9 .
+
+erb:LanguageCandidates_11 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-running-app" ;
+    erb:name "A Running App " ;
+    erb:category "Running Software" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity true ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference false ;
+    erb:isLiveOntologyEditor true ;
+    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 1 ;
+    erb:modelObjectFacilityLayer "M4" ;
+    erb:sortOrder 22 .
+
+erb:LanguageCandidates_12 a erb:LanguageCandidates ;
+    erb:languageCandidateId "an-xlsx-doc" ;
+    erb:name "An XLSX Doc" ;
+    erb:category "Formal Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M2" ;
+    erb:sortOrder 23 .
+
+erb:LanguageCandidates_13 a erb:LanguageCandidates ;
+    erb:languageCandidateId "xlsx-editing" ;
+    erb:name "XLSX - Editing" ;
+    erb:category "Running Software" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing false ;
+    erb:resolvesToAnAST true ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference false ;
+    erb:isLiveOntologyEditor true ;
+    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
     erb:isOpenWorld false ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 1 ;
-    erb:sortOrder 12 .
+    erb:modelObjectFacilityLayer "M4" ;
+    erb:sortOrder 24 .
+
+erb:LanguageCandidates_14 a erb:LanguageCandidates ;
+    erb:languageCandidateId "an-docx-doc" ;
+    erb:name "An DOCX Doc" ;
+    erb:category "Formal Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M2" ;
+    erb:sortOrder 25 .
+
+erb:LanguageCandidates_15 a erb:LanguageCandidates ;
+    erb:languageCandidateId "docx-editing" ;
+    erb:name "DOCX - Editing" ;
+    erb:category "Running Software" ;
+    erb:chosenLanguageCandidate false ;
+    erb:hasSyntax false ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing false ;
+    erb:resolvesToAnAST false ;
+    erb:hasLinearDecodingPressure false ;
+    erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor true ;
+    erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 1 ;
+    erb:modelObjectFacilityLayer "M4" ;
+    erb:sortOrder 25 .
+
+erb:LanguageCandidates_16 a erb:LanguageCandidates ;
+    erb:languageCandidateId "a-csv-file" ;
+    erb:name "A CSV File" ;
+    erb:category "Formal Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld true ;
+    erb:isClosedWorld false ;
+    erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M2" ;
+    erb:sortOrder 10 .
+
+erb:LanguageCandidates_17 a erb:LanguageCandidates ;
+    erb:languageCandidateId "owl-rdf-graphql-generally" ;
+    erb:name "OWL/RDF/GraphQL/... generally" ;
+    erb:category "Natural Language" ;
+    erb:chosenLanguageCandidate true ;
+    erb:hasSyntax true ;
+    erb:hasIdentity false ;
+    erb:canBeHeld false ;
+    erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
+    erb:hasLinearDecodingPressure true ;
+    erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
+    erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
+    erb:isOpenWorld false ;
+    erb:isClosedWorld true ;
+    erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M2" ;
+    erb:sortOrder 11 .
 
 erb:LanguageCandidates_18 a erb:LanguageCandidates ;
     erb:languageCandidateId "a-thunderstorm" ;
@@ -530,12 +584,15 @@ erb:LanguageCandidates_18 a erb:LanguageCandidates ;
     erb:hasIdentity true ;
     erb:canBeHeld true ;
     erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
     erb:hasLinearDecodingPressure false ;
     erb:isStableOntologyReference false ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "N/A" ;
     erb:isOpenWorld false ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 1 ;
+    erb:modelObjectFacilityLayer "NA" ;
     erb:sortOrder 13 .
 
 erb:LanguageCandidates_19 a erb:LanguageCandidates ;
@@ -547,12 +604,15 @@ erb:LanguageCandidates_19 a erb:LanguageCandidates ;
     erb:hasIdentity false ;
     erb:canBeHeld false ;
     erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
     erb:hasLinearDecodingPressure true ;
     erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
     erb:isOpenWorld false ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M2" ;
     erb:sortOrder 14 .
 
 erb:LanguageCandidates_20 a erb:LanguageCandidates ;
@@ -564,12 +624,15 @@ erb:LanguageCandidates_20 a erb:LanguageCandidates ;
     erb:hasIdentity false ;
     erb:canBeHeld false ;
     erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
     erb:hasLinearDecodingPressure true ;
     erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
     erb:isOpenWorld false ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M2" ;
     erb:sortOrder 15 .
 
 erb:LanguageCandidates_21 a erb:LanguageCandidates ;
@@ -581,12 +644,15 @@ erb:LanguageCandidates_21 a erb:LanguageCandidates ;
     erb:hasIdentity true ;
     erb:canBeHeld true ;
     erb:requiresParsing false ;
+    erb:resolvesToAnAST false ;
     erb:hasLinearDecodingPressure false ;
     erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "N/A" ;
     erb:isOpenWorld false ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 1 ;
+    erb:modelObjectFacilityLayer "NA" ;
     erb:sortOrder 16 .
 
 erb:LanguageCandidates_22 a erb:LanguageCandidates ;
@@ -598,12 +664,15 @@ erb:LanguageCandidates_22 a erb:LanguageCandidates ;
     erb:hasIdentity true ;
     erb:canBeHeld false ;
     erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
     erb:hasLinearDecodingPressure false ;
     erb:isStableOntologyReference false ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "MultiDimensionalNonSymbolic" ;
     erb:isOpenWorld false ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 1 ;
+    erb:modelObjectFacilityLayer "M1" ;
     erb:sortOrder 17 .
 
 erb:LanguageCandidates_23 a erb:LanguageCandidates ;
@@ -615,12 +684,15 @@ erb:LanguageCandidates_23 a erb:LanguageCandidates ;
     erb:hasIdentity false ;
     erb:canBeHeld false ;
     erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
     erb:hasLinearDecodingPressure true ;
     erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
     erb:isOpenWorld false ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M1" ;
     erb:sortOrder 18 .
 
 erb:LanguageCandidates_24 a erb:LanguageCandidates ;
@@ -632,10 +704,13 @@ erb:LanguageCandidates_24 a erb:LanguageCandidates ;
     erb:hasIdentity false ;
     erb:canBeHeld false ;
     erb:requiresParsing true ;
+    erb:resolvesToAnAST true ;
     erb:hasLinearDecodingPressure true ;
     erb:isStableOntologyReference true ;
+    erb:isLiveOntologyEditor false ;
     erb:dimensionalityWhileEditing "OneDimensionalSymbolic" ;
     erb:isOpenWorld false ;
     erb:isClosedWorld false ;
     erb:distanceFromConcept 2 ;
+    erb:modelObjectFacilityLayer "M1" ;
     erb:sortOrder 19 .

@@ -135,6 +135,11 @@ erb:requiresParsing a owl:DatatypeProperty ;
     rdfs:range xsd:boolean ;
     rdfs:label "RequiresParsing" .
 
+erb:resolvesToAnAST a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "ResolvesToAnAST" .
+
 erb:hasLinearDecodingPressure a owl:DatatypeProperty ;
     rdfs:domain erb:LanguageCandidates ;
     rdfs:range xsd:boolean ;
@@ -144,6 +149,11 @@ erb:isStableOntologyReference a owl:DatatypeProperty ;
     rdfs:domain erb:LanguageCandidates ;
     rdfs:range xsd:boolean ;
     rdfs:label "IsStableOntologyReference" .
+
+erb:isLiveOntologyEditor a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "IsLiveOntologyEditor" .
 
 erb:dimensionalityWhileEditing a owl:DatatypeProperty ;
     rdfs:domain erb:LanguageCandidates ;
@@ -182,6 +192,11 @@ erb:relationshipToConcept a owl:DatatypeProperty ;
     rdfs:range xsd:string ;
     rdfs:label "RelationshipToConcept" .
     # calculated: calculated
+
+erb:modelObjectFacilityLayer a owl:DatatypeProperty ;
+    rdfs:domain erb:LanguageCandidates ;
+    rdfs:range xsd:string ;
+    rdfs:label "ModelObjectFacilityLayer" .
 
 erb:sortOrder a owl:DatatypeProperty ;
     rdfs:domain erb:LanguageCandidates ;

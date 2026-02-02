@@ -293,33 +293,33 @@ Formalizable(Language) ∧ ∃x ¬Language(x) ⇒ ¬(EverythingIsALanguage)
 
 The following entities have been evaluated against the operational definition of "language" using testable predicates.
 
-| Name | Category | Is Language? | HasSyntax | RequiresParsing | MeaningIsSerialized | IsOntologyDescriptor | README |
-|------|----------|--------------|-----------|-----------------|---------------------|----------------------|--------|
-| Falsifier A | MISSING: Have you seen this Language? | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/falsifier-a/README.md) |
+| Name | Category | Is Language? | HasSyntax | RequiresParsing | HasLinearDecodingPressure | StableOntologyReference | README |
+|------|----------|--------------|-----------|-----------------|---------------------------|-------------------------|--------|
+| Falsifier A | MISSING: Have you seen this Language? | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/falsifier-a/README.md) |
 | Falsifier B | MISSING: Have you seen this Language? | No | ✗ | ✓ | ✗ | ✗ | - |
-| Falsifier C | MISSING: Have you seen this Language? | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/falsifier-c/README.md) |
-| English | Natural Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/english/README.md) |
-| Spoken Words | Natural Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/spoken-words/README.md) |
-| A Chair  | Physical Object | No | ✗ | ✗ | ✗ | ✗ | - |
-| A Game of Fortnite | Running Software | No | ✗ | ✓ | ✗ | ✗ | - |
-| Sign Language | Natural Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/sign-language/README.md) |
-| Python | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/python/README.md) |
-| A Smartphone | Physical Object | No | ✗ | ✗ | ✗ | ✗ | - |
-| A Running App  | Running Software | No | ✗ | ✓ | ✗ | ✗ | - |
-| An XLSX Doc | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/an-xlsx-doc/README.md) |
-| Editing an XLSX Doc | Running Software | No | ✗ | ✗ | ✗ | ✗ | - |
-| An DOCX Doc | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/an-docx-doc/README.md) |
-| Editing an DOCX Doc | Running Software | No | ✗ | ✗ | ✗ | ✗ | - |
-| A CSV File | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/a-csv-file/README.md) |
-| OWL/RDF/GraphQL/... generally | Natural Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/owl-rdf-graphql-generally/README.md) |
+| Falsifier C | MISSING: Have you seen this Language? | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/falsifier-c/README.md) |
+| English | Natural Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/english/README.md) |
+| Airtable - Editing | Running Software | No | ✗ | ✗ | ✗ | ✗ | - |
+| Spoken Words | Natural Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/spoken-words/README.md) |
 | A Coffee Mug | Physical Object | No | ✗ | ✗ | ✗ | ✗ | - |
+| A Game of Fortnite | Running Software | No | ✗ | ✓ | ✗ | ✗ | - |
+| Sign Language | Natural Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/sign-language/README.md) |
+| Python | Formal Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/python/README.md) |
+| A Smartphone | Physical Object | No | ✗ | ✗ | ✓ | ✗ | - |
+| A Running App  | Running Software | No | ✗ | ✓ | ✓ | ✗ | - |
+| An XLSX Doc | Formal Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/an-xlsx-doc/README.md) |
+| XLSX - Editing | Running Software | No | ✗ | ✗ | ✗ | ✗ | - |
+| An DOCX Doc | Formal Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/an-docx-doc/README.md) |
+| DOCX - Editing | Running Software | No | ✗ | ✗ | ✗ | ✗ | - |
+| A CSV File | Formal Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/a-csv-file/README.md) |
+| OWL/RDF/GraphQL/... generally | Natural Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/owl-rdf-graphql-generally/README.md) |
 | A Thunderstorm | Physical event | No | ✗ | ✓ | ✗ | ✗ | - |
-| A UML File | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/a-uml-file/README.md) |
-| Binary Code | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/binary-code/README.md) |
+| A UML File | Formal Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/a-uml-file/README.md) |
+| Binary Code | Formal Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/binary-code/README.md) |
 | The Mona Lisa | Physical Object | No | ✗ | ✗ | ✗ | ✗ | - |
 | Running Calculator App | Running Software | No | ✗ | ✓ | ✗ | ✗ | - |
-| JavaScript | Formal Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/javascript/README.md) |
-| French | Natural Language | Yes | ✓ | ✓ | ✗ | ✗ | [View](./execution-substratrates/french/README.md) |
+| JavaScript | Formal Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/javascript/README.md) |
+| French | Natural Language | Yes | ✓ | ✓ | ✓ | ✗ | [View](./execution-substratrates/french/README.md) |
 
 ### Predicate Legend
 
@@ -327,51 +327,12 @@ The following entities have been evaluated against the operational definition of
 |-----------|-------------|
 | **HasSyntax** | Has formal syntactic rules governing valid expressions |
 | **RequiresParsing** | Understanding requires parsing/interpreting structured input |
-| **MeaningIsSerialized** | Meaning is encoded in a serialized, transmittable form |
-| **IsOntologyDescriptor** | Functions as an ontology/descriptor system for categorizing concepts |
+| **HasLinearDecodingPressure** | Requires sequential/linear interpretation to extract meaning |
+| **StableOntologyReference** | Provides stable references to concepts over time |
 
 ---
 
 ## Table Schemas
-
-### Table: IsEverythingALanguage
-
-> Table: IsEverythingALanguage
-
-#### Schema
-
-| Field | Type | Data Type | Nullable | Description |
-|-------|------|-----------|----------|-------------|
-| `IsEverythingALanguageId` | raw | string | No | - |
-| `Name` | raw | string | Yes | - |
-| `ArgumentName` | raw | string | Yes | - |
-| `ArgumentCategory` | raw | string | Yes | - |
-| `StepType` | raw | string | Yes | - |
-| `Statement` | raw | string | Yes | - |
-| `Formalization` | raw | string | Yes | - |
-| `RelatedCandidateName` | raw | string | Yes | - |
-| `RelatedCandidateId` | raw | string | Yes | - |
-| `EvidenceFromRulebook` | raw | string | Yes | - |
-| `Notes` | raw | string | Yes | - |
-
-
-#### Sample Data (16 records)
-
-| Field | Value |
-|-------|-------|
-| `IsEverythingALanguageId` | neial-001 |
-| `Name` | NEIAL-001 |
-| `ArgumentName` | LanguageCanBeFormalized |
-| `ArgumentCategory` | Definition |
-| `StepType` | Motivation |
-| `Statement` | To avoid the slogan 'Everything is a language', treat 'language' as a typed construct defined by testable properties (syntax, parsing, linear decoding pressure, and descriptor-role). |
-| `Notes` | This keeps 'can be interpreted' separate from 'is a language system'. |
-| `Formalization` |  |
-| `RelatedCandidateName` |  |
-| `RelatedCandidateId` |  |
-| `EvidenceFromRulebook` |  |
-
----
 
 ### Table: LanguageCandidates
 
@@ -393,8 +354,10 @@ The following entities have been evaluated against the operational definition of
 | `CanBeHeld` | raw | boolean | Yes | Is this candidate physical/material.  I.e. could it at least theoretically "be held"? |
 | `HasGrammar` | calculated | boolean | Yes | Does this candidate have a Grammar?  Generally follows candidates that have syntax also have grammar. |
 | `RequiresParsing` | raw | boolean | Yes | Is the knowledge/information encoded in a form that requires parsing before meaning can be extracted? |
+| `ResolvesToAnAST` | raw | boolean | Yes | Is the knowledge/information encoded in a form that requires parsing before meaning can be extracted? |
 | `HasLinearDecodingPressure` | raw | boolean | Yes | - |
 | `IsStableOntologyReference` | raw | boolean | Yes | - |
+| `IsLiveOntologyEditor` | raw | boolean | Yes | - |
 | `DimensionalityWhileEditing` | raw | string | Yes | - |
 | `IsOpenWorld` | raw | boolean | Yes | - |
 | `IsClosedWorld` | raw | boolean | Yes | - |
@@ -402,6 +365,7 @@ The following entities have been evaluated against the operational definition of
 | `DistanceFromConcept` | raw | integer | Yes | - |
 | `IsDescriptionOf` | calculated | boolean | Yes | - |
 | `RelationshipToConcept` | calculated | string | Yes | - |
+| `ModelObjectFacilityLayer` | raw | string | Yes | - |
 | `SortOrder` | raw | integer | Yes | - |
 
 **Formula for `FamilyFuedQuestion`:**
@@ -416,6 +380,7 @@ The following entities have been evaluated against the operational definition of
   {{RequiresParsing}},
   {{IsDescriptionOf}},
   {{HasLinearDecodingPressure}},
+  {{ResolvesToAnAST}},
   {{IsStableOntologyReference}},
   NOT({{CanBeHeld}}),
   NOT({{HasIdentity}})
@@ -470,12 +435,54 @@ The following entities have been evaluated against the operational definition of
 | `HasGrammar` | true |
 | `DimensionalityWhileEditing` | N/A |
 | `IsDescriptionOf` | true |
+| `ResolvesToAnAST` | true |
+| `ModelObjectFacilityLayer` | M1 |
 | `ChosenLanguageCandidate` | false |
 | `HasIdentity` | false |
 | `CanBeHeld` | false |
+| `IsLiveOntologyEditor` | false |
 | `IsOpenWorld` | false |
 | `IsClosedWorld` | false |
 | `IsOpenClosedWorldConflicted` | false |
+
+---
+
+### Table: IsEverythingALanguage
+
+> Table: IsEverythingALanguage
+
+#### Schema
+
+| Field | Type | Data Type | Nullable | Description |
+|-------|------|-----------|----------|-------------|
+| `IsEverythingALanguageId` | raw | string | No | - |
+| `Name` | raw | string | Yes | - |
+| `ArgumentName` | raw | string | Yes | - |
+| `ArgumentCategory` | raw | string | Yes | - |
+| `StepType` | raw | string | Yes | - |
+| `Statement` | raw | string | Yes | - |
+| `Formalization` | raw | string | Yes | - |
+| `RelatedCandidateName` | raw | string | Yes | - |
+| `RelatedCandidateId` | raw | string | Yes | - |
+| `EvidenceFromRulebook` | raw | string | Yes | - |
+| `Notes` | raw | string | Yes | - |
+
+
+#### Sample Data (16 records)
+
+| Field | Value |
+|-------|-------|
+| `IsEverythingALanguageId` | neial-001 |
+| `Name` | NEIAL-001 |
+| `ArgumentName` | LanguageCanBeFormalized |
+| `ArgumentCategory` | Definition |
+| `StepType` | Motivation |
+| `Statement` | To avoid the slogan 'Everything is a language', treat 'language' as a typed construct defined by testable properties (syntax, parsing, linear decoding pressure, and descriptor-role). |
+| `Notes` | This keeps 'can be interpreted' separate from 'is a language system'. |
+| `Formalization` |  |
+| `RelatedCandidateName` |  |
+| `RelatedCandidateId` |  |
+| `EvidenceFromRulebook` |  |
 
 ---
 

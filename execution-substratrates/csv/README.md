@@ -185,6 +185,41 @@ This substrate produces RFC 4180 compliant CSV with:
 | Portable answers | Requires Excel/openpyxl | Any CSV reader |
 | Schema export | Embedded in xlsx | Separate `column_formulas.csv` |
 
+## Generated Files
+
+| File | Description |
+|------|-------------|
+| `rulebook.xlsx` | **GENERATED** - Excel workbook with all tables |
+| `language_candidates.csv` | **GENERATED** - Flat CSV export with computed values |
+| `column_formulas.csv` | **GENERATED** - Schema/formula definitions for all fields |
+| `test-answers.json` | **GENERATED** - Test execution results for grading |
+| `test-results.md` | **GENERATED** - Human-readable test report |
+
+## Source Files (Not Cleaned)
+
+| File | Description |
+|------|-------------|
+| `inject-into-csv.py` | Generates xlsx + CSV files from rulebook |
+| `inject-substrate.sh` | Shell wrapper for orchestration |
+| `take-test.py` | Populates answers from CSV (not xlsx) |
+| `take-test.sh` | Copies blank test, runs take-test.py |
+| `README.md` | This documentation |
+
+## Cleaning
+
+To remove all generated files:
+
+```bash
+python3 inject-into-csv.py --clean
+```
+
+This will remove:
+- `rulebook.xlsx`
+- `language_candidates.csv`
+- `column_formulas.csv`
+- `test-answers.json`
+- `test-results.md`
+
 ## Source
 
 Generated from: `effortless-rulebook/effortless-rulebook.json`

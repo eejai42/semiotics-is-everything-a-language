@@ -17,7 +17,7 @@ from pathlib import Path
 # Add project root to path for shared imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from orchestration.shared import load_rulebook, write_readme, get_candidate_name_from_cwd
+from orchestration.shared import load_rulebook, get_candidate_name_from_cwd, handle_clean_arg
 from orchestration.formula_parser import (
     parse_formula, compile_to_javascript, get_field_dependencies,
     to_snake_case, ASTNode
@@ -258,6 +258,18 @@ def generate_resolvers(rulebook):
 
 
 def main():
+    # Define generated files for this substrate
+    GENERATED_FILES = [
+        'schema.graphql',
+        'resolvers.js',
+        'test-answers.json',
+        'test-results.md',
+    ]
+
+    # Handle --clean argument
+    if handle_clean_arg(GENERATED_FILES, "GraphQL substrate: Removes generated schema, resolvers, and test outputs"):
+        return
+
     candidate_name = get_candidate_name_from_cwd()
     print(f"Generating {candidate_name} from rulebook...")
 
@@ -282,26 +294,6 @@ def main():
     with open(resolvers_path, 'w', encoding='utf-8') as f:
         f.write(resolvers_content)
     print(f"Generated: {resolvers_path}")
-
-    # Write README
-    write_readme(
-        candidate_name,
-        "GraphQL schema and resolvers generated from the Effortless Rulebook.\n\n"
-        "This substrate generates:\n"
-        "- `schema.graphql`: GraphQL type definitions for all entities\n"
-        "- `resolvers.js`: JavaScript resolver functions for calculated fields\n\n"
-        "The resolvers implement the exact same calculation logic as the PostgreSQL functions, "
-        "enabling consistent results across all execution substrates.",
-        technology="""**GraphQL** is a query language and runtime for APIs developed by Facebook (2012, open-sourced 2015). Unlike REST's fixed endpoints, GraphQL lets clients request exactly the fields they need in a single query, with strong typing enforced by a schema.
-
-Key characteristics:
-- **Schema-first**: Types, queries, and mutations are defined in SDL (Schema Definition Language)
-- **Hierarchical queries**: Clients can traverse relationships in a single request
-- **Strong typing**: Every field has a type; the schema serves as a contract and documentation
-- **Introspection**: Clients can query the schema itself to discover available types and fields
-
-This ERB GraphQL substrate generates both the schema definitions and the JavaScript resolver functions needed to compute calculated fields."""
-    )
 
     print(f"\nDone generating {candidate_name}.")
 

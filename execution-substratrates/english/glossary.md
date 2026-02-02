@@ -10,7 +10,7 @@ Human-readable definitions for all predicates in the Effortless Rulebook.
 
 **Type:** string
 
-This unique identifier represents a specific candidate for classification as a language. It is used to track and reference each language candidate in the classification process.
+This predicate represents a unique identifier for each language candidate. It is used to track and reference individual language candidates in the classification process.
 
 ---
 
@@ -18,7 +18,7 @@ This unique identifier represents a specific candidate for classification as a l
 
 **Type:** string
 
-This predicate represents the name of the language candidate being evaluated. It is used to identify and refer to the candidate in discussions and analyses.
+This predicate indicates the name of the language candidate being evaluated. It is essential for identifying and distinguishing between different language candidates.
 
 ---
 
@@ -26,7 +26,7 @@ This predicate represents the name of the language candidate being evaluated. It
 
 **Type:** string
 
-This indicates the category to which the language candidate belongs, such as programming languages, natural languages, etc. It helps in understanding the context and classification of the candidate.
+This predicate specifies the category to which the language candidate belongs, such as natural language or programming language. It helps in understanding the context and classification of the language candidate.
 
 ---
 
@@ -34,7 +34,7 @@ This indicates the category to which the language candidate belongs, such as pro
 
 **Type:** boolean
 
-This boolean value indicates whether the language candidate has been selected as a potential language. It plays a crucial role in determining which candidates are considered for further assessment.
+This boolean predicate indicates whether the language candidate has been selected as a potential language. It plays a crucial role in determining which candidates are considered for further analysis.
 
 ---
 
@@ -42,7 +42,7 @@ This boolean value indicates whether the language candidate has been selected as
 
 **Type:** boolean
 
-This predicate indicates whether the language candidate has a defined set of rules for structure and arrangement of symbols. It is an important factor in classifying something as a language, as syntax is a fundamental characteristic of most languages.
+This predicate indicates whether the language candidate has a defined syntax or structure. Syntax is essential for determining if the candidate can be classified as a language.
 
 ---
 
@@ -50,7 +50,7 @@ This predicate indicates whether the language candidate has a defined set of rul
 
 **Type:** boolean
 
-This boolean value measures whether the language candidate has a distinct identity or recognition as a language. It helps in identifying established languages versus informal or lesser-known candidates.
+This boolean predicate shows whether the language candidate has a clear identity or distinctiveness. Candidates without a strong identity may not qualify as full-fledged languages.
 
 ---
 
@@ -58,15 +58,7 @@ This boolean value measures whether the language candidate has a distinct identi
 
 **Type:** boolean
 
-This predicate indicates if the language candidate can be physically grasped or manipulated. It is used to differentiate between tangible and intangible entities when assessing the nature of the language.
-
----
-
-### HasGrammar
-
-**Type:** boolean
-
-This indicates whether the language candidate has a set of rules governing the composition of clauses, phrases, and words. Grammar is essential for classifying a candidate as a language since it defines how the language operates.
+This predicate indicates whether the language candidate can be held or maintained as a formal entity. If a candidate cannot be held, it may not be considered a true language.
 
 ---
 
@@ -74,7 +66,15 @@ This indicates whether the language candidate has a set of rules governing the c
 
 **Type:** boolean
 
-This boolean value indicates whether the language candidate needs to be analyzed for structure and meaning. It is significant in determining the complexity of the language and its suitability for classification.
+This predicate measures whether the language candidate requires parsing to understand its structure. A candidate that requires parsing is more likely to be classified as a language.
+
+---
+
+### ResolvesToAnAST
+
+**Type:** boolean
+
+This boolean predicate indicates if the language candidate can be resolved into an Abstract Syntax Tree (AST). The ability to resolve to an AST is a strong indicator of a candidate being a language.
 
 ---
 
@@ -82,15 +82,23 @@ This boolean value indicates whether the language candidate needs to be analyzed
 
 **Type:** boolean
 
-This predicate measures whether the language candidate necessitates a sequential or linear approach to decoding information. It is important for understanding how the language functions and is processed.
+This predicate shows whether the language candidate has linear decoding pressure, which refers to the need to process the language input in a sequential manner. This characteristic is important for classifying a candidate as a language.
 
 ---
 
-### StableOntologyReference
+### IsStableOntologyReference
 
 **Type:** boolean
 
-This boolean value indicates whether the language candidate has a consistent reference framework or ontology. Stability in ontology is crucial for a language's classification as it reflects its reliability and coherence.
+This boolean predicate indicates if the language candidate serves as a stable reference within an ontology. A stable ontology reference is essential for a candidate to be recognized as a language.
+
+---
+
+### IsLiveOntologyEditor
+
+**Type:** boolean
+
+This predicate measures whether the language candidate functions as a live editor for an ontology. If it does, it may influence its classification as a language.
 
 ---
 
@@ -98,7 +106,7 @@ This boolean value indicates whether the language candidate has a consistent ref
 
 **Type:** string
 
-This string value represents the complexity or number of dimensions involved when editing the language candidate. It provides insight into how the language can be manipulated and its usability in practical applications.
+This predicate specifies the dimensionality of the language candidate when being edited. Understanding the dimensionality can help determine the complexity and classification of the candidate.
 
 ---
 
@@ -106,7 +114,7 @@ This string value represents the complexity or number of dimensions involved whe
 
 **Type:** boolean
 
-This boolean value indicates whether the language candidate operates in an open world context, meaning it allows for the introduction of new elements. This characteristic can influence its classification as a language based on its adaptability.
+This boolean predicate indicates if the language candidate operates in an open-world context, where new terms can be added freely. Open-world characteristics can affect how a candidate is classified as a language.
 
 ---
 
@@ -114,7 +122,7 @@ This boolean value indicates whether the language candidate operates in an open 
 
 **Type:** boolean
 
-This predicate indicates whether the language candidate exists in a closed world context, where all elements are predefined. This is relevant in classifying the candidate as it affects its flexibility and scope.
+This predicate measures whether the language candidate functions within a closed-world context, where all terms are predefined. This characteristic is vital for understanding the classification of the candidate.
 
 ---
 
@@ -122,7 +130,15 @@ This predicate indicates whether the language candidate exists in a closed world
 
 **Type:** integer
 
-This numeric value measures how closely related the language candidate is to a core concept of language. It helps in assessing its validity as a language based on its conceptual alignment.
+This numeric value measures how far the language candidate is from a core concept of what constitutes a language. The distance helps determine the relevance and classification of the candidate.
+
+---
+
+### ModelObjectFacilityLayer
+
+**Type:** string
+
+This predicate specifies the layer of the model object facility that the language candidate operates within. It aids in understanding the structural context of the candidate.
 
 ---
 
@@ -130,7 +146,7 @@ This numeric value measures how closely related the language candidate is to a c
 
 **Type:** integer
 
-This integer value specifies the order in which language candidates are evaluated or presented. It is useful for organizing candidates during the classification process.
+This predicate indicates the order in which language candidates should be evaluated or processed. It helps prioritize candidates during the classification process.
 
 ---
 
@@ -141,7 +157,7 @@ This integer value specifies the order in which language candidates are evaluate
 **Type:** string
 **Formula:** `="Is " & {{Name}} & " a language?"`
 
-This calculated string formulates a question about whether the language candidate is considered a language. It serves as a prompt to initiate discussion or evaluation of the candidate.
+This calculated predicate generates a question that asks if the language candidate is considered a language. It serves as a prompt for determining the candidate's status.
 
 ---
 
@@ -150,15 +166,16 @@ This calculated string formulates a question about whether the language candidat
 **Type:** boolean
 **Formula:** `=AND(
   {{HasSyntax}},
-  NOT({{CanBeHeld}}),
-  {{HasLinearDecodingPressure}},
   {{RequiresParsing}},
-  {{StableOntologyReference}},
-  NOT({{HasIdentity}}),
-  {{DistanceFromConcept}}=2
+  {{IsDescriptionOf}},
+  {{HasLinearDecodingPressure}},
+  {{ResolvesToAnAST}},
+  {{IsStableOntologyReference}},
+  NOT({{CanBeHeld}}),
+  NOT({{HasIdentity}})
 )`
 
-This boolean value determines if the language candidate meets specific criteria that would classify it as a language. It aggregates several raw attributes to provide a clear classification outcome.
+This boolean predicate evaluates whether the language candidate meets specific criteria indicative of being a language. It is used to help classify the candidate accurately.
 
 ---
 
@@ -169,7 +186,16 @@ This boolean value determines if the language candidate meets specific criteria 
   {{Name}} & " " & IF({{TopFamilyFeudAnswer}}, "Is", "Isn't") & " a Family Feud Language, but " & 
   IF({{ChosenLanguageCandidate}}, "Is", "Is Not") & " marked as a 'Language Candidate.'") & IF({{IsOpenClosedWorldConflicted}}, " - Open World vs. Closed World Conflict.")`
 
-This calculated string identifies discrepancies between the language candidate's classification and its characteristics. It highlights conflicts that may need further exploration in the classification process.
+This calculated predicate identifies discrepancies between the top family feud answer and the chosen language candidate. It highlights candidates that may not align with the typical characteristics of a language.
+
+---
+
+### HasGrammar
+
+**Type:** boolean
+**Formula:** `={{HasSyntax}} = TRUE()`
+
+This boolean predicate indicates whether the language candidate has defined grammatical rules. Having grammar is a crucial factor in assessing if a candidate is a language.
 
 ---
 
@@ -178,7 +204,16 @@ This calculated string identifies discrepancies between the language candidate's
 **Type:** boolean
 **Formula:** `=AND({{IsOpenWorld}}, {{IsClosedWorld}})`
 
-This boolean value indicates whether there is a conflict between the open and closed world assumptions of the language candidate. Understanding this conflict is vital for accurate classification.
+This predicate evaluates if there is a conflict between open and closed world characteristics of the language candidate. Such conflicts can complicate its classification as a language.
+
+---
+
+### IsDescriptionOf
+
+**Type:** boolean
+**Formula:** `={{DistanceFromConcept}} > 1`
+
+This boolean predicate indicates whether the language candidate serves as a description of a core concept. Descriptive candidates may not be classified as full languages.
 
 ---
 
@@ -187,6 +222,6 @@ This boolean value indicates whether there is a conflict between the open and cl
 **Type:** string
 **Formula:** `=IF({{DistanceFromConcept}} = 1, "IsMirrorOf", "IsDescriptionOf")`
 
-This calculated string defines the relationship of the language candidate to a core concept based on its distance from that concept. It helps in clarifying how the candidate relates to established ideas of what constitutes a language.
+This calculated predicate describes the relationship of the language candidate to a core concept, indicating whether it mirrors or describes that concept. This classification helps assess the candidate's language status.
 
 ---

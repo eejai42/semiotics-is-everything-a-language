@@ -22,7 +22,7 @@ from enum import Enum, auto
 # Add project root to path for shared imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from orchestration.shared import load_rulebook
+from orchestration.shared import load_rulebook, handle_clean_arg
 
 
 # =============================================================================
@@ -703,6 +703,19 @@ def generate_shacl_rules(tables: Dict[str, Any]) -> str:
 # =============================================================================
 
 def main():
+    # Define generated files for this substrate
+    GENERATED_FILES = [
+        'ontology.owl',
+        'individuals.ttl',
+        'rules.shacl.ttl',
+        'test-answers.json',
+        'test-results.md',
+    ]
+
+    # Handle --clean argument
+    if handle_clean_arg(GENERATED_FILES, "OWL substrate: Removes generated ontology, individuals, and SHACL rules"):
+        return
+
     script_dir = Path(__file__).resolve().parent
 
     print("=" * 70)

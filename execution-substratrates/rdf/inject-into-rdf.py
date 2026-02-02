@@ -24,7 +24,7 @@ from enum import Enum, auto
 # Add project root to path for shared imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from orchestration.shared import load_rulebook
+from orchestration.shared import load_rulebook, handle_clean_arg
 
 
 # =============================================================================
@@ -658,6 +658,19 @@ WHERE {{
 # =============================================================================
 
 def main():
+    # Define generated files for this substrate
+    GENERATED_FILES = [
+        'schema.ttl',
+        'data.ttl',
+        'queries.sparql',
+        'test-answers.json',
+        'test-results.md',
+    ]
+
+    # Handle --clean argument
+    if handle_clean_arg(GENERATED_FILES, "RDF substrate: Removes generated schema, data, and SPARQL queries"):
+        return
+
     script_dir = Path(__file__).resolve().parent
 
     print("=" * 70)

@@ -28,7 +28,7 @@ from datetime import datetime
 # Add project root to path for shared imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from orchestration.shared import load_rulebook, get_candidate_name_from_cwd
+from orchestration.shared import load_rulebook, get_candidate_name_from_cwd, handle_clean_arg
 
 # Try to import openpyxl, provide helpful error if missing
 try:
@@ -56,6 +56,39 @@ def build_column_map(schema):
         col_letter = get_column_letter(idx + 1)
         column_map[field['name']] = col_letter
     return column_map
+
+
+def convert_formula_to_excel(formula, column_map, row_num):
+    """Convert a rulebook formula to an Excel formula.
+
+    Converts {{FieldName}} placeholders to cell references like $B2.
+    The $ before the column letter makes it an absolute column reference,
+    while the row number remains relative.
+
+    Args:
+        formula: The formula string from the rulebook (e.g., "={{HasSyntax}} = TRUE()")
+        column_map: Dict mapping field names to column letters
+        row_num: The current row number (1-indexed, accounting for header row)
+
+    Returns:
+        Excel formula string with cell references
+    """
+    result = formula
+
+    # Find all {{FieldName}} patterns and replace with cell references
+    pattern = r'\{\{(\w+)\}\}'
+
+    def replace_field(match):
+        field_name = match.group(1)
+        if field_name in column_map:
+            col_letter = column_map[field_name]
+            return f'${col_letter}{row_num}'
+        else:
+            # Keep the placeholder if field not found (might be an error in rulebook)
+            return match.group(0)
+
+    result = re.sub(pattern, replace_field, result)
+    return result
 
 
 def evaluate_formula(formula, row_data):
@@ -215,7 +248,7 @@ def get_value_for_cell(field_schema, row_data, column_map, row_num):
     """Get the value to put in a cell.
 
     For raw fields, returns the data value.
-    For calculated fields, computes and returns the value.
+    For calculated fields with formulas, returns the Excel formula.
 
     Args:
         field_schema: The field definition from the schema
@@ -224,15 +257,15 @@ def get_value_for_cell(field_schema, row_data, column_map, row_num):
         row_num: The current row number (1-indexed)
 
     Returns:
-        The computed value for the cell
+        The value or Excel formula to put in the cell
     """
     field_name = field_schema['name']
     field_type = field_schema.get('type', 'raw')
 
     if field_type == 'calculated' and 'formula' in field_schema:
-        # This is a calculated field - compute the value
+        # This is a calculated field - use the Excel formula
         formula = field_schema['formula']
-        return evaluate_formula(formula, row_data)
+        return convert_formula_to_excel(formula, column_map, row_num)
     else:
         # This is a raw field - use the data value
         value = row_data.get(field_name)
@@ -406,6 +439,80 @@ def cleanup_file(path):
         path.unlink()
 
 
+def compute_table_values_to_csv(rulebook, table_name, csv_path):
+    """Compute values from rulebook and write to CSV.
+
+    This is used for the "after" comparison since newly generated xlsx files
+    with formulas don't have cached computed values until opened in Excel.
+
+    Args:
+        rulebook: The loaded rulebook dict
+        table_name: Name of the table to export
+        csv_path: Path for the output CSV file
+
+    Returns:
+        True if export succeeded, False otherwise
+    """
+    csv_path = Path(csv_path)
+
+    # Find the table (case-insensitive matching)
+    matching_table = None
+    for name in rulebook.keys():
+        if name.lower() == table_name.lower():
+            matching_table = name
+            break
+
+    if not matching_table:
+        print(f"  Warning: Table '{table_name}' not found in rulebook")
+        return False
+
+    table_data = rulebook[matching_table]
+    if not isinstance(table_data, dict) or 'schema' not in table_data:
+        print(f"  Warning: '{table_name}' is not a valid table structure")
+        return False
+
+    schema = table_data.get('schema', [])
+    data = table_data.get('data', [])
+
+    try:
+        with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+
+            # Write header row
+            header = [field['name'] for field in schema]
+            writer.writerow(header)
+
+            # Write data rows with computed values
+            for row_data in data:
+                row = []
+                for field in schema:
+                    field_name = field['name']
+                    field_type = field.get('type', 'raw')
+
+                    if field_type == 'calculated' and 'formula' in field:
+                        # Compute the value using Python formula evaluation
+                        value = evaluate_formula(field['formula'], row_data)
+                    else:
+                        # Raw field - use the data value
+                        value = row_data.get(field_name)
+
+                    # Convert to string for CSV
+                    if value is None:
+                        row.append('')
+                    elif isinstance(value, bool):
+                        row.append(str(value))
+                    else:
+                        row.append(str(value))
+
+                writer.writerow(row)
+
+        return True
+
+    except Exception as e:
+        print(f"  Error computing values to CSV: {e}")
+        return False
+
+
 def generate_workbook(rulebook, table_names):
     """Generate the workbook from the rulebook.
     
@@ -445,6 +552,17 @@ def generate_workbook(rulebook, table_names):
 
 
 def main():
+    # Define generated files for this substrate
+    GENERATED_FILES = [
+        'rulebook.xlsx',
+        'test-answers.json',
+        'test-results.md',
+    ]
+
+    # Handle --clean argument
+    if handle_clean_arg(GENERATED_FILES, "XLSX substrate: Removes generated Excel workbook and test outputs"):
+        return
+
     candidate_name = get_candidate_name_from_cwd()
     print(f"Generating {candidate_name} from rulebook...")
 
@@ -504,11 +622,12 @@ def main():
 
     # Step 4-6: Compare and decide whether to keep or rollback
     if baseline_exported and backup_path.exists():
-        print(f"\nStep 4: Exporting '{comparison_sheet}' from new xlsx to CSV...")
-        after_exported = export_sheet_to_csv(output_path, comparison_sheet, csv_after_path)
-        
+        print(f"\nStep 4: Computing values for '{comparison_sheet}' to CSV...")
+        # Use Python formula evaluation since the new xlsx doesn't have cached computed values yet
+        after_exported = compute_table_values_to_csv(rulebook, comparison_sheet, csv_after_path)
+
         if after_exported:
-            print(f"  Exported to: {csv_after_path}")
+            print(f"  Computed values to: {csv_after_path}")
             
             # Step 5: Compare the CSVs
             print(f"\nStep 5: Comparing content...")
@@ -538,16 +657,6 @@ def main():
             print(f"  Warning: Could not export new xlsx for comparison - keeping new file")
             cleanup_file(backup_path)
             cleanup_file(csv_before_path)
-
-    # Also update the README
-    from orchestration.shared import write_readme
-    write_readme(
-        candidate_name,
-        f"Excel workbook generated from the Effortless Rulebook.\n\n"
-        f"The workbook contains {len(wb.sheetnames)} worksheets:\n" +
-        "\n".join(f"- **{name}**" for name in wb.sheetnames) +
-        f"\n\nCalculated fields are implemented as native Excel formulas."
-    )
 
     print(f"\nDone generating {candidate_name}.")
 

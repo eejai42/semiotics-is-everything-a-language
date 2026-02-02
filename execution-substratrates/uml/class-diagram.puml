@@ -25,12 +25,15 @@ class LanguageCandidates {
   +HasIdentity: Boolean
   +CanBeHeld: Boolean
   +RequiresParsing: Boolean
+  +ResolvesToAnAST: Boolean
   +HasLinearDecodingPressure: Boolean
   +IsStableOntologyReference: Boolean
+  +IsLiveOntologyEditor: Boolean
   +DimensionalityWhileEditing: String
   +IsOpenWorld: Boolean
   +IsClosedWorld: Boolean
   +DistanceFromConcept: Integer
+  +ModelObjectFacilityLayer: String
   +SortOrder: Integer
   --
   /FamilyFuedQuestion: String  {derived}

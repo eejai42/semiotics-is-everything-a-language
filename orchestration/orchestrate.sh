@@ -59,6 +59,7 @@ TOTAL_SUBSTRATES=${#SUBSTRATES_ARRAY[@]}
 
 echo -e "${BOLD}${WHITE}Select an option:${NC}"
 echo ""
+echo -e "  ${RED}[C]${NC} ${BOLD}CLEAN${NC} all generated files from substrates"
 echo -e "  ${GREEN}[A]${NC} Run ${BOLD}ALL${NC} substrates ($TOTAL_SUBSTRATES total)"
 echo ""
 echo -e "  ${YELLOW}Or select a specific substrate:${NC}"
@@ -75,15 +76,47 @@ for substrate in $SUBSTRATES; do
     #   echo -e "  ${DIM}[$INDEX] $substrate (no inject-substrate.sh)${NC}"
     fi
     INDEX=$((INDEX + 1))
-done 
+done
 echo ""
 
 # Read user input
-read -p "Enter choice [A or 1-$TOTAL_SUBSTRATES] (default: A): " USER_CHOICE
+read -p "Enter choice [C, A, or 1-$TOTAL_SUBSTRATES] (default: A): " USER_CHOICE
 
 # Default to 'A' if user just presses Enter
 if [ -z "$USER_CHOICE" ]; then
     USER_CHOICE="A"
+fi
+
+# Handle CLEAN option
+if [[ "$USER_CHOICE" =~ ^[Cc]$ ]]; then
+    echo ""
+    echo -e "${BOLD}${RED}╔════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${BOLD}${RED}║${NC}              ${BOLD}${WHITE}CLEANING ALL SUBSTRATES${NC}                       ${BOLD}${RED}║${NC}"
+    echo -e "${BOLD}${RED}╚════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+
+    for substrate in $SUBSTRATES; do
+        substrate_dir="$SUBSTRATES_DIR/$substrate"
+        echo -e "${YELLOW}Cleaning ${substrate}...${NC}"
+
+        # Try different clean methods in order of preference
+        if [ -f "$substrate_dir/inject-into-${substrate}.py" ]; then
+            # Most substrates have inject-into-*.py with --clean
+            (cd "$substrate_dir" && python3 "inject-into-${substrate}.py" --clean 2>/dev/null) || true
+        elif [ -f "$substrate_dir/clean.py" ]; then
+            # YAML has a separate clean.py
+            (cd "$substrate_dir" && python3 clean.py --clean 2>/dev/null) || true
+        else
+            echo -e "  ${DIM}No clean script found${NC}"
+        fi
+    done
+
+    echo ""
+    echo -e "${BOLD}${GREEN}╔════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${BOLD}${GREEN}║${NC}              ${BOLD}${WHITE}CLEAN COMPLETE${NC}                                ${BOLD}${GREEN}║${NC}"
+    echo -e "${BOLD}${GREEN}╚════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    exit 0
 fi
 
 # Determine which substrates to run
@@ -170,7 +203,10 @@ for substrate in $SUBSTRATES_TO_RUN; do
         # Run script with real-time output AND capture for error reporting
         # Use tee to show output live while also saving to temp file
         INJECT_TEMP_FILE=$(mktemp)
+        START_TIME=$(python3 -c "import time; print(time.time())")
         bash "$inject_script" 2>&1 | tee "$INJECT_TEMP_FILE" && INJECT_EXIT_CODE=0 || INJECT_EXIT_CODE=${PIPESTATUS[0]}
+        END_TIME=$(python3 -c "import time; print(time.time())")
+        ELAPSED_TIME=$(python3 -c "print($END_TIME - $START_TIME)")
         INJECT_OUTPUT=$(cat "$INJECT_TEMP_FILE")
         rm -f "$INJECT_TEMP_FILE"
         
@@ -203,6 +239,7 @@ with open(test_orch.ANSWER_KEY_PATH, 'r') as f:
 
 substrate = '$substrate'
 inject_exit_code = $INJECT_EXIT_CODE
+elapsed_seconds = $ELAPSED_TIME
 
 # If inject failed, mark as error regardless of stale test-answers.json
 if inject_exit_code != 0:
@@ -216,6 +253,9 @@ else:
     else:
         grades = test_orch.grade_substrate(substrate, answer_key, None)
         grades['error'] = 'No test-answers.json'
+
+# Add timing information
+grades['elapsed_seconds'] = elapsed_seconds
 
 test_orch.generate_substrate_report(substrate, grades)
 test_orch.print_substrate_test_summary(substrate, grades)

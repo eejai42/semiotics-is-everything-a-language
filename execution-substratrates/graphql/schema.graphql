@@ -15,22 +15,6 @@ type Query {
   languageCandidate(id: ID!): LanguageCandidate
 }
 
-"""Entity: IsEverythingALanguage"""
-type IsEverythingALanguage {
-  # Raw Fields
-  isEverythingALanguageId: String!
-  name: String
-  argumentName: String
-  argumentCategory: String
-  stepType: String
-  statement: String
-  formalization: String
-  relatedCandidateName: String
-  relatedCandidateId: String
-  evidenceFromRulebook: String
-  notes: String
-}
-
 """Entity: LanguageCandidates"""
 type LanguageCandidates {
   # Raw Fields
@@ -42,12 +26,15 @@ type LanguageCandidates {
   hasIdentity: Boolean
   canBeHeld: Boolean
   requiresParsing: Boolean
+  resolvesToAnAST: Boolean
   hasLinearDecodingPressure: Boolean
   isStableOntologyReference: Boolean
+  isLiveOntologyEditor: Boolean
   dimensionalityWhileEditing: String
   isOpenWorld: Boolean
   isClosedWorld: Boolean
   distanceFromConcept: Int
+  modelObjectFacilityLayer: String
   sortOrder: Int
 
   # Calculated Fields
@@ -65,4 +52,20 @@ type LanguageCandidates {
   isDescriptionOf: Boolean
   """Formula: =IF({{DistanceFromConcept}} = 1, "IsMirrorOf", "IsDescriptio..."""
   relationshipToConcept: String
+}
+
+"""Entity: IsEverythingALanguage"""
+type IsEverythingALanguage {
+  # Raw Fields
+  isEverythingALanguageId: String!
+  name: String
+  argumentName: String
+  argumentCategory: String
+  stepType: String
+  statement: String
+  formalization: String
+  relatedCandidateName: String
+  relatedCandidateId: String
+  evidenceFromRulebook: String
+  notes: String
 }

@@ -21,7 +21,7 @@ from pathlib import Path
 # Add project root to path for shared imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from orchestration.shared import load_rulebook, get_candidate_name_from_cwd
+from orchestration.shared import load_rulebook, get_candidate_name_from_cwd, handle_clean_arg
 
 # =============================================================================
 # MODEL TIER CONFIGURATION
@@ -476,8 +476,8 @@ def generate_specification(rulebook: dict, provider: str = None, tier: str = Non
         "",
         "1. HasSyntax = true",
         "2. RequiresParsing = true",
-        "3. Meaning_Is_Serialized = true (MeaningIsSerialized)",
-        "4. IsOngologyDescriptor = true",
+        "3. HasLinearDecodingPressure = true",
+        "4. StableOntologyReference = true",
         "5. CanBeHeld = false",
         "6. HasIdentity = false",
         "7. DistanceFromConcept = 2",
@@ -559,8 +559,8 @@ def generate_candidate_profiles(rulebook: dict, provider: str = None, tier: str 
         "",
         "- HasSyntax = true",
         "- RequiresParsing = true",
-        "- MeaningIsSerialized = true",
-        "- IsOngologyDescriptor = true",
+        "- HasLinearDecodingPressure = true",
+        "- StableOntologyReference = true",
         "- CanBeHeld = false",
         "- HasIdentity = false",
         "- DistanceFromConcept = 2",
@@ -609,6 +609,19 @@ def print_tier_info(tier: str, provider: str):
 
 
 def main():
+    # Define generated files for this substrate
+    # NOTE: LLM-generated files (markdown docs, test-answers.json) are NOT cleaned
+    # because they take significant time to regenerate. Only test-results.md is cleaned
+    # (it's quick to regenerate from the existing test-answers.json).
+    GENERATED_FILES = [
+        'test-results.md',  # Quick to regenerate - just grading existing answers
+    ]
+
+    # Handle --clean argument (check before argparse to avoid conflicts)
+    if '--clean' in sys.argv:
+        if handle_clean_arg(GENERATED_FILES, "English substrate: Preserves LLM-generated files (they take time to rebuild). Only removes test-results.md."):
+            return
+
     parser = argparse.ArgumentParser(
         description="Generate English documentation from the Effortless Rulebook",
         epilog="""
@@ -673,18 +686,18 @@ Environment Variables:
         print(f"\nExisting output files found: {', '.join(existing_files)}")
         if args.no_prompt:
             print("Skipping LLM regeneration (use --regenerate to force).")
-            return 0
+            return 2  # Exit code 2 = skipped by user choice (not an error)
 
         # Check if stdin is a terminal for interactive prompts
         if not sys.stdin.isatty():
             print("Non-interactive mode detected. Skipping LLM regeneration (use --regenerate to force).")
-            return 0
+            return 2  # Exit code 2 = skipped (not an error)
 
         sys.stdout.flush()
         response = input("Re-run all LLM prompts? [y/N]: ").strip().lower()
         if response not in ('y', 'yes'):
             print("Skipping LLM regeneration. Use --regenerate to force.")
-            return 0
+            return 2  # Exit code 2 = skipped by user choice (not an error)
 
     print(f"Generating {candidate_name} substrate (LLM-assisted)...")
 

@@ -1,6 +1,24 @@
-# English Language Candidate
+# English Execution Substrate
 
 English prose documentation generated from the Effortless Rulebook using LLM-assisted Natural Language Generation.
+
+## Current Status
+
+**Implemented and functional.** The injector uses LLM APIs (OpenAI or Anthropic) to generate English documentation from the rulebook schema. The test runner uses an LLM to read the generated documentation and infer computed values, demonstrating round-trip verification.
+
+Current test score: **~90%** - Some edge cases (particularly `relationship_to_concept` for physical objects) are misinterpreted by the LLM reader.
+
+## Model Tiers
+
+The substrate supports configurable model tiers to balance accuracy vs cost:
+
+| Tier | OpenAI Model | Anthropic Model | Description |
+|------|--------------|-----------------|-------------|
+| smart | gpt-4o | claude-sonnet-4 | Highest accuracy, slowest, most expensive |
+| medium | gpt-4o-mini | claude-3.5-haiku | Balanced accuracy and cost (default) |
+| cheap | gpt-3.5-turbo | claude-3-haiku | Fastest/cheapest, less reliable |
+
+Configure via `--tier` flag or `LLM_TIER` environment variable.
 
 ## Architecture: Deterministic Structure + Stochastic Content
 
@@ -125,13 +143,40 @@ The test proves the English is accurate by having an LLM read it back:
 
 If the generated English is clear and accurate, the LLM reader should be able to reproduce the correct computed values.
 
-## Files Generated
+## Generated Files
 
-| File | Structure | Content Source |
-|------|-----------|----------------|
-| `specification.md` | Deterministic sections | LLM-generated formula explanations |
-| `glossary.md` | Deterministic format | LLM-generated predicate definitions |
-| `candidate-profiles.md` | One section per candidate | LLM-generated reasoning for each |
+| File | Description |
+|------|-------------|
+| `specification.md` | **GENERATED** - LLM-generated formula explanations with deterministic structure |
+| `glossary.md` | **GENERATED** - LLM-generated predicate definitions with deterministic format |
+| `candidate-profiles.md` | **GENERATED** - LLM-generated reasoning for each candidate |
+| `test-answers.json` | **GENERATED** - Test execution results for grading |
+| `test-results.md` | **GENERATED** - Human-readable test report |
+
+## Source Files (Not Cleaned)
+
+| File | Description |
+|------|-------------|
+| `inject-into-english.py` | LLM-powered documentation generator |
+| `inject-substrate.sh` | Shell wrapper for orchestration |
+| `take-test.py` | Test runner using LLM round-trip verification |
+| `take-test.sh` | Shell wrapper for test runner |
+| `README.md` | This documentation |
+
+## Cleaning
+
+To remove all generated files:
+
+```bash
+python3 inject-into-english.py --clean
+```
+
+This will remove:
+- `specification.md`
+- `glossary.md`
+- `candidate-profiles.md`
+- `test-answers.json`
+- `test-results.md`
 
 ## Why This Matters
 
@@ -144,9 +189,18 @@ This approach ensures:
 
 The English substrate proves that natural language can be a valid "execution substrate" when the prose is generated systematically from structured data.
 
-## Status
+## Running
 
-Implementation pending - requires LLM integration in inject-into-english.py
+```bash
+# Generate English documentation (requires OPENAI_API_KEY or ANTHROPIC_API_KEY)
+python3 inject-into-english.py
+
+# Run tests (LLM reads documentation and infers values)
+./take-test.sh
+
+# Use a specific tier
+python3 inject-into-english.py --tier smart
+```
 
 ## Source
 

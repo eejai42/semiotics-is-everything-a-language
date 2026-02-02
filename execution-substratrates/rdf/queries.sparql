@@ -21,7 +21,7 @@ WHERE {
 }
 
 # Computed field: TopFamilyFeudAnswer
-# Formula: =AND(   {{HasSyntax}},   {{RequiresParsing}},   {{IsDescriptionOf}},   {{HasLinearDecodingPressure}},   {{IsStableOntologyReference}},   NOT({{CanBeHeld}}),   NOT({{HasIdentity}}) )
+# Formula: =AND(   {{HasSyntax}},   {{RequiresParsing}},   {{IsDescriptionOf}},   {{HasLinearDecodingPressure}},   {{ResolvesToAnAST}},   {{IsStableOntologyReference}},   NOT({{CanBeHeld}}),   NOT({{HasIdentity}}) )
 PREFIX erb: <http://example.org/erb#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -37,7 +37,8 @@ WHERE {
     OPTIONAL { ?entity erb:isDescriptionOf ?is_description_of . }
     OPTIONAL { ?entity erb:isStableOntologyReference ?is_stable_ontology_reference . }
     OPTIONAL { ?entity erb:requiresParsing ?requires_parsing . }
-    BIND((?has_syntax && ?requires_parsing && ?is_description_of && ?has_linear_decoding_pressure && ?is_stable_ontology_reference && (!(?can_be_held)) && (!(?has_identity))) AS ?_result)
+    OPTIONAL { ?entity erb:resolvesToAnAST ?resolves_to_an_ast . }
+    BIND((?has_syntax && ?requires_parsing && ?is_description_of && ?has_linear_decoding_pressure && ?resolves_to_an_ast && ?is_stable_ontology_reference && (!(?can_be_held)) && (!(?has_identity))) AS ?_result)
 }
 
 # Computed field: FamilyFeudMismatch

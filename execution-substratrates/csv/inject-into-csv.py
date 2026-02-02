@@ -19,7 +19,7 @@ from pathlib import Path
 # Add project root to path for shared imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from orchestration.shared import load_rulebook, get_candidate_name_from_cwd
+from orchestration.shared import load_rulebook, get_candidate_name_from_cwd, handle_clean_arg
 
 # Try to import openpyxl, provide helpful error if missing
 try:
@@ -406,6 +406,19 @@ def export_column_formulas_csv(rulebook, output_path):
 
 
 def main():
+    # Define generated files for this substrate
+    GENERATED_FILES = [
+        'rulebook.xlsx',
+        'language_candidates.csv',
+        'column_formulas.csv',
+        'test-answers.json',
+        'test-results.md',
+    ]
+
+    # Handle --clean argument
+    if handle_clean_arg(GENERATED_FILES, "CSV substrate: Removes generated CSV files and test outputs"):
+        return
+
     candidate_name = get_candidate_name_from_cwd()
     print(f"Generating {candidate_name} from rulebook...")
 

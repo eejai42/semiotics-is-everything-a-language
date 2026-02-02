@@ -229,13 +229,13 @@ str_11_len:
 
     ; Static result buffers for string concatenation
     .bss
-    .globl _result_buf_eval_family_fued_question
-    .p2align 3
-_result_buf_eval_family_fued_question:
-    .space 1024
     .globl _result_buf_eval_family_feud_mismatch
     .p2align 3
 _result_buf_eval_family_feud_mismatch:
+    .space 1024
+    .globl _result_buf_eval_family_fued_question
+    .p2align 3
+_result_buf_eval_family_fued_question:
     .space 1024
 
     .text
@@ -301,11 +301,13 @@ _eval_top_family_feud_answer:
     cbz w0, and_false_1
     ldrb w0, [x19, #92]
     cbz w0, and_false_1
-    ldrb w0, [x19, #128]
+    ldrb w0, [x19, #136]
+    cbz w0, and_false_1
+    ldrb w0, [x19, #94]
     cbz w0, and_false_1
     ldrb w0, [x19, #93]
     cbz w0, and_false_1
-    ldrb w0, [x19, #94]
+    ldrb w0, [x19, #95]
     cbz w0, and_false_1
     ldrb w0, [x19, #90]
     eor w0, w0, #1
@@ -447,7 +449,7 @@ if_end_4:
     mov x1, x21
     str x0, [sp, #16]
     str x1, [sp, #24]
-    ldrb w0, [x19, #114]
+    ldrb w0, [x19, #122]
     cbz w0, if_else_9
     adrp x0, str_9@PAGE
     add x0, x0, str_9@PAGEOFF
@@ -515,9 +517,9 @@ _eval_is_open_closed_world_conflicted:
     stp x23, x24, [sp, #-16]!
     sub sp, sp, #256
     mov x19, x0
-    ldrb w0, [x19, #112]
+    ldrb w0, [x19, #120]
     cbz w0, and_false_11
-    ldrb w0, [x19, #113]
+    ldrb w0, [x19, #121]
     cbz w0, and_false_11
     mov w0, #1
     b and_end_12
@@ -541,7 +543,7 @@ _eval_is_description_of:
     stp x23, x24, [sp, #-16]!
     sub sp, sp, #256
     mov x19, x0
-    ldr x0, [x19, #120]
+    ldr x0, [x19, #128]
     mov x20, x0
     mov x0, #1
     cmp x20, x0
@@ -563,7 +565,7 @@ _eval_relationship_to_concept:
     stp x23, x24, [sp, #-16]!
     sub sp, sp, #256
     mov x19, x0
-    ldr x0, [x19, #120]
+    ldr x0, [x19, #128]
     mov x20, x0
     mov x0, #1
     cmp x20, x0

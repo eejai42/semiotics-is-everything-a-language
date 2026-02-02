@@ -2,9 +2,21 @@
 
 OWL (Web Ontology Language) execution substrate for the Effortless Rulebook.
 
-## Status: Planned
+## Current Status
 
-The ontology schema is manually authored. Dynamic generation and reasoning are not yet implemented.
+**Implemented and fully functional.** The compiler generates OWL TBox (ontology schema), ABox (data instances as Turtle), and SHACL-SPARQL rules from rulebook formulas. The test runner uses pyshacl to execute the rules and compute derived values.
+
+Current test score: **100%** - All calculated fields pass.
+
+## Running
+
+```bash
+# Generate OWL ontology and SHACL rules
+python3 inject-into-owl.py
+
+# Run tests (pyshacl executes SHACL-SPARQL rules)
+./take-test.sh
+```
 
 ## Architecture Overview
 
@@ -336,6 +348,42 @@ owl/
 | **Computation** | Native code execution | SHACL reasoner |
 | **Domain-agnostic** | Yes (reads formulas) | Yes (reads formulas) |
 | **Deterministic** | Yes | Yes (sorted triples) |
+
+## Generated Files
+
+| File | Description |
+|------|-------------|
+| `ontology.owl` | **GENERATED** - OWL TBox (classes and properties) |
+| `individuals.ttl` | **GENERATED** - RDF ABox (data instances) |
+| `rules.shacl.ttl` | **GENERATED** - SHACL-SPARQL rules for calculations |
+| `test-answers.json` | **GENERATED** - Test execution results for grading |
+| `test-results.md` | **GENERATED** - Human-readable test report |
+
+## Source Files (Not Cleaned)
+
+| File | Description |
+|------|-------------|
+| `inject-into-owl.py` | The compiler: parses formulas and generates OWL/SHACL |
+| `inject-substrate.sh` | Shell wrapper for orchestration |
+| `take-test.py` | Test runner using pyshacl reasoner |
+| `take-test.sh` | Shell wrapper for test runner |
+| `requirements.txt` | Python dependencies |
+| `README.md` | This documentation |
+
+## Cleaning
+
+To remove all generated files:
+
+```bash
+python3 inject-into-owl.py --clean
+```
+
+This will remove:
+- `ontology.owl`
+- `individuals.ttl`
+- `rules.shacl.ttl`
+- `test-answers.json`
+- `test-results.md`
 
 ## Technology Background
 

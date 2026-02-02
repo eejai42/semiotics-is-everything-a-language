@@ -233,12 +233,15 @@ object "Falsifier A" as LanguageCandidates_0 {
   HasIdentity = false
   CanBeHeld = false
   RequiresParsing = true
+  ResolvesToAnAST = true
   HasLinearDecodingPressure = true
   IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "N/A"
   IsOpenWorld = false
   IsClosedWorld = false
   DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M1"
   SortOrder = 0
 }
 
@@ -251,12 +254,15 @@ object "Falsifier B" as LanguageCandidates_1 {
   HasIdentity = true
   CanBeHeld = true
   RequiresParsing = true
+  ResolvesToAnAST = true
   HasLinearDecodingPressure = false
   IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "N/A"
   IsOpenWorld = false
   IsClosedWorld = false
   DistanceFromConcept = 1
+  ModelObjectFacilityLayer = "NA"
   SortOrder = 1
 }
 
@@ -269,12 +275,15 @@ object "Falsifier C" as LanguageCandidates_2 {
   HasIdentity = false
   CanBeHeld = false
   RequiresParsing = true
+  ResolvesToAnAST = true
   HasLinearDecodingPressure = true
   IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "OneDimensionalSymbolic"
   IsOpenWorld = true
   IsClosedWorld = true
   DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M1"
   SortOrder = 2
 }
 
@@ -287,16 +296,40 @@ object "English" as LanguageCandidates_3 {
   HasIdentity = false
   CanBeHeld = false
   RequiresParsing = true
+  ResolvesToAnAST = true
   HasLinearDecodingPressure = true
   IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "OneDimensionalSymbolic"
   IsOpenWorld = true
   IsClosedWorld = false
   DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M1"
   SortOrder = 3
 }
 
-object "Spoken Words" as LanguageCandidates_4 {
+object "Airtable - Editing" as LanguageCandidates_4 {
+  LanguageCandidateId = "airtable-editing"
+  Name = "Airtable - Editing"
+  Category = "Running Software"
+  ChosenLanguageCandidate = false
+  HasSyntax = false
+  HasIdentity = true
+  CanBeHeld = false
+  RequiresParsing = false
+  ResolvesToAnAST = true
+  HasLinearDecodingPressure = false
+  IsStableOntologyReference = true
+  IsLiveOntologyEditor = true
+  DimensionalityWhileEditing = "MultiDimensionalNonSymbolic"
+  IsOpenWorld = false
+  IsClosedWorld = true
+  DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M4"
+  SortOrder = 3
+}
+
+object "Spoken Words" as LanguageCandidates_5 {
   LanguageCandidateId = "spoken-words"
   Name = "Spoken Words"
   Category = "Natural Language"
@@ -305,232 +338,19 @@ object "Spoken Words" as LanguageCandidates_4 {
   HasIdentity = false
   CanBeHeld = false
   RequiresParsing = true
+  ResolvesToAnAST = true
   HasLinearDecodingPressure = true
   IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "OneDimensionalSymbolic"
   IsOpenWorld = true
   IsClosedWorld = false
   DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M1"
   SortOrder = 4
 }
 
-object "A Chair " as LanguageCandidates_5 {
-  LanguageCandidateId = "a-chair"
-  Name = "A Chair "
-  Category = "Physical Object"
-  ChosenLanguageCandidate = false
-  HasSyntax = false
-  HasIdentity = true
-  CanBeHeld = true
-  RequiresParsing = false
-  HasLinearDecodingPressure = false
-  IsStableOntologyReference = false
-  DimensionalityWhileEditing = "N/A"
-  IsOpenWorld = false
-  IsClosedWorld = true
-  DistanceFromConcept = 1
-  SortOrder = 5
-}
-
-object "A Game of Fortnite" as LanguageCandidates_6 {
-  LanguageCandidateId = "a-game-of-fortnite"
-  Name = "A Game of Fortnite"
-  Category = "Running Software"
-  ChosenLanguageCandidate = false
-  HasSyntax = false
-  HasIdentity = true
-  CanBeHeld = false
-  RequiresParsing = true
-  HasLinearDecodingPressure = false
-  IsStableOntologyReference = false
-  DimensionalityWhileEditing = "MultiDimensionalNonSymbolic"
-  IsOpenWorld = false
-  IsClosedWorld = true
-  DistanceFromConcept = 1
-  SortOrder = 6
-}
-
-object "Sign Language" as LanguageCandidates_7 {
-  LanguageCandidateId = "sign-language"
-  Name = "Sign Language"
-  Category = "Natural Language"
-  ChosenLanguageCandidate = true
-  HasSyntax = true
-  HasIdentity = false
-  CanBeHeld = false
-  RequiresParsing = true
-  HasLinearDecodingPressure = true
-  IsStableOntologyReference = true
-  DimensionalityWhileEditing = "OneDimensionalSymbolic"
-  IsOpenWorld = true
-  IsClosedWorld = false
-  DistanceFromConcept = 2
-  SortOrder = 7
-}
-
-object "Python" as LanguageCandidates_8 {
-  LanguageCandidateId = "python"
-  Name = "Python"
-  Category = "Formal Language"
-  ChosenLanguageCandidate = true
-  HasSyntax = true
-  HasIdentity = false
-  CanBeHeld = false
-  RequiresParsing = true
-  HasLinearDecodingPressure = true
-  IsStableOntologyReference = true
-  DimensionalityWhileEditing = "OneDimensionalSymbolic"
-  IsOpenWorld = true
-  IsClosedWorld = false
-  DistanceFromConcept = 2
-  SortOrder = 8
-}
-
-object "A Smartphone" as LanguageCandidates_9 {
-  LanguageCandidateId = "a-smartphone"
-  Name = "A Smartphone"
-  Category = "Physical Object"
-  ChosenLanguageCandidate = false
-  HasSyntax = false
-  HasIdentity = true
-  CanBeHeld = true
-  RequiresParsing = false
-  HasLinearDecodingPressure = true
-  IsStableOntologyReference = false
-  DimensionalityWhileEditing = "N/A"
-  IsOpenWorld = false
-  IsClosedWorld = true
-  DistanceFromConcept = 1
-  SortOrder = 9
-}
-
-object "A Running App " as LanguageCandidates_10 {
-  LanguageCandidateId = "a-running-app"
-  Name = "A Running App "
-  Category = "Running Software"
-  ChosenLanguageCandidate = false
-  HasSyntax = false
-  HasIdentity = true
-  CanBeHeld = false
-  RequiresParsing = true
-  HasLinearDecodingPressure = true
-  IsStableOntologyReference = false
-  DimensionalityWhileEditing = "MultiDimensionalNonSymbolic"
-  IsOpenWorld = false
-  IsClosedWorld = true
-  DistanceFromConcept = 1
-  SortOrder = 22
-}
-
-object "An XLSX Doc" as LanguageCandidates_11 {
-  LanguageCandidateId = "an-xlsx-doc"
-  Name = "An XLSX Doc"
-  Category = "Formal Language"
-  ChosenLanguageCandidate = true
-  HasSyntax = true
-  HasIdentity = false
-  CanBeHeld = false
-  RequiresParsing = true
-  HasLinearDecodingPressure = true
-  IsStableOntologyReference = true
-  DimensionalityWhileEditing = "OneDimensionalSymbolic"
-  IsOpenWorld = false
-  IsClosedWorld = false
-  DistanceFromConcept = 2
-  SortOrder = 23
-}
-
-object "Editing an XLSX Doc" as LanguageCandidates_12 {
-  LanguageCandidateId = "editing-an-xlsx-doc"
-  Name = "Editing an XLSX Doc"
-  Category = "Running Software"
-  ChosenLanguageCandidate = false
-  HasSyntax = false
-  HasIdentity = false
-  CanBeHeld = false
-  RequiresParsing = false
-  HasLinearDecodingPressure = false
-  IsStableOntologyReference = false
-  DimensionalityWhileEditing = "MultiDimensionalNonSymbolic"
-  IsOpenWorld = false
-  IsClosedWorld = false
-  DistanceFromConcept = 1
-  SortOrder = 24
-}
-
-object "An DOCX Doc" as LanguageCandidates_13 {
-  LanguageCandidateId = "an-docx-doc"
-  Name = "An DOCX Doc"
-  Category = "Formal Language"
-  ChosenLanguageCandidate = true
-  HasSyntax = true
-  HasIdentity = false
-  CanBeHeld = false
-  RequiresParsing = true
-  HasLinearDecodingPressure = true
-  IsStableOntologyReference = true
-  DimensionalityWhileEditing = "OneDimensionalSymbolic"
-  IsOpenWorld = false
-  IsClosedWorld = false
-  DistanceFromConcept = 2
-  SortOrder = 25
-}
-
-object "Editing an DOCX Doc" as LanguageCandidates_14 {
-  LanguageCandidateId = "editing-an-docx-doc"
-  Name = "Editing an DOCX Doc"
-  Category = "Running Software"
-  ChosenLanguageCandidate = false
-  HasSyntax = false
-  HasIdentity = false
-  CanBeHeld = false
-  RequiresParsing = false
-  HasLinearDecodingPressure = false
-  IsStableOntologyReference = true
-  DimensionalityWhileEditing = "MultiDimensionalNonSymbolic"
-  IsOpenWorld = false
-  IsClosedWorld = false
-  DistanceFromConcept = 1
-  SortOrder = 25
-}
-
-object "A CSV File" as LanguageCandidates_15 {
-  LanguageCandidateId = "a-csv-file"
-  Name = "A CSV File"
-  Category = "Formal Language"
-  ChosenLanguageCandidate = true
-  HasSyntax = true
-  HasIdentity = false
-  CanBeHeld = false
-  RequiresParsing = true
-  HasLinearDecodingPressure = true
-  IsStableOntologyReference = true
-  DimensionalityWhileEditing = "OneDimensionalSymbolic"
-  IsOpenWorld = true
-  IsClosedWorld = false
-  DistanceFromConcept = 2
-  SortOrder = 10
-}
-
-object "OWL/RDF/GraphQL/... generally" as LanguageCandidates_16 {
-  LanguageCandidateId = "owl-rdf-graphql-generally"
-  Name = "OWL/RDF/GraphQL/... generally"
-  Category = "Natural Language"
-  ChosenLanguageCandidate = true
-  HasSyntax = true
-  HasIdentity = false
-  CanBeHeld = false
-  RequiresParsing = true
-  HasLinearDecodingPressure = true
-  IsStableOntologyReference = true
-  DimensionalityWhileEditing = "OneDimensionalSymbolic"
-  IsOpenWorld = false
-  IsClosedWorld = true
-  DistanceFromConcept = 2
-  SortOrder = 11
-}
-
-object "A Coffee Mug" as LanguageCandidates_17 {
+object "A Coffee Mug" as LanguageCandidates_6 {
   LanguageCandidateId = "a-coffee-mug"
   Name = "A Coffee Mug"
   Category = "Physical Object"
@@ -539,13 +359,247 @@ object "A Coffee Mug" as LanguageCandidates_17 {
   HasIdentity = true
   CanBeHeld = true
   RequiresParsing = false
+  ResolvesToAnAST = false
   HasLinearDecodingPressure = false
   IsStableOntologyReference = false
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "N/A"
+  IsOpenWorld = false
+  IsClosedWorld = true
+  DistanceFromConcept = 1
+  ModelObjectFacilityLayer = "NA"
+  SortOrder = 5
+}
+
+object "A Game of Fortnite" as LanguageCandidates_7 {
+  LanguageCandidateId = "a-game-of-fortnite"
+  Name = "A Game of Fortnite"
+  Category = "Running Software"
+  ChosenLanguageCandidate = false
+  HasSyntax = false
+  HasIdentity = true
+  CanBeHeld = false
+  RequiresParsing = true
+  ResolvesToAnAST = true
+  HasLinearDecodingPressure = false
+  IsStableOntologyReference = false
+  IsLiveOntologyEditor = false
+  DimensionalityWhileEditing = "MultiDimensionalNonSymbolic"
+  IsOpenWorld = false
+  IsClosedWorld = true
+  DistanceFromConcept = 1
+  ModelObjectFacilityLayer = "M4"
+  SortOrder = 6
+}
+
+object "Sign Language" as LanguageCandidates_8 {
+  LanguageCandidateId = "sign-language"
+  Name = "Sign Language"
+  Category = "Natural Language"
+  ChosenLanguageCandidate = true
+  HasSyntax = true
+  HasIdentity = false
+  CanBeHeld = false
+  RequiresParsing = true
+  ResolvesToAnAST = true
+  HasLinearDecodingPressure = true
+  IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
+  DimensionalityWhileEditing = "OneDimensionalSymbolic"
+  IsOpenWorld = true
+  IsClosedWorld = false
+  DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M1"
+  SortOrder = 7
+}
+
+object "Python" as LanguageCandidates_9 {
+  LanguageCandidateId = "python"
+  Name = "Python"
+  Category = "Formal Language"
+  ChosenLanguageCandidate = true
+  HasSyntax = true
+  HasIdentity = false
+  CanBeHeld = false
+  RequiresParsing = true
+  ResolvesToAnAST = true
+  HasLinearDecodingPressure = true
+  IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
+  DimensionalityWhileEditing = "OneDimensionalSymbolic"
+  IsOpenWorld = true
+  IsClosedWorld = false
+  DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M1"
+  SortOrder = 8
+}
+
+object "A Smartphone" as LanguageCandidates_10 {
+  LanguageCandidateId = "a-smartphone"
+  Name = "A Smartphone"
+  Category = "Physical Object"
+  ChosenLanguageCandidate = false
+  HasSyntax = false
+  HasIdentity = true
+  CanBeHeld = true
+  RequiresParsing = false
+  ResolvesToAnAST = false
+  HasLinearDecodingPressure = true
+  IsStableOntologyReference = false
+  IsLiveOntologyEditor = false
+  DimensionalityWhileEditing = "N/A"
+  IsOpenWorld = false
+  IsClosedWorld = true
+  DistanceFromConcept = 1
+  ModelObjectFacilityLayer = "NA"
+  SortOrder = 9
+}
+
+object "A Running App " as LanguageCandidates_11 {
+  LanguageCandidateId = "a-running-app"
+  Name = "A Running App "
+  Category = "Running Software"
+  ChosenLanguageCandidate = false
+  HasSyntax = false
+  HasIdentity = true
+  CanBeHeld = false
+  RequiresParsing = true
+  ResolvesToAnAST = true
+  HasLinearDecodingPressure = true
+  IsStableOntologyReference = false
+  IsLiveOntologyEditor = true
+  DimensionalityWhileEditing = "MultiDimensionalNonSymbolic"
+  IsOpenWorld = false
+  IsClosedWorld = true
+  DistanceFromConcept = 1
+  ModelObjectFacilityLayer = "M4"
+  SortOrder = 22
+}
+
+object "An XLSX Doc" as LanguageCandidates_12 {
+  LanguageCandidateId = "an-xlsx-doc"
+  Name = "An XLSX Doc"
+  Category = "Formal Language"
+  ChosenLanguageCandidate = true
+  HasSyntax = true
+  HasIdentity = false
+  CanBeHeld = false
+  RequiresParsing = true
+  ResolvesToAnAST = true
+  HasLinearDecodingPressure = true
+  IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
+  DimensionalityWhileEditing = "OneDimensionalSymbolic"
+  IsOpenWorld = false
+  IsClosedWorld = false
+  DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M2"
+  SortOrder = 23
+}
+
+object "XLSX - Editing" as LanguageCandidates_13 {
+  LanguageCandidateId = "xlsx-editing"
+  Name = "XLSX - Editing"
+  Category = "Running Software"
+  ChosenLanguageCandidate = false
+  HasSyntax = false
+  HasIdentity = false
+  CanBeHeld = false
+  RequiresParsing = false
+  ResolvesToAnAST = true
+  HasLinearDecodingPressure = false
+  IsStableOntologyReference = false
+  IsLiveOntologyEditor = true
+  DimensionalityWhileEditing = "MultiDimensionalNonSymbolic"
   IsOpenWorld = false
   IsClosedWorld = false
   DistanceFromConcept = 1
-  SortOrder = 12
+  ModelObjectFacilityLayer = "M4"
+  SortOrder = 24
+}
+
+object "An DOCX Doc" as LanguageCandidates_14 {
+  LanguageCandidateId = "an-docx-doc"
+  Name = "An DOCX Doc"
+  Category = "Formal Language"
+  ChosenLanguageCandidate = true
+  HasSyntax = true
+  HasIdentity = false
+  CanBeHeld = false
+  RequiresParsing = true
+  ResolvesToAnAST = true
+  HasLinearDecodingPressure = true
+  IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
+  DimensionalityWhileEditing = "OneDimensionalSymbolic"
+  IsOpenWorld = false
+  IsClosedWorld = false
+  DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M2"
+  SortOrder = 25
+}
+
+object "DOCX - Editing" as LanguageCandidates_15 {
+  LanguageCandidateId = "docx-editing"
+  Name = "DOCX - Editing"
+  Category = "Running Software"
+  ChosenLanguageCandidate = false
+  HasSyntax = false
+  HasIdentity = false
+  CanBeHeld = false
+  RequiresParsing = false
+  ResolvesToAnAST = false
+  HasLinearDecodingPressure = false
+  IsStableOntologyReference = true
+  IsLiveOntologyEditor = true
+  DimensionalityWhileEditing = "MultiDimensionalNonSymbolic"
+  IsOpenWorld = false
+  IsClosedWorld = false
+  DistanceFromConcept = 1
+  ModelObjectFacilityLayer = "M4"
+  SortOrder = 25
+}
+
+object "A CSV File" as LanguageCandidates_16 {
+  LanguageCandidateId = "a-csv-file"
+  Name = "A CSV File"
+  Category = "Formal Language"
+  ChosenLanguageCandidate = true
+  HasSyntax = true
+  HasIdentity = false
+  CanBeHeld = false
+  RequiresParsing = true
+  ResolvesToAnAST = true
+  HasLinearDecodingPressure = true
+  IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
+  DimensionalityWhileEditing = "OneDimensionalSymbolic"
+  IsOpenWorld = true
+  IsClosedWorld = false
+  DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M2"
+  SortOrder = 10
+}
+
+object "OWL/RDF/GraphQL/... generally" as LanguageCandidates_17 {
+  LanguageCandidateId = "owl-rdf-graphql-generally"
+  Name = "OWL/RDF/GraphQL/... generally"
+  Category = "Natural Language"
+  ChosenLanguageCandidate = true
+  HasSyntax = true
+  HasIdentity = false
+  CanBeHeld = false
+  RequiresParsing = true
+  ResolvesToAnAST = true
+  HasLinearDecodingPressure = true
+  IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
+  DimensionalityWhileEditing = "OneDimensionalSymbolic"
+  IsOpenWorld = false
+  IsClosedWorld = true
+  DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M2"
+  SortOrder = 11
 }
 
 object "A Thunderstorm" as LanguageCandidates_18 {
@@ -557,12 +611,15 @@ object "A Thunderstorm" as LanguageCandidates_18 {
   HasIdentity = true
   CanBeHeld = true
   RequiresParsing = true
+  ResolvesToAnAST = true
   HasLinearDecodingPressure = false
   IsStableOntologyReference = false
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "N/A"
   IsOpenWorld = false
   IsClosedWorld = false
   DistanceFromConcept = 1
+  ModelObjectFacilityLayer = "NA"
   SortOrder = 13
 }
 
@@ -575,12 +632,15 @@ object "A UML File" as LanguageCandidates_19 {
   HasIdentity = false
   CanBeHeld = false
   RequiresParsing = true
+  ResolvesToAnAST = true
   HasLinearDecodingPressure = true
   IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "OneDimensionalSymbolic"
   IsOpenWorld = false
   IsClosedWorld = false
   DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M2"
   SortOrder = 14
 }
 
@@ -593,12 +653,15 @@ object "Binary Code" as LanguageCandidates_20 {
   HasIdentity = false
   CanBeHeld = false
   RequiresParsing = true
+  ResolvesToAnAST = true
   HasLinearDecodingPressure = true
   IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "OneDimensionalSymbolic"
   IsOpenWorld = false
   IsClosedWorld = false
   DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M2"
   SortOrder = 15
 }
 
@@ -611,12 +674,15 @@ object "The Mona Lisa" as LanguageCandidates_21 {
   HasIdentity = true
   CanBeHeld = true
   RequiresParsing = false
+  ResolvesToAnAST = false
   HasLinearDecodingPressure = false
   IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "N/A"
   IsOpenWorld = false
   IsClosedWorld = false
   DistanceFromConcept = 1
+  ModelObjectFacilityLayer = "NA"
   SortOrder = 16
 }
 
@@ -629,12 +695,15 @@ object "Running Calculator App" as LanguageCandidates_22 {
   HasIdentity = true
   CanBeHeld = false
   RequiresParsing = true
+  ResolvesToAnAST = true
   HasLinearDecodingPressure = false
   IsStableOntologyReference = false
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "MultiDimensionalNonSymbolic"
   IsOpenWorld = false
   IsClosedWorld = false
   DistanceFromConcept = 1
+  ModelObjectFacilityLayer = "M1"
   SortOrder = 17
 }
 
@@ -647,12 +716,15 @@ object "JavaScript" as LanguageCandidates_23 {
   HasIdentity = false
   CanBeHeld = false
   RequiresParsing = true
+  ResolvesToAnAST = true
   HasLinearDecodingPressure = true
   IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "OneDimensionalSymbolic"
   IsOpenWorld = false
   IsClosedWorld = false
   DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M1"
   SortOrder = 18
 }
 
@@ -665,12 +737,15 @@ object "French" as LanguageCandidates_24 {
   HasIdentity = false
   CanBeHeld = false
   RequiresParsing = true
+  ResolvesToAnAST = true
   HasLinearDecodingPressure = true
   IsStableOntologyReference = true
+  IsLiveOntologyEditor = false
   DimensionalityWhileEditing = "OneDimensionalSymbolic"
   IsOpenWorld = false
   IsClosedWorld = false
   DistanceFromConcept = 2
+  ModelObjectFacilityLayer = "M1"
   SortOrder = 19
 }
 

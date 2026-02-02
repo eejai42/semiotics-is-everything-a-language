@@ -1,41 +1,164 @@
 # Is Everything a Language?
 
-> A formalized argument that "language" is a testable, computable boundary—not a universal property.
+This repository is a falsifiable, executable argument about what *is* and *is not* a language.
 
-This repository implements a philosophical argument as executable code. The thesis: **not everything is a language**, and we can prove it by defining "language" through testable predicates, then showing that many things fail those tests.
+It does so by:
+- Defining "language" as a set of explicit predicates
+- Encoding those predicates in a single declarative rulebook
+- Executing that same rulebook across 12 independent substrates
+- Verifying that all substrates produce identical classifications
 
-## NOTE: There Is just a Single Source of Truth
+---
 
-The ontology this entire repository is 1 level up from postgres.  The rulebook at the hub of this repo is a derived artifact from this ***[Public Airtable Base](https://airtable.com/appC8XTj95lubn6hz/shro5WGKLfkfxltQK)*** that generates the rulebook in the first place.
+## Single Source of Truth Architecture
 
-https://airtable.com/appC8XTj95lubn6hz/shro5WGKLfkfxltQK
+![Effortless Rulebook Architecture](./effortless_rulebook_architecture.png)
+
+**One declarative rulebook. Many execution substrates. Identical results.**
+
+The Airtable model is the single source of truth.
+The generated `effortless-rulebook.json` is the canonical hub.
+Each execution substrate independently consumes the same rulebook and computes the same answers.
+
+---
+
+## The Core Claim (TL;DR)
+
+Truth does not live in syntax, code, or serialization.
+
+Truth lives in a snapshot-consistent declarative model.
+All code, files, and formats are projections.
+
+- [Airtable](https://airtable.com/appC8XTj95lubn6hz/shro5WGKLfkfxltQK) — the source of truth
+- [`effortless-rulebook.json`](effortless-rulebook/effortless-rulebook.json) — the canonical hub
+- 12+ execution substrates — independent hosts computing identical results
+
+### Download the Artifacts
+
+| Artifact | Description |
+|----------|-------------|
+| [`effortless-rulebook.json`](effortless-rulebook/effortless-rulebook.json) | The canonical rulebook (JSON) — all schema, formulas, and data |
+| [`rulebook.xlsx`](execution-substratrates/xlsx/rulebook.xlsx) | Excel workbook with live formulas |
+| [`language_candidates.csv`](execution-substratrates/csv/language_candidates.csv) | Flat CSV of all candidates with computed values |
+| [`column_formulas.csv`](execution-substratrates/csv/column_formulas.csv) | CSV of all field definitions and formulas |
+| [`specification.md`](execution-substratrates/english/specification.md) | Human-readable English specification |
+| [`glossary.md`](execution-substratrates/english/glossary.md) | Glossary of terms and predicates |
+
+---
+
+## The Rulebook Is the Hub
+
+`/effortless-rulebook/effortless-rulebook.json` is the canonical model.
+
+It contains:
+- Predicate definitions
+- Derived fields
+- Test candidates
+- Expected results
+
+All execution substrates consume this file.
+No execution substrate defines truth.
+
+---
+
+## What This Repository Settles
+
+This project makes the following claims falsifiable:
+
+- Not everything that can be interpreted is a language
+- Serialization alone is insufficient to define language
+- If something is a language, it must satisfy explicit predicates
+- Disagreements about language reduce to predicate choices
+
+If you disagree with a result, you can point to the exact predicate.
+
+---
+
+## Everything Follows Along
+
+**The most radical claim of this architecture: change the source of truth, and everything else follows along automatically.**
+
+Add a new column in Airtable? Twelve execution substrates each regenerate with the new field—from Python dataclasses to PostgreSQL views to *literally x86 assembly code*.
+
+Change a formula in Excel? The same formula propagates to Go structs, GraphQL resolvers, OWL ontologies, and compiled binaries.
+
+This isn't abstraction. This is **one truth, many projections**.
+
+### From Airtable to Assembler
+
+Consider what happens when you add a new predicate like `ResolvesToAnAST`:
+
+| Substrate | What Gets Generated |
+|-----------|---------------------|
+| **Airtable** | New column appears in the table |
+| **PostgreSQL** | New `calc_*()` function + view column |
+| **Python** | New field on `@dataclass` + `calc_*()` method |
+| **Go** | New struct field + `Calc*()` method |
+| **Excel** | New column with formula |
+| **GraphQL** | New field + resolver |
+| **English** | New paragraph in specification |
+| **Binary/ASM** | New field in C struct + **x86 assembly function** |
+
+Yes, that last one is real. The same declarative formula that lives in Airtable gets transpiled to assembly:
+
+```asm
+; calc_top_family_feud_answer - implements the 7-condition AND formula
+calc_top_family_feud_answer:
+    push rbp
+    mov rbp, rsp
+    ; Load has_syntax field
+    mov al, [rdi + OFFSET_HAS_SYNTAX]
+    test al, al
+    jz .return_false
+    ; ... continues for all 7 conditions
+```
+
+**The formula doesn't care what language hosts it.** Airtable, Excel, Python, Go, SQL, GraphQL, English prose, or raw machine code—they all compute the same answer because they all project the same truth.
+
+---
+
+## Explore the Model Interactively
+
+The unique value of this project is that you can explore and modify the ontology yourself using familiar tools:
+
+| Format | Link | Description |
+|--------|------|-------------|
+| **Airtable** | [Open in Airtable](https://airtable.com/appC8XTj95lubn6hz/shro5WGKLfkfxltQK) | Browse, filter, and explore the full ontology with linked records and calculated fields |
+| **Excel** | [Download rulebook.xlsx](execution-substratrates/xlsx/rulebook.xlsx) | Native Excel workbook with formulas that compute the same results as all other substrates |
+
+The entire repository—12+ execution substrates, tests, and documentation—is generated from this single source of truth.
 
 ---
 
 ## Table of Contents
 
-1. [The Argument](#the-argument)
+1. [The Core Claim (TL;DR)](#the-core-claim-tldr)
+2. [The Rulebook Is the Hub](#the-rulebook-is-the-hub)
+3. [What This Repository Settles](#what-this-repository-settles)
+4. [Everything Follows Along](#everything-follows-along)
+   - [From Airtable to Assembler](#from-airtable-to-assembler)
+6. [The Argument](#the-argument)
    - [Part I: Language Can Be Formalized](#part-i-language-can-be-formalized)
    - [Part II: Not Everything Is a Language](#part-ii-not-everything-is-a-language)
    - [Conclusion](#conclusion)
-2. [The Predicates](#the-predicates)
-3. [The Evaluation Matrix](#the-evaluation-matrix)
-4. [The DAG (Inference Levels)](#the-dag-inference-levels)
-5. [Execution Layers](#execution-layers)
-   - [Substrate Roles in the Three-Phase Contract](#substrate-roles-in-the-three-phase-contract)
-   - [All Execution Layers](#all-execution-layers)
-6. [Testing Architecture](#testing-architecture)
-   - [The Three-Phase Testing Model](#the-three-phase-testing-model)
-   - [Phase 1: Substrate Injection](#phase-1-substrate-injection-domain-agnostic)
-   - [Phase 2: Test Execution](#phase-2-test-execution-main)
-   - [Phase 3: Grading](#phase-3-grading)
-7. [Fuzzy Evaluation Layer](#fuzzy-evaluation-layer)
-   - [Concept](#concept)
-   - [Substrates Using Fuzzy Evaluation](#substrates-using-fuzzy-evaluation)
-   - [Running Fuzzy Evaluation](#running-fuzzy-evaluation)
-8. [Quick Start](#quick-start)
-9. [Architecture](#architecture)
-10. [Transpilers](#transpilers)
+7. [The Predicates](#the-predicates)
+8. [The Evaluation Matrix](#the-evaluation-matrix)
+9. [The DAG (Inference Levels)](#the-dag-inference-levels)
+10. [Independent Execution Substrates](#independent-execution-substrates)
+    - [Substrate Roles in the Three-Phase Contract](#substrate-roles-in-the-three-phase-contract)
+    - [All Execution Substrates](#all-execution-substrates)
+11. [Testing Architecture](#testing-architecture)
+    - [The Three-Phase Testing Model](#the-three-phase-testing-model)
+    - [Phase 1: Substrate Injection](#phase-1-substrate-injection-domain-agnostic)
+    - [Phase 2: Test Execution](#phase-2-test-execution-main)
+    - [Phase 3: Grading](#phase-3-grading)
+12. [Fuzzy Evaluation Layer](#fuzzy-evaluation-layer)
+    - [Concept](#concept)
+    - [Substrates Using Fuzzy Evaluation](#substrates-using-fuzzy-evaluation)
+    - [Running Fuzzy Evaluation](#running-fuzzy-evaluation)
+13. [Quick Start](#quick-start)
+14. [Architecture](#architecture)
+15. [Transpilers](#transpilers)
 
 ---
 
@@ -301,9 +424,14 @@ family_feud_mismatch: null   ← computed (true) matches marked (true)
 
 ---
 
-## Execution Layers
+## Independent Execution Substrates
 
-The same logic is implemented in 12+ formats, proving the argument is computable across paradigms.
+Each execution substrate is a fully independent host that consumes the same rulebook and computes results using domain-agnostic, reusable tooling.
+
+No substrate is privileged.
+Disagreement is therefore about definitions, not implementations.
+
+> **No execution substrate defines truth; all substrates merely project and compute from the rulebook.**
 
 ### For Instance: `top_family_feud_answer` in Three Languages
 
@@ -380,7 +508,7 @@ The *thing that changes per substrate* is: **what "injection" produces**, **how 
 
 **Legend**: ✓ = Native execution, 🔮 = LLM Fuzzy Grading (see [Fuzzy Evaluation Layer](#fuzzy-evaluation-layer))
 
-### All Execution Layers
+### All Execution Substrates
 
 | Layer | Description | Run | README |
 |-------|-------------|-----|--------|

@@ -43,7 +43,8 @@ erb:LanguageCandidatesShape a sh:NodeShape ;
     OPTIONAL { $this erb:isDescriptionOf ?is_description_of . }
     OPTIONAL { $this erb:isStableOntologyReference ?is_stable_ontology_reference . }
     OPTIONAL { $this erb:requiresParsing ?requires_parsing . }
-                BIND((?has_syntax && ?requires_parsing && ?is_description_of && ?has_linear_decoding_pressure && ?is_stable_ontology_reference && (!(?can_be_held)) && (!(?has_identity))) AS ?_result)
+    OPTIONAL { $this erb:resolvesToAnAST ?resolves_to_an_ast . }
+                BIND((?has_syntax && ?requires_parsing && ?is_description_of && ?has_linear_decoding_pressure && ?resolves_to_an_ast && ?is_stable_ontology_reference && (!(?can_be_held)) && (!(?has_identity))) AS ?_result)
             }
         """ ;
     ] ;

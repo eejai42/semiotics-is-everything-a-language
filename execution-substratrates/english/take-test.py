@@ -178,7 +178,7 @@ def call_llm(prompt):
         model=model,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3,  # Higher temp for more variability
-        max_tokens=5500,  # gpt-3.5-turbo limit
+        max_tokens=8096,  # gpt-3.5-turbo limit
     )
 
     response_text = response.choices[0].message.content

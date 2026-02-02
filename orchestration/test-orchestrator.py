@@ -10,6 +10,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from datetime import datetime
 
 import psycopg2
@@ -174,14 +175,15 @@ def get_substrates():
 
 
 def run_substrate_test(substrate_name):
-    """Run a substrate's take-test.sh and return path to test-answers.json"""
+    """Run a substrate's take-test.sh and return path to test-answers.json with timing"""
     substrate_dir = os.path.join(SUBSTRATES_DIR, substrate_name)
     script_path = os.path.join(substrate_dir, "take-test.sh")
     answers_path = os.path.join(substrate_dir, "test-answers.json")
 
     if not os.path.exists(script_path):
-        return None, f"No take-test.sh found"
+        return None, f"No take-test.sh found", 0.0
 
+    start_time = time.time()
     try:
         result = subprocess.run(
             ["bash", script_path],
@@ -190,19 +192,22 @@ def run_substrate_test(substrate_name):
             text=True,
             timeout=60
         )
+        elapsed = time.time() - start_time
 
         if result.returncode != 0:
-            return None, f"Script failed: {result.stderr}"
+            return None, f"Script failed: {result.stderr}", elapsed
 
         if not os.path.exists(answers_path):
-            return None, f"No test-answers.json generated"
+            return None, f"No test-answers.json generated", elapsed
 
-        return answers_path, None
+        return answers_path, None, elapsed
 
     except subprocess.TimeoutExpired:
-        return None, "Script timed out"
+        elapsed = time.time() - start_time
+        return None, "Script timed out", elapsed
     except Exception as e:
-        return None, str(e)
+        elapsed = time.time() - start_time
+        return None, str(e), elapsed
 
 
 def run_and_grade_all_substrates(answer_key):
@@ -220,13 +225,14 @@ def run_and_grade_all_substrates(answer_key):
         # Print substrate header (flush immediately so it appears before the test runs)
         print(f"  [{i}/{len(substrates)}] Testing {substrate}...", flush=True)
 
-        # Run the test
-        answers_path, error = run_substrate_test(substrate)
+        # Run the test (now returns timing)
+        answers_path, error, elapsed = run_substrate_test(substrate)
 
         # Grade the results
         grades = grade_substrate(substrate, answer_key, answers_path)
         if error:
             grades["error"] = error
+        grades["elapsed_seconds"] = elapsed
 
         all_grades[substrate] = grades
 
@@ -235,7 +241,7 @@ def run_and_grade_all_substrates(answer_key):
 
         # Print the summary box immediately
         print_substrate_test_summary(substrate, grades)
-        
+
         # Add vertical spacing after each substrate for visual isolation
         print("\n" * 10, flush=True)
 
@@ -256,6 +262,9 @@ def grade_all_substrates(answer_key, substrate_results):
 
         if run_result.get("error"):
             grades["error"] = run_result["error"]
+
+        # Include timing if provided
+        grades["elapsed_seconds"] = run_result.get("elapsed_seconds", 0.0)
 
         all_grades[substrate_name] = grades
 
@@ -301,7 +310,8 @@ def grade_substrate(substrate_name, answer_key, answers_path):
         "fields_passed": 0,
         "fields_failed": 0,
         "failures": [],
-        "error": None
+        "error": None,
+        "elapsed_seconds": 0.0  # Will be set by caller
     }
 
     if not answers_path:
@@ -347,6 +357,18 @@ def grade_substrate(substrate_name, answer_key, answers_path):
     return results
 
 
+def format_duration(seconds):
+    """Format duration in human-readable form"""
+    if seconds < 1:
+        return f"{seconds * 1000:.0f}ms"
+    elif seconds < 60:
+        return f"{seconds:.2f}s"
+    else:
+        mins = int(seconds // 60)
+        secs = seconds % 60
+        return f"{mins}m {secs:.1f}s"
+
+
 def generate_substrate_report(substrate_name, results):
     """Generate test-results.md for a substrate"""
     substrate_dir = os.path.join(SUBSTRATES_DIR, substrate_name)
@@ -356,6 +378,7 @@ def generate_substrate_report(substrate_name, results):
     passed = results["fields_passed"]
     failed = results["fields_failed"]
     score = (passed / total * 100) if total > 0 else 0
+    elapsed = results.get("elapsed_seconds", 0.0)
 
     lines = [
         f"# Test Results: {substrate_name}",
@@ -368,6 +391,7 @@ def generate_substrate_report(substrate_name, results):
         f"| Passed | {passed} |",
         f"| Failed | {failed} |",
         f"| Score | {score:.1f}% |",
+        f"| Duration | {format_duration(elapsed)} |",
         "",
     ]
 
@@ -415,6 +439,7 @@ def print_substrate_test_summary(substrate_name, grades):
     failed = grades["fields_failed"]
     execution_failed = grades.get("execution_failed", False) or (grades.get("error") and total == 0)
     score = (passed / total * 100) if total > 0 else 0
+    elapsed = grades.get("elapsed_seconds", 0.0)
 
     # Determine status with color
     if execution_failed:
@@ -440,14 +465,18 @@ def print_substrate_test_summary(substrate_name, grades):
 
     print(f"  {header_bg}{header_text}┌{'─' * box_width}┐{RESET}", flush=True)
     print(f"  {header_bg}{header_text}│{BOLD} {substrate_name.upper():^{box_width - 2}} {RESET}{header_bg}{header_text}│{RESET}", flush=True)
-    
-    # Score line
+
+    # Score line with timing
+    duration_str = format_duration(elapsed)
     if execution_failed:
         score_text = f"Score: --/-- (--%) - {status_plain}"
         print(f"  {header_bg}{header_text}│ {RED}{BOLD}{score_text:^{box_width - 2}}{RESET}{header_bg}{header_text} │{RESET}", flush=True)
     else:
         score_text = f"Score: {passed}/{total} ({score:.1f}%) - {status_plain}"
         print(f"  {header_bg}{header_text}│ {score_color}{BOLD}{score_text:^{box_width - 2}}{RESET}{header_bg}{header_text} │{RESET}", flush=True)
+    # Duration line
+    duration_text = f"Duration: {duration_str}"
+    print(f"  {header_bg}{header_text}│ {duration_text:^{box_width - 2}} │{RESET}", flush=True)
     print(f"  {header_bg}{header_text}├{'─' * box_width}┤{RESET}", flush=True)
 
     # Group failures by field
@@ -511,13 +540,14 @@ def generate_summary_report(all_grades):
         "",
         "## Summary by Substrate",
         "",
-        "| Substrate | Passed | Failed | Total | Score | Status |",
-        "|-----------|--------|--------|-------|-------|--------|",
+        "| Substrate | Passed | Failed | Total | Score | Duration | Status |",
+        "|-----------|--------|--------|-------|-------|----------|--------|",
     ]
 
     total_passed = 0
     total_failed = 0
     total_tests = 0
+    total_time = 0.0
 
     for substrate_name in sorted(all_grades.keys()):
         grades = all_grades[substrate_name]
@@ -526,10 +556,12 @@ def generate_summary_report(all_grades):
         failed = grades["fields_failed"]
         total = grades["total_fields_tested"]
         score = (passed / total * 100) if total > 0 else 0
+        elapsed = grades.get("elapsed_seconds", 0.0)
 
         total_passed += passed
         total_failed += failed
         total_tests += total
+        total_time += elapsed
 
         if grades.get("error"):
             status = f"ERROR: {grades['error'][:30]}"
@@ -538,7 +570,7 @@ def generate_summary_report(all_grades):
         else:
             status = "FAIL"
 
-        lines.append(f"| {substrate_name} | {passed} | {failed} | {total} | {score:.1f}% | {status} |")
+        lines.append(f"| {substrate_name} | {passed} | {failed} | {total} | {score:.1f}% | {format_duration(elapsed)} | {status} |")
 
     overall_score = (total_passed / total_tests * 100) if total_tests > 0 else 0
 
@@ -553,6 +585,7 @@ def generate_summary_report(all_grades):
         f"| Total Passed | {total_passed} |",
         f"| Total Failed | {total_failed} |",
         f"| Overall Score | {overall_score:.1f}% |",
+        f"| Total Duration | {format_duration(total_time)} |",
         "",
     ])
 
@@ -658,6 +691,7 @@ def print_final_summary_table(all_grades):
     # Calculate column widths
     substrate_width = 15
     test_width = 12  # Wider to accommodate longer column name parts
+    duration_width = 10  # For duration column
     status_width = 18  # Wide enough for "FAILED TO COMPUTE"
 
     # Build multi-line header (3 lines for column names)
@@ -679,21 +713,22 @@ def print_final_summary_table(all_grades):
         for parts in col_name_parts:
             line += f" │ {parts[line_idx]:^{test_width}}"
 
-        # Add Total/Score/Status on middle line only
+        # Add Total/Score/Duration/Status on middle line only
         if line_idx == 1:
-            line += f" │ {'Total':^8} │ {'Score':^7} │ {'Status':^{status_width}}"
+            line += f" │ {'Total':^8} │ {'Score':^7} │ {'Duration':^{duration_width}} │ {'Status':^{status_width}}"
         else:
-            line += f" │ {'':^8} │ {'':^7} │ {'':^{status_width}}"
+            line += f" │ {'':^8} │ {'':^7} │ {'':^{duration_width}} │ {'':^{status_width}}"
 
         print(line, flush=True)
 
     # Calculate header width for separator
-    header_width = substrate_width + (len(COMPUTED_COLUMNS) * (test_width + 3)) + 8 + 3 + 7 + 3 + status_width + 3
+    header_width = substrate_width + (len(COMPUTED_COLUMNS) * (test_width + 3)) + 8 + 3 + 7 + 3 + duration_width + 3 + status_width + 3
     print("─" * header_width, flush=True)
 
     # Data rows
     total_passed = 0
     total_failed = 0
+    total_time = 0.0
     failed_substrates = []
 
     # Sort substrates by score (highest to lowest)
@@ -707,6 +742,8 @@ def print_final_summary_table(all_grades):
         grades = all_grades[substrate_name]
         has_error = grades.get("error") is not None
         execution_failed = grades.get("execution_failed", False) or (has_error and grades.get("total_fields_tested", 0) == 0)
+        elapsed = grades.get("elapsed_seconds", 0.0)
+        total_time += elapsed
 
         # Track failed substrates (execution failures only)
         if execution_failed:
@@ -759,31 +796,33 @@ def print_final_summary_table(all_grades):
         passed = grades["fields_passed"]
         total = grades["total_fields_tested"]
         score = (passed / total * 100) if total > 0 else 0
+        duration_str = format_duration(elapsed)
 
         # Use gradient color for score
         score_color = get_score_color(score)
 
-        # Status column
+        # Status column (with duration)
         if execution_failed:
             status_text = "FAILED TO COMPUTE"
             # Show --/-- for total since we have no data
-            print(f" │ {'--':>3}/{'--':<3} │ {RED}{DIM}{'--':>5}%{RESET} │ {RED}{BOLD}{status_text:^{status_width}}{RESET}", flush=True)
+            print(f" │ {'--':>3}/{'--':<3} │ {RED}{DIM}{'--':>5}%{RESET} │ {duration_str:>{duration_width}} │ {RED}{BOLD}{status_text:^{status_width}}{RESET}", flush=True)
         elif grades["fields_failed"] == 0:
             status_text = "PASS"
-            print(f" │ {passed:>3}/{total:<3} │ {score_color}{score:>5.1f}%{RESET} │ {GREEN}{status_text:^{status_width}}{RESET}", flush=True)
+            print(f" │ {passed:>3}/{total:<3} │ {score_color}{score:>5.1f}%{RESET} │ {duration_str:>{duration_width}} │ {GREEN}{status_text:^{status_width}}{RESET}", flush=True)
         else:
             status_text = "PARTIAL"
-            print(f" │ {passed:>3}/{total:<3} │ {score_color}{score:>5.1f}%{RESET} │ {YELLOW}{status_text:^{status_width}}{RESET}", flush=True)
+            print(f" │ {passed:>3}/{total:<3} │ {score_color}{score:>5.1f}%{RESET} │ {duration_str:>{duration_width}} │ {YELLOW}{status_text:^{status_width}}{RESET}", flush=True)
 
     print("─" * header_width, flush=True)
 
     # Overall totals
     overall_total = total_passed + total_failed
     overall_score = (total_passed / overall_total * 100) if overall_total > 0 else 0
+    total_duration_str = format_duration(total_time)
     print(f"{BOLD}{'OVERALL':<{substrate_width}}{RESET}", end="", flush=True)
     for _ in COMPUTED_COLUMNS:
         print(f" │ {'':^{test_width}}", end="", flush=True)
-    print(f" │ {total_passed:>3}/{overall_total:<3} │ {BOLD}{overall_score:>5.1f}%{RESET} │ {' ':^{status_width}}", flush=True)
+    print(f" │ {total_passed:>3}/{overall_total:<3} │ {BOLD}{overall_score:>5.1f}%{RESET} │ {BOLD}{total_duration_str:>{duration_width}}{RESET} │ {' ':^{status_width}}", flush=True)
     print(flush=True)
 
     # Print failed substrates summary if any

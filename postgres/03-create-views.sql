@@ -5,21 +5,6 @@
 -- Total Views: 2
 -- ============================================================================
 
-CREATE OR REPLACE VIEW vw_is_everything_a_language WITH (security_invoker = ON) AS
-SELECT
-  t.is_everything_a_language_id,
-  t.name,
-  t.argument_name,
-  t.argument_category,
-  t.step_type,
-  t.statement,
-  t.formalization,
-  t.related_candidate_name,
-  t.related_candidate_id,
-  t.evidence_from_rulebook,
-  t.notes
-FROM is_everything_a_language t;
-
 CREATE OR REPLACE VIEW vw_language_candidates WITH (security_invoker = ON) AS
 SELECT
   t.language_candidate_id,
@@ -34,8 +19,10 @@ SELECT
   t.can_be_held,
   calc_language_candidates_has_grammar(t.language_candidate_id) AS has_grammar,
   t.requires_parsing,
+  t.resolves_to_an_ast,
   t.has_linear_decoding_pressure,
   t.is_stable_ontology_reference,
+  t.is_live_ontology_editor,
   t.dimensionality_while_editing,
   t.is_open_world,
   t.is_closed_world,
@@ -43,6 +30,22 @@ SELECT
   t.distance_from_concept,
   calc_language_candidates_is_description_of(t.language_candidate_id) AS is_description_of,
   calc_language_candidates_relationship_to_concept(t.language_candidate_id) AS relationship_to_concept,
+  t.model_object_facility_layer,
   t.sort_order
 FROM language_candidates t;
+
+CREATE OR REPLACE VIEW vw_is_everything_a_language WITH (security_invoker = ON) AS
+SELECT
+  t.is_everything_a_language_id,
+  t.name,
+  t.argument_name,
+  t.argument_category,
+  t.step_type,
+  t.statement,
+  t.formalization,
+  t.related_candidate_name,
+  t.related_candidate_id,
+  t.evidence_from_rulebook,
+  t.notes
+FROM is_everything_a_language t;
 

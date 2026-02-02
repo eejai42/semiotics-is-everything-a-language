@@ -11,33 +11,23 @@ test_answer bytes → asm evaluator(test_answer_struct_ptr, candidate_id) → sc
 
 This is a domain-agnostic "formula → tiny native evaluator" pipeline where field names, domain concepts, and business logic exist only at compile time. At runtime, it's pure byte offsets and generic operations.
 
+## Current Status
+
+**Implemented and functional.** The compiler generates ARM64 assembly (Apple Silicon) that is assembled and linked into a shared library. The test runner loads this library via ctypes and executes the generated evaluators.
+
+Current test score: **~70%** - Some calculated fields (particularly those with formula dependencies like `family_feud_mismatch`) have known issues with DAG ordering.
+
+## Known Limitations
+
+1. **DAG ordering for dependent formulas**: The assembly functions are self-contained and don't call each other. Calculated fields that depend on other calculated fields (like `family_feud_mismatch` depending on `top_family_feud_answer`) need the dependency computed and written back to the struct before evaluating.
+
+2. **ARM64 only**: Currently generates Apple Silicon ARM64 assembly. x86-64 support is not implemented.
+
+3. **String return ABI**: The approach for returning both pointer and length from string functions has edge cases on ARM64.
+
 ---
 
-Remaining Bugs in Binary Substrate
-1. Calculated fields not computed before dependent formulas
-The family_feud_mismatch formula reads {{TopFamilyFeudAnswer}} from the struct at offset 64, but the test runner packs the original JSON value (which is null/missing for calculated fields), not the computed value. The assembly functions are self-contained and don't call each other.
-
-Fix needed: In take-test.py, call eval_top_family_feud_answer first and write the result back to the struct buffer at offset 64 before calling eval_family_feud_mismatch.
-
-2. String return capturing may not work reliably
-The StringResult struct approach to capture both x0 (ptr) and x1 (len) may not work correctly on ARM64 - ctypes struct returns don't always map to register pairs the way we need.
-
-Fix needed: Either use a wrapper that stores x1 in a global, or have the assembly write the length to a known memory location.
-
-3. Static buffer reuse between calls
-The static result buffers (_result_buf_*) are 1KB each and not cleared between calls. Consecutive calls may have leftover data if the new string is shorter.
-
-Fix needed: Zero the buffer at the start of each function, or always rely on the returned length (fix #2 first).
-
-4. JSON field name mapping inconsistencies
-The pack_test_answer function tries multiple key formats but may not correctly map all JSON keys (e.g., chosen_language_candidate vs ChosenLanguageCandidate) to struct offsets.
-
-Fix needed: Verify the field name normalization matches between the compiler's build_schema and the runtime's packing logic.
-
-5. family_fued_question formula uses wrong string literal length
-In erb_calc.s:228, the code loads mov x1, #12 for str_1 (" a language?") but str_0 is loaded with mov x1, #3 - need to verify all literal lengths match their actual string contents.
-
-## Original Implementation Plan
+## Architecture
 
 ### Phase 0: Define a Tiny, Domain-Agnostic ABI
 
@@ -167,17 +157,41 @@ For each computed value, run:
 
 ---
 
-## File Structure
+## Generated Files
+
+| File | Description |
+|------|-------------|
+| `erb_calc.s` | **GENERATED** - ARM64 assembly (never hand-written) |
+| `erb_calc.o` | **GENERATED** - Assembled object file |
+| `erb_calc.dylib` / `.so` | **GENERATED** - Compiled shared library |
+| `test-answers.json` | **GENERATED** - Computed results for grading |
+| `test-results.md` | **GENERATED** - Human-readable test report |
+
+## Source Files (Not Cleaned)
 
 | File | Description |
 |------|-------------|
 | `inject-into-binary.py` | **THE COMPILER**: parses formulas → generates asm → builds .dylib |
-| `erb_calc.asm` | **GENERATED** assembly (never hand-written) |
-| `erb_calc.o` | Assembled object file |
-| `erb_calc.dylib` / `.so` | Compiled shared library |
 | `take-test.py` | Test runner: packs JSON → calls asm → unpacks results |
 | `take-test.sh` | Shell wrapper |
-| `test-answers.json` | Computed results for grading |
+| `inject-substrate.sh` | Orchestration wrapper |
+| `schema.bin.md` | Schema documentation |
+| `README.md` | This documentation |
+
+## Cleaning
+
+To remove all generated files:
+
+```bash
+python3 inject-into-binary.py --clean
+```
+
+This will remove:
+- `erb_calc.s`
+- `erb_calc.o`
+- `erb_calc.dylib` / `erb_calc.so`
+- `test-answers.json`
+- `test-results.md`
 
 ---
 
@@ -194,8 +208,12 @@ The formula is the single source of truth. The assembly is derived, not authored
 
 ---
 
-## Current Status
+## Running
 
-**NOT IMPLEMENTED**
+```bash
+# Generate assembly and compile to shared library
+python3 inject-into-binary.py
 
-Run `./inject-substrate.sh` to see what's missing.
+# Run tests against the compiled library
+./take-test.sh
+```

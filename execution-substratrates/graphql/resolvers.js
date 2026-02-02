@@ -52,10 +52,10 @@ function calcRelationshipToConcept(candidate) {
 // ----------------------------------------
 
 /**
- * Formula: =AND(   {{HasSyntax}},   {{RequiresParsing}},   {{IsDescriptionOf}},   {{HasLinearDecodingPressure}},   {{IsStableOntologyReference}},   NOT({{CanBeHeld}}),   NOT({{HasIdentity}}) )
+ * Formula: =AND(   {{HasSyntax}},   {{RequiresParsing}},   {{IsDescriptionOf}},   {{HasLinearDecodingPressure}},   {{ResolvesToAnAST}},   {{IsStableOntologyReference}},   NOT({{CanBeHeld}}),   NOT({{HasIdentity}}) )
  */
 function calcTopFamilyFeudAnswer(candidate) {
-  return ((candidate.hasSyntax === true) && (candidate.requiresParsing === true) && (candidate.isDescriptionOf === true) && (candidate.hasLinearDecodingPressure === true) && (candidate.isStableOntologyReference === true) && ((candidate.canBeHeld !== true) === true) && ((candidate.hasIdentity !== true) === true));
+  return ((candidate.hasSyntax === true) && (candidate.requiresParsing === true) && (candidate.isDescriptionOf === true) && (candidate.hasLinearDecodingPressure === true) && (candidate.resolvesToAnAST === true) && (candidate.isStableOntologyReference === true) && ((candidate.canBeHeld !== true) === true) && ((candidate.hasIdentity !== true) === true));
 }
 
 // Level 3 calculations

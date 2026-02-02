@@ -55,10 +55,10 @@ The following logical argument establishes that "language" can be formalized as 
 
 The following entities have been evaluated against the operational definition of "language" using testable predicates.
 
-| Name | Category | Is Language? | HasSyntax | RequiresParsing | MeaningIsSerialized | IsOntologyDescriptor | README |
-|------|----------|--------------|-----------|-----------------|---------------------|----------------------|--------|
+| Name | Category | Is Language? | HasSyntax | RequiresParsing | HasLinearDecodingPressure | StableOntologyReference | README |
+|------|----------|--------------|-----------|-----------------|---------------------------|-------------------------|--------|
 {{#each LanguageCandidates.data}}
-| {{Name}} | {{Category}} | {{#if TopFamilyFeudAnswer}}Yes{{else}}No{{/if}} | {{#if HasSyntax}}✓{{else}}✗{{/if}} | {{#if RequiresParsing}}✓{{else}}✗{{/if}} | {{#if MeaningIsSerialized}}✓{{else}}✗{{/if}} | {{#if IsOngologyDescriptor}}✓{{else}}✗{{/if}} | {{#if TopFamilyFeudAnswer}}[View](./execution-substratrates/{{LanguageCandidateId}}/README.md){{else}}-{{/if}} |
+| {{Name}} | {{Category}} | {{#if TopFamilyFeudAnswer}}Yes{{else}}No{{/if}} | {{#if HasSyntax}}✓{{else}}✗{{/if}} | {{#if RequiresParsing}}✓{{else}}✗{{/if}} | {{#if HasLinearDecodingPressure}}✓{{else}}✗{{/if}} | {{#if StableOntologyReference}}✓{{else}}✗{{/if}} | {{#if TopFamilyFeudAnswer}}[View](./execution-substratrates/{{LanguageCandidateId}}/README.md){{else}}-{{/if}} |
 {{/each}}
 
 ### Predicate Legend
@@ -67,8 +67,8 @@ The following entities have been evaluated against the operational definition of
 |-----------|-------------|
 | **HasSyntax** | Has formal syntactic rules governing valid expressions |
 | **RequiresParsing** | Understanding requires parsing/interpreting structured input |
-| **MeaningIsSerialized** | Meaning is encoded in a serialized, transmittable form |
-| **IsOntologyDescriptor** | Functions as an ontology/descriptor system for categorizing concepts |
+| **HasLinearDecodingPressure** | Requires sequential/linear interpretation to extract meaning |
+| **StableOntologyReference** | Provides stable references to concepts over time |
 
 ---
 

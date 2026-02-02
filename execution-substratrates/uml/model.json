@@ -84,11 +84,19 @@
           "type": "boolean"
         },
         {
+          "name": "ResolvesToAnAST",
+          "type": "boolean"
+        },
+        {
           "name": "HasLinearDecodingPressure",
           "type": "boolean"
         },
         {
           "name": "IsStableOntologyReference",
+          "type": "boolean"
+        },
+        {
+          "name": "IsLiveOntologyEditor",
           "type": "boolean"
         },
         {
@@ -108,6 +116,10 @@
           "type": "integer"
         },
         {
+          "name": "ModelObjectFacilityLayer",
+          "type": "string"
+        },
+        {
           "name": "SortOrder",
           "type": "integer"
         }
@@ -121,7 +133,7 @@
         {
           "name": "TopFamilyFeudAnswer",
           "type": "boolean",
-          "formula": "=AND(\n  {{HasSyntax}},\n  {{RequiresParsing}},\n  {{IsDescriptionOf}},\n  {{HasLinearDecodingPressure}},\n  {{IsStableOntologyReference}},\n  NOT({{CanBeHeld}}),\n  NOT({{HasIdentity}})\n)"
+          "formula": "=AND(\n  {{HasSyntax}},\n  {{RequiresParsing}},\n  {{IsDescriptionOf}},\n  {{HasLinearDecodingPressure}},\n  {{ResolvesToAnAST}},\n  {{IsStableOntologyReference}},\n  NOT({{CanBeHeld}}),\n  NOT({{HasIdentity}})\n)"
         },
         {
           "name": "FamilyFeudMismatch",
@@ -436,12 +448,15 @@
         "HasIdentity": false,
         "CanBeHeld": false,
         "RequiresParsing": true,
+        "ResolvesToAnAST": true,
         "HasLinearDecodingPressure": true,
         "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "N/A",
         "IsOpenWorld": false,
         "IsClosedWorld": false,
         "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M1",
         "SortOrder": 0
       }
     },
@@ -457,12 +472,15 @@
         "HasIdentity": true,
         "CanBeHeld": true,
         "RequiresParsing": true,
+        "ResolvesToAnAST": true,
         "HasLinearDecodingPressure": false,
         "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "N/A",
         "IsOpenWorld": false,
         "IsClosedWorld": false,
         "DistanceFromConcept": 1,
+        "ModelObjectFacilityLayer": "NA",
         "SortOrder": 1
       }
     },
@@ -478,12 +496,15 @@
         "HasIdentity": false,
         "CanBeHeld": false,
         "RequiresParsing": true,
+        "ResolvesToAnAST": true,
         "HasLinearDecodingPressure": true,
         "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "OneDimensionalSymbolic",
         "IsOpenWorld": true,
         "IsClosedWorld": true,
         "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M1",
         "SortOrder": 2
       }
     },
@@ -499,18 +520,45 @@
         "HasIdentity": false,
         "CanBeHeld": false,
         "RequiresParsing": true,
+        "ResolvesToAnAST": true,
         "HasLinearDecodingPressure": true,
         "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "OneDimensionalSymbolic",
         "IsOpenWorld": true,
         "IsClosedWorld": false,
         "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M1",
         "SortOrder": 3
       }
     },
     {
       "class": "LanguageCandidates",
       "id": "LanguageCandidates_4",
+      "values": {
+        "LanguageCandidateId": "airtable-editing",
+        "Name": "Airtable - Editing",
+        "Category": "Running Software",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": false,
+        "RequiresParsing": false,
+        "ResolvesToAnAST": true,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": true,
+        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M4",
+        "SortOrder": 3
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_5",
       "values": {
         "LanguageCandidateId": "spoken-words",
         "Name": "Spoken Words",
@@ -520,270 +568,21 @@
         "HasIdentity": false,
         "CanBeHeld": false,
         "RequiresParsing": true,
+        "ResolvesToAnAST": true,
         "HasLinearDecodingPressure": true,
         "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "OneDimensionalSymbolic",
         "IsOpenWorld": true,
         "IsClosedWorld": false,
         "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M1",
         "SortOrder": 4
       }
     },
     {
       "class": "LanguageCandidates",
-      "id": "LanguageCandidates_5",
-      "values": {
-        "LanguageCandidateId": "a-chair",
-        "Name": "A Chair ",
-        "Category": "Physical Object",
-        "ChosenLanguageCandidate": false,
-        "HasSyntax": false,
-        "HasIdentity": true,
-        "CanBeHeld": true,
-        "RequiresParsing": false,
-        "HasLinearDecodingPressure": false,
-        "IsStableOntologyReference": false,
-        "DimensionalityWhileEditing": "N/A",
-        "IsOpenWorld": false,
-        "IsClosedWorld": true,
-        "DistanceFromConcept": 1,
-        "SortOrder": 5
-      }
-    },
-    {
-      "class": "LanguageCandidates",
       "id": "LanguageCandidates_6",
-      "values": {
-        "LanguageCandidateId": "a-game-of-fortnite",
-        "Name": "A Game of Fortnite",
-        "Category": "Running Software",
-        "ChosenLanguageCandidate": false,
-        "HasSyntax": false,
-        "HasIdentity": true,
-        "CanBeHeld": false,
-        "RequiresParsing": true,
-        "HasLinearDecodingPressure": false,
-        "IsStableOntologyReference": false,
-        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
-        "IsOpenWorld": false,
-        "IsClosedWorld": true,
-        "DistanceFromConcept": 1,
-        "SortOrder": 6
-      }
-    },
-    {
-      "class": "LanguageCandidates",
-      "id": "LanguageCandidates_7",
-      "values": {
-        "LanguageCandidateId": "sign-language",
-        "Name": "Sign Language",
-        "Category": "Natural Language",
-        "ChosenLanguageCandidate": true,
-        "HasSyntax": true,
-        "HasIdentity": false,
-        "CanBeHeld": false,
-        "RequiresParsing": true,
-        "HasLinearDecodingPressure": true,
-        "IsStableOntologyReference": true,
-        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
-        "IsOpenWorld": true,
-        "IsClosedWorld": false,
-        "DistanceFromConcept": 2,
-        "SortOrder": 7
-      }
-    },
-    {
-      "class": "LanguageCandidates",
-      "id": "LanguageCandidates_8",
-      "values": {
-        "LanguageCandidateId": "python",
-        "Name": "Python",
-        "Category": "Formal Language",
-        "ChosenLanguageCandidate": true,
-        "HasSyntax": true,
-        "HasIdentity": false,
-        "CanBeHeld": false,
-        "RequiresParsing": true,
-        "HasLinearDecodingPressure": true,
-        "IsStableOntologyReference": true,
-        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
-        "IsOpenWorld": true,
-        "IsClosedWorld": false,
-        "DistanceFromConcept": 2,
-        "SortOrder": 8
-      }
-    },
-    {
-      "class": "LanguageCandidates",
-      "id": "LanguageCandidates_9",
-      "values": {
-        "LanguageCandidateId": "a-smartphone",
-        "Name": "A Smartphone",
-        "Category": "Physical Object",
-        "ChosenLanguageCandidate": false,
-        "HasSyntax": false,
-        "HasIdentity": true,
-        "CanBeHeld": true,
-        "RequiresParsing": false,
-        "HasLinearDecodingPressure": true,
-        "IsStableOntologyReference": false,
-        "DimensionalityWhileEditing": "N/A",
-        "IsOpenWorld": false,
-        "IsClosedWorld": true,
-        "DistanceFromConcept": 1,
-        "SortOrder": 9
-      }
-    },
-    {
-      "class": "LanguageCandidates",
-      "id": "LanguageCandidates_10",
-      "values": {
-        "LanguageCandidateId": "a-running-app",
-        "Name": "A Running App ",
-        "Category": "Running Software",
-        "ChosenLanguageCandidate": false,
-        "HasSyntax": false,
-        "HasIdentity": true,
-        "CanBeHeld": false,
-        "RequiresParsing": true,
-        "HasLinearDecodingPressure": true,
-        "IsStableOntologyReference": false,
-        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
-        "IsOpenWorld": false,
-        "IsClosedWorld": true,
-        "DistanceFromConcept": 1,
-        "SortOrder": 22
-      }
-    },
-    {
-      "class": "LanguageCandidates",
-      "id": "LanguageCandidates_11",
-      "values": {
-        "LanguageCandidateId": "an-xlsx-doc",
-        "Name": "An XLSX Doc",
-        "Category": "Formal Language",
-        "ChosenLanguageCandidate": true,
-        "HasSyntax": true,
-        "HasIdentity": false,
-        "CanBeHeld": false,
-        "RequiresParsing": true,
-        "HasLinearDecodingPressure": true,
-        "IsStableOntologyReference": true,
-        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
-        "IsOpenWorld": false,
-        "IsClosedWorld": false,
-        "DistanceFromConcept": 2,
-        "SortOrder": 23
-      }
-    },
-    {
-      "class": "LanguageCandidates",
-      "id": "LanguageCandidates_12",
-      "values": {
-        "LanguageCandidateId": "editing-an-xlsx-doc",
-        "Name": "Editing an XLSX Doc",
-        "Category": "Running Software",
-        "ChosenLanguageCandidate": false,
-        "HasSyntax": false,
-        "HasIdentity": false,
-        "CanBeHeld": false,
-        "RequiresParsing": false,
-        "HasLinearDecodingPressure": false,
-        "IsStableOntologyReference": false,
-        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
-        "IsOpenWorld": false,
-        "IsClosedWorld": false,
-        "DistanceFromConcept": 1,
-        "SortOrder": 24
-      }
-    },
-    {
-      "class": "LanguageCandidates",
-      "id": "LanguageCandidates_13",
-      "values": {
-        "LanguageCandidateId": "an-docx-doc",
-        "Name": "An DOCX Doc",
-        "Category": "Formal Language",
-        "ChosenLanguageCandidate": true,
-        "HasSyntax": true,
-        "HasIdentity": false,
-        "CanBeHeld": false,
-        "RequiresParsing": true,
-        "HasLinearDecodingPressure": true,
-        "IsStableOntologyReference": true,
-        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
-        "IsOpenWorld": false,
-        "IsClosedWorld": false,
-        "DistanceFromConcept": 2,
-        "SortOrder": 25
-      }
-    },
-    {
-      "class": "LanguageCandidates",
-      "id": "LanguageCandidates_14",
-      "values": {
-        "LanguageCandidateId": "editing-an-docx-doc",
-        "Name": "Editing an DOCX Doc",
-        "Category": "Running Software",
-        "ChosenLanguageCandidate": false,
-        "HasSyntax": false,
-        "HasIdentity": false,
-        "CanBeHeld": false,
-        "RequiresParsing": false,
-        "HasLinearDecodingPressure": false,
-        "IsStableOntologyReference": true,
-        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
-        "IsOpenWorld": false,
-        "IsClosedWorld": false,
-        "DistanceFromConcept": 1,
-        "SortOrder": 25
-      }
-    },
-    {
-      "class": "LanguageCandidates",
-      "id": "LanguageCandidates_15",
-      "values": {
-        "LanguageCandidateId": "a-csv-file",
-        "Name": "A CSV File",
-        "Category": "Formal Language",
-        "ChosenLanguageCandidate": true,
-        "HasSyntax": true,
-        "HasIdentity": false,
-        "CanBeHeld": false,
-        "RequiresParsing": true,
-        "HasLinearDecodingPressure": true,
-        "IsStableOntologyReference": true,
-        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
-        "IsOpenWorld": true,
-        "IsClosedWorld": false,
-        "DistanceFromConcept": 2,
-        "SortOrder": 10
-      }
-    },
-    {
-      "class": "LanguageCandidates",
-      "id": "LanguageCandidates_16",
-      "values": {
-        "LanguageCandidateId": "owl-rdf-graphql-generally",
-        "Name": "OWL/RDF/GraphQL/... generally",
-        "Category": "Natural Language",
-        "ChosenLanguageCandidate": true,
-        "HasSyntax": true,
-        "HasIdentity": false,
-        "CanBeHeld": false,
-        "RequiresParsing": true,
-        "HasLinearDecodingPressure": true,
-        "IsStableOntologyReference": true,
-        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
-        "IsOpenWorld": false,
-        "IsClosedWorld": true,
-        "DistanceFromConcept": 2,
-        "SortOrder": 11
-      }
-    },
-    {
-      "class": "LanguageCandidates",
-      "id": "LanguageCandidates_17",
       "values": {
         "LanguageCandidateId": "a-coffee-mug",
         "Name": "A Coffee Mug",
@@ -793,13 +592,280 @@
         "HasIdentity": true,
         "CanBeHeld": true,
         "RequiresParsing": false,
+        "ResolvesToAnAST": false,
         "HasLinearDecodingPressure": false,
         "IsStableOntologyReference": false,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "N/A",
+        "IsOpenWorld": false,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 1,
+        "ModelObjectFacilityLayer": "NA",
+        "SortOrder": 5
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_7",
+      "values": {
+        "LanguageCandidateId": "a-game-of-fortnite",
+        "Name": "A Game of Fortnite",
+        "Category": "Running Software",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "ResolvesToAnAST": true,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": false,
+        "IsLiveOntologyEditor": false,
+        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 1,
+        "ModelObjectFacilityLayer": "M4",
+        "SortOrder": 6
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_8",
+      "values": {
+        "LanguageCandidateId": "sign-language",
+        "Name": "Sign Language",
+        "Category": "Natural Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "ResolvesToAnAST": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": true,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M1",
+        "SortOrder": 7
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_9",
+      "values": {
+        "LanguageCandidateId": "python",
+        "Name": "Python",
+        "Category": "Formal Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "ResolvesToAnAST": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": true,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M1",
+        "SortOrder": 8
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_10",
+      "values": {
+        "LanguageCandidateId": "a-smartphone",
+        "Name": "A Smartphone",
+        "Category": "Physical Object",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": true,
+        "RequiresParsing": false,
+        "ResolvesToAnAST": false,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": false,
+        "IsLiveOntologyEditor": false,
+        "DimensionalityWhileEditing": "N/A",
+        "IsOpenWorld": false,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 1,
+        "ModelObjectFacilityLayer": "NA",
+        "SortOrder": 9
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_11",
+      "values": {
+        "LanguageCandidateId": "a-running-app",
+        "Name": "A Running App ",
+        "Category": "Running Software",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": true,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "ResolvesToAnAST": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": false,
+        "IsLiveOntologyEditor": true,
+        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 1,
+        "ModelObjectFacilityLayer": "M4",
+        "SortOrder": 22
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_12",
+      "values": {
+        "LanguageCandidateId": "an-xlsx-doc",
+        "Name": "An XLSX Doc",
+        "Category": "Formal Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "ResolvesToAnAST": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M2",
+        "SortOrder": 23
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_13",
+      "values": {
+        "LanguageCandidateId": "xlsx-editing",
+        "Name": "XLSX - Editing",
+        "Category": "Running Software",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": false,
+        "ResolvesToAnAST": true,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": false,
+        "IsLiveOntologyEditor": true,
+        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
         "IsOpenWorld": false,
         "IsClosedWorld": false,
         "DistanceFromConcept": 1,
-        "SortOrder": 12
+        "ModelObjectFacilityLayer": "M4",
+        "SortOrder": 24
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_14",
+      "values": {
+        "LanguageCandidateId": "an-docx-doc",
+        "Name": "An DOCX Doc",
+        "Category": "Formal Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "ResolvesToAnAST": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M2",
+        "SortOrder": 25
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_15",
+      "values": {
+        "LanguageCandidateId": "docx-editing",
+        "Name": "DOCX - Editing",
+        "Category": "Running Software",
+        "ChosenLanguageCandidate": false,
+        "HasSyntax": false,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": false,
+        "ResolvesToAnAST": false,
+        "HasLinearDecodingPressure": false,
+        "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": true,
+        "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 1,
+        "ModelObjectFacilityLayer": "M4",
+        "SortOrder": 25
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_16",
+      "values": {
+        "LanguageCandidateId": "a-csv-file",
+        "Name": "A CSV File",
+        "Category": "Formal Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "ResolvesToAnAST": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": true,
+        "IsClosedWorld": false,
+        "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M2",
+        "SortOrder": 10
+      }
+    },
+    {
+      "class": "LanguageCandidates",
+      "id": "LanguageCandidates_17",
+      "values": {
+        "LanguageCandidateId": "owl-rdf-graphql-generally",
+        "Name": "OWL/RDF/GraphQL/... generally",
+        "Category": "Natural Language",
+        "ChosenLanguageCandidate": true,
+        "HasSyntax": true,
+        "HasIdentity": false,
+        "CanBeHeld": false,
+        "RequiresParsing": true,
+        "ResolvesToAnAST": true,
+        "HasLinearDecodingPressure": true,
+        "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
+        "DimensionalityWhileEditing": "OneDimensionalSymbolic",
+        "IsOpenWorld": false,
+        "IsClosedWorld": true,
+        "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M2",
+        "SortOrder": 11
       }
     },
     {
@@ -814,12 +880,15 @@
         "HasIdentity": true,
         "CanBeHeld": true,
         "RequiresParsing": true,
+        "ResolvesToAnAST": true,
         "HasLinearDecodingPressure": false,
         "IsStableOntologyReference": false,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "N/A",
         "IsOpenWorld": false,
         "IsClosedWorld": false,
         "DistanceFromConcept": 1,
+        "ModelObjectFacilityLayer": "NA",
         "SortOrder": 13
       }
     },
@@ -835,12 +904,15 @@
         "HasIdentity": false,
         "CanBeHeld": false,
         "RequiresParsing": true,
+        "ResolvesToAnAST": true,
         "HasLinearDecodingPressure": true,
         "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "OneDimensionalSymbolic",
         "IsOpenWorld": false,
         "IsClosedWorld": false,
         "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M2",
         "SortOrder": 14
       }
     },
@@ -856,12 +928,15 @@
         "HasIdentity": false,
         "CanBeHeld": false,
         "RequiresParsing": true,
+        "ResolvesToAnAST": true,
         "HasLinearDecodingPressure": true,
         "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "OneDimensionalSymbolic",
         "IsOpenWorld": false,
         "IsClosedWorld": false,
         "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M2",
         "SortOrder": 15
       }
     },
@@ -877,12 +952,15 @@
         "HasIdentity": true,
         "CanBeHeld": true,
         "RequiresParsing": false,
+        "ResolvesToAnAST": false,
         "HasLinearDecodingPressure": false,
         "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "N/A",
         "IsOpenWorld": false,
         "IsClosedWorld": false,
         "DistanceFromConcept": 1,
+        "ModelObjectFacilityLayer": "NA",
         "SortOrder": 16
       }
     },
@@ -898,12 +976,15 @@
         "HasIdentity": true,
         "CanBeHeld": false,
         "RequiresParsing": true,
+        "ResolvesToAnAST": true,
         "HasLinearDecodingPressure": false,
         "IsStableOntologyReference": false,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "MultiDimensionalNonSymbolic",
         "IsOpenWorld": false,
         "IsClosedWorld": false,
         "DistanceFromConcept": 1,
+        "ModelObjectFacilityLayer": "M1",
         "SortOrder": 17
       }
     },
@@ -919,12 +1000,15 @@
         "HasIdentity": false,
         "CanBeHeld": false,
         "RequiresParsing": true,
+        "ResolvesToAnAST": true,
         "HasLinearDecodingPressure": true,
         "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "OneDimensionalSymbolic",
         "IsOpenWorld": false,
         "IsClosedWorld": false,
         "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M1",
         "SortOrder": 18
       }
     },
@@ -940,12 +1024,15 @@
         "HasIdentity": false,
         "CanBeHeld": false,
         "RequiresParsing": true,
+        "ResolvesToAnAST": true,
         "HasLinearDecodingPressure": true,
         "IsStableOntologyReference": true,
+        "IsLiveOntologyEditor": false,
         "DimensionalityWhileEditing": "OneDimensionalSymbolic",
         "IsOpenWorld": false,
         "IsClosedWorld": false,
         "DistanceFromConcept": 2,
+        "ModelObjectFacilityLayer": "M1",
         "SortOrder": 19
       }
     }

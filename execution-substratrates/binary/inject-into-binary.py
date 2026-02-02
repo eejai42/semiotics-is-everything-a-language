@@ -24,7 +24,7 @@ from enum import Enum, auto
 # Add project root to path for shared imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from orchestration.shared import load_rulebook
+from orchestration.shared import load_rulebook, handle_clean_arg
 
 
 # =============================================================================
@@ -1208,6 +1208,20 @@ def assemble_and_link(asm_source: str, output_path: Path) -> Path:
 # =============================================================================
 
 def main():
+    # Define generated files for this substrate
+    GENERATED_FILES = [
+        'erb_calc.s',
+        'erb_calc.o',
+        'erb_calc.dylib',
+        'erb_calc.so',
+        'test-answers.json',
+        'test-results.md',
+    ]
+
+    # Handle --clean argument
+    if handle_clean_arg(GENERATED_FILES, "Binary substrate: Removes generated assembly and compiled library"):
+        return
+
     script_dir = Path(__file__).resolve().parent
 
     print("=" * 70)
@@ -1216,7 +1230,7 @@ def main():
     print()
 
     # Load the rulebook
-    print("📖 Loading rulebook...")
+    print("Loading rulebook...")
     try:
         rulebook = load_rulebook()
     except FileNotFoundError as e:

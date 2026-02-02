@@ -24,7 +24,7 @@ from enum import Enum, auto
 # Add project root to path for shared imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from orchestration.shared import load_rulebook
+from orchestration.shared import load_rulebook, handle_clean_arg
 
 
 # =============================================================================
@@ -633,6 +633,20 @@ def generate_ocl_constraints(tables: Dict[str, Any]) -> str:
 # =============================================================================
 
 def main():
+    # Define generated files for this substrate
+    GENERATED_FILES = [
+        'class-diagram.puml',
+        'objects.puml',
+        'model.json',
+        'constraints.ocl',
+        'test-answers.json',
+        'test-results.md',
+    ]
+
+    # Handle --clean argument
+    if handle_clean_arg(GENERATED_FILES, "UML substrate: Removes generated PlantUML diagrams, model, and OCL constraints"):
+        return
+
     script_dir = Path(__file__).resolve().parent
 
     print("=" * 70)

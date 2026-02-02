@@ -83,3 +83,66 @@ def get_candidate_name_from_cwd():
     Assumes we're running from /execution-substratrates/{candidate}/
     """
     return Path.cwd().name
+
+
+def clean_generated_files(generated_files: list, substrate_name: str = None):
+    """Remove generated files from a substrate directory.
+
+    Args:
+        generated_files: List of filenames (relative to cwd) to remove
+        substrate_name: Optional name for logging (defaults to cwd name)
+
+    Returns:
+        List of files that were successfully removed
+    """
+    if substrate_name is None:
+        substrate_name = get_candidate_name_from_cwd()
+
+    cwd = Path.cwd()
+    removed = []
+
+    print(f"Cleaning generated files for {substrate_name}...")
+
+    for filename in generated_files:
+        file_path = cwd / filename
+        if file_path.exists():
+            try:
+                file_path.unlink()
+                print(f"  Removed: {filename}")
+                removed.append(filename)
+            except Exception as e:
+                print(f"  Failed to remove {filename}: {e}")
+        else:
+            print(f"  Skipped (not found): {filename}")
+
+    if removed:
+        print(f"Cleaned {len(removed)} file(s)")
+    else:
+        print("No files to clean")
+
+    return removed
+
+
+def handle_clean_arg(generated_files: list, description: str = None):
+    """Check for --clean argument and perform cleanup if requested.
+
+    Args:
+        generated_files: List of filenames to remove when cleaning
+        description: Optional description to display
+
+    Returns:
+        True if --clean was handled (script should exit), False otherwise
+    """
+    import sys
+
+    if '--clean' in sys.argv:
+        substrate_name = get_candidate_name_from_cwd()
+        if description:
+            print(f"\n{description}\n")
+        print(f"=" * 60)
+        print(f"CLEAN MODE: {substrate_name.upper()}")
+        print(f"=" * 60)
+        clean_generated_files(generated_files, substrate_name)
+        return True
+
+    return False
