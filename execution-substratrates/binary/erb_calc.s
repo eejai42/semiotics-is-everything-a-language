@@ -229,13 +229,13 @@ str_11_len:
 
     ; Static result buffers for string concatenation
     .bss
-    .globl _result_buf_eval_family_feud_mismatch
-    .p2align 3
-_result_buf_eval_family_feud_mismatch:
-    .space 1024
     .globl _result_buf_eval_family_fued_question
     .p2align 3
 _result_buf_eval_family_fued_question:
+    .space 1024
+    .globl _result_buf_eval_family_feud_mismatch
+    .p2align 3
+_result_buf_eval_family_feud_mismatch:
     .space 1024
 
     .text

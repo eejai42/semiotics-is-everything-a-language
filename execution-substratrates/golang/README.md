@@ -41,10 +41,9 @@ This substrate compiles rulebook formulas into native Go code, generating struct
 | File | Description |
 |------|-------------|
 | `erb_sdk.go` | **GENERATED** - Go structs and calculation functions compiled from rulebook formulas |
-| `main.go` | **GENERATED** - Test runner that loads blank-test.json and produces test-answers.json |
-| `erb_test` | **GENERATED** - Compiled Go binary (test runner) |
-| `test-answers.json` | **GENERATED** - Test execution results for grading |
-| `test-results.md` | **GENERATED** - Human-readable test report |
+| `erb_test` | **BUILD OUTPUT** - Compiled Go binary (built by take-test.sh) |
+| `test-answers.json` | **TEST OUTPUT** - Test execution results for grading |
+| `test-results.md` | **TEST OUTPUT** - Human-readable test report |
 
 ## Source Files (Not Cleaned)
 
@@ -52,12 +51,13 @@ This substrate compiles rulebook formulas into native Go code, generating struct
 |------|-------------|
 | `inject-into-golang.py` | The compiler: parses formulas and generates Go code |
 | `inject-substrate.sh` | Shell wrapper for orchestration |
+| `main.go` | Test runner that loads blank-test.json and produces test-answers.json (created once if missing) |
 | `take-test.sh` | Shell wrapper for test runner (builds and runs erb_test) |
 | `README.md` | This documentation |
 
 ## Cleaning
 
-To remove all generated files:
+To remove generated files:
 
 ```bash
 python3 inject-into-golang.py --clean
@@ -65,10 +65,8 @@ python3 inject-into-golang.py --clean
 
 This will remove:
 - `erb_sdk.go`
-- `main.go`
-- `erb_test`
-- `test-answers.json`
-- `test-results.md`
+
+Note: `main.go` is a source file and is NOT removed by clean. Build outputs (`erb_test`, `test-answers.json`, `test-results.md`) are created by the test runner, not the injector.
 
 ## Usage
 
